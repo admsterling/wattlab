@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { graphqlHTTP } = require('express-graphql');
 
-const port = require('../config').api_port;
-const db = require('../config').mongodb;
+const { api_port, db, dev_flag } = require('../config');
 
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
@@ -35,7 +34,7 @@ app.use(
   graphqlHTTP({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
-    graphiql: true,
+    graphiql: dev_flag,
     customFormatErrorFn(err) {
       if (!err.originalError) {
         return err;
@@ -51,8 +50,8 @@ app.use(
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
-    app.listen(port, () => {
-      console.log('Listening on localhost:' + port);
+    app.listen(api_port, () => {
+      console.log('Listening on localhost:' + api_port);
     });
   })
   .catch((err) => console.log(err));
