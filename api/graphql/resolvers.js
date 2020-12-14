@@ -63,6 +63,11 @@ module.exports = {
       error.code = 401;
       throw error;
     }
+    if (!prof.approved) {
+      const error = new Error('Professor not approved.');
+      error.code = 401;
+      throw error;
+    }
     const isEqual = await bcrypt.compare(password, prof.password);
     if (!isEqual) {
       const error = new Error('Password is incorrect.');
