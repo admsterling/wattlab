@@ -9,16 +9,11 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 Vue.use(VueApollo);
-const api_port = require('../../config').api_port;
-const httpLink = createHttpLink({
-  uri: 'http://localhost:' + api_port + '/graphql',
-});
-
-const cache = new InMemoryCache();
+const { api_port } = require('../../config');
 
 const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache,
+  link: createHttpLink({ uri: 'http://localhost:' + api_port + '/graphql' }),
+  cache: new InMemoryCache(),
 });
 
 const apolloProvider = new VueApollo({
