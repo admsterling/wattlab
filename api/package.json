@@ -1,16 +1,16 @@
 {
-  "name": "server",
+  "name": "api",
   "version": "1.0.0",
-  "description": "Socket.io Server for WattLab Vue Frontend.",
-  "main": "index.js",
+  "description": "GraphQL API for WattLab Vue Frontend",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "Adam Sterling",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^3.0.4"
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.4.0"
   }
 }
