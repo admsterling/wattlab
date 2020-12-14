@@ -1,0 +1,32 @@
+mutation createProf{
+  createProf(profInput: {
+    fname: "Adam",
+    lname: "Sterling",
+    email:"test@test.com",
+    password:"test123"
+  }) {
+    _id
+    fname
+    lname
+    email
+    password
+    approved
+  }
+}
+
+query login{
+  login(email:"test@test.com", password:"test123"){
+   	token
+    userId
+  }
+}
+
+query getProf{
+  prof(id:"5fd7c3dd80134f1fc84a4c85"){
+   	fname
+    lname
+    email
+    approved
+    password
+  }
+}
