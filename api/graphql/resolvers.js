@@ -7,6 +7,14 @@ const Prof = require('../models/prof');
 const Lab = require('../models/lab');
 const { api_key } = require('../../config');
 
+function checkAuth(flag) {
+  if (!flag) {
+    const error = new Error('Not authenticated');
+    error.code = 401;
+    throw error;
+  }
+}
+
 module.exports = {
   createProf: async function ({ profInput }) {
     const errors = [];
@@ -72,11 +80,7 @@ module.exports = {
     return { token: token, userId: prof._id.toString() };
   },
   prof: async function ({ id }, req) {
-    if (!req.isAuth) {
-      const error = new Error('Not authenticated!');
-      error.code = 401;
-      throw error;
-    }
+    checkAuth(req.isAuth);
     const prof = await Prof.findOne({ _id: mongoose.Types.ObjectId(id) });
     if (!prof) {
       const error = new Error('No professor found!');
