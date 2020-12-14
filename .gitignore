@@ -1,6 +1,7 @@
 /api/node_modules
 /server/node_modules
 /vue/node_modules
+config.js
 
 # Logs
 logs
