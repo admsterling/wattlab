@@ -11,7 +11,6 @@
             required
             label="Lab Code"
             clearable
-            @input="textToUpper"
             :loading="submitted"
             :disabled="submitted"
           ></v-text-field>
@@ -58,7 +57,7 @@ export default {
       validForm: true,
       codeRules: [
         (value) => !!value || "Required",
-        (value) => /^[A-Z0-9]{5}/.test(value) || "Incorrect Format",
+        (value) => /^[0-9]{5}/.test(value) || "Incorrect Format",
       ],
       usernameRules: [
         (value) => !!value || "Required",
@@ -67,9 +66,6 @@ export default {
     };
   },
   methods: {
-    textToUpper(val) {
-      this.labCode = val.toUpperCase();
-    },
     submit() {
       if (this.$refs.form.validate()) {
         this.submitted = true;

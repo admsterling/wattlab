@@ -67,7 +67,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.submitted = true;
         this.$emit("disable-tabs");
-        // continue here...
+        
       }
     },
   },
