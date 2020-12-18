@@ -16,14 +16,17 @@
               background-color="teal lighten-1"
               v-model="tab"
             >
-              <v-tab>Student / Helper</v-tab>
-              <v-tab>Teacher</v-tab>
+              <v-tab :disabled="tabDisable">Student / Helper</v-tab>
+              <v-tab :disabled="tabDisable">Teacher</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab" class="pa-6">
-              <v-tab-item><StudentHelperLogin /></v-tab-item>
-              <v-tab-item> </v-tab-item>
-              <v-tab-item> </v-tab-item>
+              <v-tab-item>
+                <StudentHelperLogin @disable-tabs="disableTabs" />
+              </v-tab-item>
+              <v-tab-item>
+                <ProfessorLogin @disable-tabs="disableTabs" />
+              </v-tab-item>
             </v-tabs-items>
           </v-card>
         </v-col>
@@ -37,11 +40,18 @@
 export default {
   components: {
     StudentHelperLogin: () => import("./login/StudentHelper"),
+    ProfessorLogin: () => import("./login/ProfessorLogin"),
   },
   data() {
     return {
       tab: null,
+      tabDisable: false,
     };
+  },
+  methods: {
+    disableTabs() {
+      this.tabDisable = true;
+    },
   },
 };
 </script>

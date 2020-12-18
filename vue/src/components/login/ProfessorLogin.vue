@@ -4,29 +4,23 @@
       <v-container>
         <v-row>
           <v-text-field
-            v-model="labCode"
-            :counter="5"
-            maxlength="5"
-            :rules="codeRules"
-            required
-            label="Lab Code"
+            label="E-mail:"
+            v-model="email"
+            :rules="emailRules"
             clearable
-            @input="textToUpper"
             :loading="submitted"
             :disabled="submitted"
           ></v-text-field>
         </v-row>
         <v-row>
           <v-text-field
-            v-model="studentName"
-            ref="name"
-            maxlength="6"
-            :rules="usernameRules"
-            label="Heriot-Watt Username:"
-            hint="Your username is the start of your HW e-mail xxx@hw.ac.uk"
-            persistent-hint
-            required
-            clearable
+            label="Password:"
+            v-model="password"
+            :rules="passwordRules"
+            :type="show ? 'text' : 'password'"
+            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="show = !show"
+            hint="Minimum 6 characters"
             :loading="submitted"
             :disabled="submitted"
           ></v-text-field>
@@ -52,24 +46,23 @@
 export default {
   data() {
     return {
-      labCode: "",
-      studentName: "",
+      email: "",
+      password: "",
+      show: false,
       submitted: false,
-      validForm: true,
-      codeRules: [
+      emailRules: [
         (value) => !!value || "Required",
-        (value) => /^[A-Z0-9]{5}/.test(value) || "Incorrect Format",
+        (value) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+          "Incorrect Format",
       ],
-      usernameRules: [
+      passwordRules: [
         (value) => !!value || "Required",
-        (value) => /^[a-z]{2}[0-9]{1,4}$/.test(value) || "Incorrect Format",
+        (value) => (value && value.length >= 6) || "Minimum 6 characters",
       ],
     };
   },
   methods: {
-    textToUpper(val) {
-      this.labCode = val.toUpperCase();
-    },
     submit() {
       if (this.$refs.form.validate()) {
         this.submitted = true;
