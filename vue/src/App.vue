@@ -1,7 +1,5 @@
 <template>
   <v-app class="grey lighten-4">
-    <nav-bar></nav-bar>
-
     <v-main class="mx-8 my-6">
       <transition name="fade" mode="out-in">
         <router-view></router-view>
