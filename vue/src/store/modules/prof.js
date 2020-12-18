@@ -1,47 +1,27 @@
-const state = () => ({
-  prof: {},
-});
+// import axios from 'axios';
 
-const getters = {
-//   cartProducts: (state, getters, rootState) => {
-//     return state.items.map(({ id, quantity }) => {
-//       const product = rootState.products.all.find(
-//         (product) => product.id === id
-//       );
-//       return {
-//         title: product.title,
-//         price: product.price,
-//         quantity,
-//       };
-//     });
-//   },
+const state = {
+  token: '',
+  isAuth: false,
+  profData: {},
 };
 
-const actions = {
-//   checkout({ commit, state }, products) {
-//     const savedCartItems = [...state.items];
-//     commit('setCheckoutStatus', null);
-//     // empty cart
-//     commit('setCartItems', { items: [] });
-//     shop.buyProducts(
-//       products,
-//       () => commit('setCheckoutStatus', 'successful'),
-//       () => {
-//         commit('setCheckoutStatus', 'failed');
-//         // rollback to the cart saved before sending the request
-//         commit('setCartItems', { items: savedCartItems });
-//       }
-//     );
-//   },
+const getters = {
+  isLoggedIn: (state) => state.isAuth,
 };
 
 const mutations = {
-//   pushProductToCart(state, { id }) {
-//     state.items.push({
-//       id,
-//       quantity: 1,
-//     });
-//   },
+  SET_LOGIN(state, { token, prof }) {
+    state.token = token;
+    state.isAuth = true;
+    state.profData = prof;
+  },
+};
+
+const actions = {
+  loginProf({ commit }, loginData) {
+    commit('SET_LOGIN', loginData);
+  },
 };
 
 export default {

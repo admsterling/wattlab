@@ -12,7 +12,7 @@ module.exports = buildSchema(`
 
     type AuthData {
         token: String!
-        userId: String!
+        prof: Prof!
     }
 
     input ProfCreateData {

@@ -82,7 +82,8 @@ module.exports = {
       api_key,
       { expiresIn: '1h' }
     );
-    return { token: token, userId: prof._id.toString() };
+    let authData = { token: token, prof: prof }
+    return authData;
   },
   prof: async function ({ id }, req) {
     checkAuth(req.isAuth);

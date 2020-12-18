@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col></v-col>
-        <v-col class="text-center">
+        <v-col class="text-center" cols="8" lg="6" xl="5">
           <v-card>
             <v-card-title class="text-uppercase grey--text justify-center">
               <span class="font-weight-light">watt</span>

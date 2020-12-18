@@ -5,7 +5,7 @@
         <v-row>
           <v-text-field
             label="E-mail:"
-            v-model="email"
+            v-model="prof.email"
             :rules="emailRules"
             clearable
             :loading="submitted"
@@ -15,7 +15,7 @@
         <v-row>
           <v-text-field
             label="Password:"
-            v-model="password"
+            v-model="prof.password"
             :rules="passwordRules"
             :type="show ? 'text' : 'password'"
             :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -43,11 +43,16 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      email: "",
-      password: "",
+      prof: {
+        email: "test@test.com",
+        password: "test123",
+      },
+      errors: [],
       show: false,
       submitted: false,
       emailRules: [
@@ -67,7 +72,39 @@ export default {
       if (this.$refs.form.validate()) {
         this.submitted = true;
         this.$emit("disable-tabs");
-        
+
+        axios("http://localhost:4000/graphql", {
+          method: "POST",
+          data: {
+            query: `
+              query login($email: String!, $password: String!) {
+                login(email: $email, password: $password) {
+                  token
+                  prof{
+                    _id
+                    fname
+                    lname
+                    email
+                    approved
+                }
+              }
+            }
+            `,
+            variables: {
+              email: this.prof.email,
+              password: this.prof.password,
+            },
+          },
+        })
+          .then((res) => {
+            this.$store.dispatch("prof/loginProf", res.data.data.login);
+          })
+          .then(() => {
+            this.$router.push("/prof");
+          })
+          .catch((error) => {
+            this.errors = error;
+          });
       }
     },
   },
