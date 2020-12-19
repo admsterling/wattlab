@@ -24,6 +24,16 @@
             :disabled="submitted"
           ></v-text-field>
         </v-row>
+        <!-- <v-row no-gutters>
+          <v-col class="text-center">
+            <v-checkbox
+              v-model="remember"
+              label="Remember me"
+              :loading="submitted"
+              :disabled="submitted"
+            ></v-checkbox>
+          </v-col>
+        </v-row> -->
         <v-row align="center">
           <v-col class="text-center">
             <v-btn
@@ -50,6 +60,7 @@ export default {
         email: "test@test.com",
         password: "test123",
       },
+      remember: false,
       errorList: undefined,
       show: false,
       submitted: false,
@@ -96,6 +107,9 @@ export default {
           },
         })
           .then((res) => {
+            // if(this.remember){
+            //   localStorage.setItem('token', res.data.data.login.token);
+            // }
             this.$store.dispatch("prof/loginProf", res.data.data.login);
           })
           .then(() => {
