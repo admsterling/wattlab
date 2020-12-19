@@ -30,3 +30,20 @@ query getProf{
     password
   }
 }
+
+mutation createLab {
+  createLab(labInput: {title: "Test", studentCode:"1234", labHelperCode:"1234", desc:"Test", gitLab:"Test"}) {
+    title
+    studentCode
+    labHelperCode
+    desc
+    gitLab
+    creator{
+      _id
+      fname
+      lname
+    }
+    createdAt
+    updatedAt
+  }
+}

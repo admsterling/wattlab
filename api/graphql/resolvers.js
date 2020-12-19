@@ -82,7 +82,7 @@ module.exports = {
       api_key,
       { expiresIn: '2h' }
     );
-    let authData = { token: token, prof: prof }
+    let authData = { token: token, prof: prof };
     return authData;
   },
   prof: async function ({ id }, req) {
@@ -96,6 +96,60 @@ module.exports = {
     return {
       ...prof._doc,
       _id: prof._id.toString(),
+    };
+  },
+  createLab: async function ({ labInput }, req) {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated');
+      error.code = 401;
+      throw error;
+    }
+    const errors = [];
+    if (
+      validator.isEmpty(labInput.title) ||
+      !validator.isLength(labInput.title, { min: 5})
+    ) {
+      errors.push({ message: 'Title is invalid.' });
+    }
+    if (
+      validator.isEmpty(labInput.studentCode) ||
+      !validator.isLength(labInput.studentCode, { min: 5, max: 5 })
+    ) {
+      errors.push({ message: 'Student Code is invalid.' });
+    }
+    if (
+      validator.isEmpty(labInput.labHelperCode) ||
+      !validator.isLength(labInput.labHelperCode, { min: 5, max: 5 })
+    ) {
+      errors.push({ message: 'Lab Helper Code is invalid.' });
+    }
+    if (errors.length > 0) {
+      const error = new Error('Invalid input.');
+      error.data = errors;
+      error.code = 422;
+      throw error;
+    }
+    const prof = await Prof.findById(req.userId);
+    if (!prof) {
+      const error = new Error('Invalid professor.');
+      error.code = 401;
+      throw error;
+    }
+    const lab = new Lab({
+      title: labInput.title,
+      studentCode: labInput.studentCode,
+      labHelperCode: labInput.labHelperCode,
+      desc: labInput.desc,
+      gitLab: labInput.desc,
+    });
+    const createdLab = await lab.save();
+    prof.labs.push(createdLab);
+    await prof.save();
+    return {
+      ...createdLab._doc,
+      _id: createdPost._id.toString(),
+      createdAt: createdPost.createdAt.toISOString(),
+      updatedAt: createdPost.updatedAt.toISOString(),
     };
   },
 };

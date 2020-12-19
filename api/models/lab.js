@@ -7,10 +7,18 @@ const labSchema = new Schema(
       type: String,
       required: true
     },
-    desc: {
+    studentCode: {
         type: String,
     },
-    git: {
+    labHelperCode: {
+      type: String,
+      required: true
+    },
+    desc: {
+      type: String,
+      required: true
+    },
+    gitLab: {
       type: String,
       required: true
     },

@@ -8,11 +8,23 @@ module.exports = buildSchema(`
         email: String!
         password: String!
         approved: Boolean!
+        labs: [Lab!]!
     }
 
     type AuthData {
         token: String!
         prof: Prof!
+    }
+
+    type Lab {
+        title: String!
+        studentCode: String!
+        labHelperCode: String!
+        desc: String
+        gitLab: String
+        creator: Prof!
+        createdAt: String!
+        updatedAt: String!
     }
 
     input ProfCreateData {
@@ -22,8 +34,17 @@ module.exports = buildSchema(`
         password: String!
     }
 
+    input LabCreateData {
+        title: String!
+        studentCode: String!
+        labHelperCode: String!
+        desc: String!
+        gitLab: String!
+    }
+
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
+        createLab(labInput: LabCreateData): Lab!
     }
 
     type RootQuery {

@@ -15,6 +15,10 @@ const TeacherView = Vue.component('TeacherView', () =>
   import('../components/prof/ProfView.vue')
 );
 
+const CreateLabView = Vue.component('CreateLabView', () =>
+  import('../components/prof/create/CreateLab')
+);
+
 const NotFound = Vue.component('NotFound', () =>
   import('../components/NotFound')
 );
@@ -38,7 +42,7 @@ const routes = [
     component: TeacherView,
     redirect: '/create',
     children: [
-      { path: '/create', component: TestComponent },
+      { path: '/create', component: CreateLabView },
       { path: '/view', component: TestComponent },
     ],
   },
