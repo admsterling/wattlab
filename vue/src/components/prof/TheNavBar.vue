@@ -9,8 +9,8 @@
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-      
-      <v-dialog v-model="logoutDialog" persistent max-width="290">
+
+      <v-dialog v-model="logoutDialog" persistent max-width="550px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn depressed dark class="red mx-1" v-bind="attrs" v-on="on">
             <v-icon>mdi-lock</v-icon>Logout
@@ -47,7 +47,7 @@
 
       <v-list nav dense>
         <v-list-item-group v-model="selectedItem" color="primary">
-          <v-list-item v-for="(link, i) in links" :key="i">
+          <v-list-item v-for="(link, i) in links" :key="i" :to="link.route">
             <v-list-item-icon>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-item-icon>
@@ -72,20 +72,15 @@ export default {
       logoutDialog: false,
       selectedItem: 0,
       links: [
+        { icon: "mdi-card-search-outline", text: "View Labs", route: "/viewLabs"},
         { icon: "mdi-text-box", text: "Create New Lab", route: "/createLab" },
-        {
-          icon: "mdi-card-search-outline",
-          text: "View Labs",
-          route: "/viewLabs",
-        },
-        {},
       ],
     };
   },
   computed: {
     ...mapGetters({
       fullName: "prof/fullName",
-      email: "prof/email"
+      email: "prof/email",
     }),
   },
   methods: {

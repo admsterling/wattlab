@@ -40,10 +40,10 @@ const routes = [
     path: '/prof',
     beforeEnter: ifAuth,
     component: TeacherView,
-    redirect: '/create',
+    redirect: '/viewLabs',
     children: [
-      { path: '/create', component: CreateLabView },
-      { path: '/view', component: TestComponent },
+      { path: '/createLab', component: CreateLabView },
+      { path: '/viewLabs', component: TestComponent },
     ],
   },
 

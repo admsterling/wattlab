@@ -3,7 +3,7 @@
     <v-text-field
       v-model="currentHelper"
       maxlength="6"
-      label="Enter Lab Helper:"
+      label="Enter Lab Helper Username:"
       hint="Press Enter to add to the list of Lab Helpers"
       :rules="usernameRules"
       @keyup.enter="submitHelper"

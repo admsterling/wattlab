@@ -45,16 +45,17 @@
         </v-col>
       </v-row>
       <v-row align="center" no-gutter>
-          <v-col class="text-center">
-            <v-btn
-              outlined
-              @click="submit"
-              :loading="submitted"
-              :disabled="submitted"
-              >Create Lab
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-col class="text-center">
+          <v-btn
+            outlined
+            @click="submit"
+            :loading="submitted"
+            :disabled="submitted"
+            >Create Lab
+          </v-btn>
+          <ConfirmModal ref="confirm" :lab="lab" @confirmed="confirmed" @cancelled="cancelled" />
+        </v-col>
+      </v-row>
     </v-container>
   </v-form>
 </template>
@@ -63,23 +64,24 @@
 export default {
   components: {
     LabHelperField: () => import("./LabHelperField"),
+    ConfirmModal: () => import("./ConfirmDialog"),
   },
   data() {
     return {
       submitted: false,
       errorList: undefined,
       lab: {
-        title: "",
-        studentCode: "",
-        labHelpers: [],
-        desc: "",
+        title: "Test Data",
+        labHelpers: ["as317", "test"],
+        desc: "This is a test description for the lab.",
         url: "https://www.google.com",
       },
       titleRules: [(value) => !!value || "Required"],
       urlRules: [
         (value) =>
-          /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(value) ||
-          "Incorrect Format",
+          /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(
+            value
+          ) || "Incorrect Format",
       ],
     };
   },
@@ -88,8 +90,15 @@ export default {
       if (this.$refs.createLabForm.validate()) {
         this.submitted = true;
         this.errorList = undefined;
-        console.log(this.lab);
+        this.$refs.confirm.open();
       }
+    },
+    confirmed() {
+      console.log("pass");
+    },
+    cancelled() {
+      this.submitted = false;
+      console.log("fail");
     },
   },
 };
