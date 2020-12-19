@@ -59,18 +59,18 @@ module.exports = {
   login: async function ({ email, password }) {
     const prof = await Prof.findOne({ email: email });
     if (!prof) {
-      const error = new Error('Professor not found.');
+      const error = new Error('Account not found');
       error.code = 401;
       throw error;
     }
     if (!prof.approved) {
-      const error = new Error('Professor not approved.');
+      const error = new Error('Account not approved');
       error.code = 401;
       throw error;
     }
     const isEqual = await bcrypt.compare(password, prof.password);
     if (!isEqual) {
-      const error = new Error('Password is incorrect.');
+      const error = new Error('Password is incorrect');
       error.code = 401;
       throw error;
     }

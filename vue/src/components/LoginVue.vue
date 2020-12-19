@@ -22,10 +22,10 @@
 
             <v-tabs-items v-model="tab" class="pa-6">
               <v-tab-item>
-                <StudentHelperLogin @disable-tabs="disableTabs" />
+                <StudentHelperLogin @flip-tabs="flipTabs" />
               </v-tab-item>
               <v-tab-item>
-                <ProfessorLogin @disable-tabs="disableTabs" />
+                <ProfessorLogin @flip-tabs="flipTabs" />
               </v-tab-item>
             </v-tabs-items>
           </v-card>
@@ -49,8 +49,8 @@ export default {
     };
   },
   methods: {
-    disableTabs() {
-      this.tabDisable = true;
+    flipTabs() {
+      this.tabDisable = !this.tabDisable;
     },
   },
 };

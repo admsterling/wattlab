@@ -1,19 +1,17 @@
 // import axios from 'axios';
 
 const state = {
-  token: '',
-  isAuth: false,
+  token: undefined,
   profData: {},
 };
 
 const getters = {
-  isLoggedIn: (state) => state.isAuth,
+  isLoggedIn: (state) => !!state.token,
 };
 
 const mutations = {
   SET_LOGIN(state, { token, prof }) {
     state.token = token;
-    state.isAuth = true;
     state.profData = prof;
   },
 };

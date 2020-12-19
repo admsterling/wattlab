@@ -7,7 +7,6 @@
             label="E-mail:"
             v-model="prof.email"
             :rules="emailRules"
-            clearable
             :loading="submitted"
             :disabled="submitted"
           ></v-text-field>
@@ -28,13 +27,12 @@
         <v-row align="center">
           <v-col class="text-center">
             <v-btn
-              class="mt-6"
               outlined
               @click="submit"
               :loading="submitted"
               :disabled="submitted"
-              >Login</v-btn
-            >
+              >Login
+            </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -52,7 +50,7 @@ export default {
         email: "test@test.com",
         password: "test123",
       },
-      errors: [],
+      errorList: undefined,
       show: false,
       submitted: false,
       emailRules: [
@@ -71,7 +69,8 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.submitted = true;
-        this.$emit("disable-tabs");
+        this.errorList = undefined;
+        this.$emit("flip-tabs");
 
         axios("http://localhost:4000/graphql", {
           method: "POST",
@@ -103,7 +102,20 @@ export default {
             this.$router.push("/prof");
           })
           .catch((error) => {
-            this.errors = error;
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message, {
+                  position: "bottom-center",
+                });
+              }
+            } else {
+              console.log("Error", error.message);
+            }
+          })
+          .finally(() => {
+            this.submitted = false;
+            this.$emit("flip-tabs");
           });
       }
     },

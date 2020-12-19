@@ -69,7 +69,7 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.submitted = true;
-        this.$emit("disable-tabs");
+        this.$emit("flip-tabs");
         // continue here...
       }
     },
