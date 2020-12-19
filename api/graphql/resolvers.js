@@ -80,7 +80,7 @@ module.exports = {
         email: prof.email,
       },
       api_key,
-      { expiresIn: '10' }
+      { expiresIn: '1d' }
     );
     let authData = { token: token, prof: prof }
     return authData;

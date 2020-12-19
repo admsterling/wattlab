@@ -39,8 +39,8 @@
 <script>
 export default {
   components: {
-    StudentHelperLogin: () => import("./login/StudentHelper"),
-    ProfessorLogin: () => import("./login/ProfessorLogin"),
+    StudentHelperLogin: () => import("./StudentHelper"),
+    ProfessorLogin: () => import("./ProfessorLogin"),
   },
   data() {
     return {
@@ -52,6 +52,11 @@ export default {
     flipTabs() {
       this.tabDisable = !this.tabDisable;
     },
+  },
+  mounted() {
+    if (this.$store.getters["prof/isLoggedIn"]) {
+      this.$router.push("/prof");
+    }
   },
 };
 </script>

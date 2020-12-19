@@ -5,19 +5,25 @@ import store from '../store/index';
 Vue.use(Router);
 
 const LoginView = Vue.component('Login', () =>
-  import('../components/LoginVue')
+  import('../components/login/LoginVue')
 );
-const TestComponent = Vue.component('Login', () =>
-  import('../components/TestComponent')
+// const TestComponent = Vue.component('Login', () =>
+//   import('../components/TestComponent')
+// );
+
+const TeacherView = Vue.component('TeacherView', () =>
+  import('../components/prof/ProfView.vue')
 );
 
+const NotFound = Vue.component('NotFound', () => import('../components/NotFound'));
+
 const ifAuth = (to, from, next) => {
-  if(store.getters['prof/isLoggedIn']){
+  if (store.getters['prof/isLoggedIn']) {
     next();
-    return
+    return;
   }
   next('/login');
-}
+};
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -27,8 +33,11 @@ const routes = [
   {
     path: '/prof',
     beforeEnter: ifAuth,
-    component: TestComponent,
+    component: TeacherView,
+    //children: [{ path: '/myaccount', component: TestComponent }],
   },
+
+  { path: '*', component: NotFound },
 ];
 
 const router = new Router({

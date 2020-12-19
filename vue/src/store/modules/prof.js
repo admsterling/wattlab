@@ -1,15 +1,22 @@
 // import axios from 'axios';
 
-const state = {
-  token: undefined,
-  profData: {},
+const getDefaultState = () => {
+  return {
+    token: undefined,
+    profData: {},
+  };
 };
+
+const state = getDefaultState();
 
 const getters = {
   isLoggedIn: (state) => !!state.token,
 };
 
 const mutations = {
+  RESET_STATE(state) {
+    Object.assign(state, getDefaultState());
+  },
   SET_LOGIN(state, { token, prof }) {
     state.token = token;
     state.profData = prof;
@@ -17,6 +24,9 @@ const mutations = {
 };
 
 const actions = {
+  resetState({commit}){
+    commit('RESET_STATE');
+  },
   loginProf({ commit }, loginData) {
     commit('SET_LOGIN', loginData);
   },
