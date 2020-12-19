@@ -12,6 +12,7 @@ export default {
   components: {
     NavBar: () => import("./TheNavBar"),
   },
+  
 };
 </script>
 

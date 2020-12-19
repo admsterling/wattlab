@@ -11,6 +11,12 @@ const state = getDefaultState();
 
 const getters = {
   isLoggedIn: (state) => !!state.token,
+  fullName: (state) => {
+    return state.profData.fname + ' ' + state.profData.lname;
+  },
+  email: (state) => {
+    return state.profData.email;
+  },
 };
 
 const mutations = {
@@ -24,7 +30,7 @@ const mutations = {
 };
 
 const actions = {
-  resetState({commit}){
+  resetState({ commit }) {
     commit('RESET_STATE');
   },
   loginProf({ commit }, loginData) {

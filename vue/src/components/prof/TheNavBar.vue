@@ -9,7 +9,7 @@
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-
+      
       <v-dialog v-model="logoutDialog" persistent max-width="290">
         <template v-slot:activator="{ on, attrs }">
           <v-btn depressed dark class="red mx-1" v-bind="attrs" v-on="on">
@@ -31,82 +31,62 @@
       </v-dialog>
     </v-app-bar>
 
-    <v-navigation-drawer app v-model="drawer" class="primary px-6 py-10">
-      <div v-for="linkGroup in links" :key="linkGroup.label">
-        <v-list>
-          <p v-if="linkGroup.label != null" class="white--text">
-            {{ linkGroup.label }}
-          </p>
+    <v-navigation-drawer app v-model="drawer" class="px-6 py-10">
+      <v-list>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="title">
+              {{ fullName }}
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
 
-          <v-list-item
-            v-for="path in linkGroup.paths"
-            :key="path.text"
-            router
-            :to="path.route"
-          >
+      <v-divider></v-divider>
+
+      <v-list nav dense>
+        <v-list-item-group v-model="selectedItem" color="primary">
+          <v-list-item v-for="(link, i) in links" :key="i">
             <v-list-item-icon>
-              <v-icon class="grey--text text--lighten-4">{{
-                path.icon
-              }}</v-icon>
+              <v-icon>{{ link.icon }}</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title class="grey--text text--lighten-4">{{
-                path.text
-              }}</v-list-item-title>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list>
-      </div>
+        </v-list-item-group>
+      </v-list>
     </v-navigation-drawer>
   </nav>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       drawer: false,
       logoutDialog: false,
+      selectedItem: 0,
       links: [
+        { icon: "mdi-text-box", text: "Create New Lab", route: "/createLab" },
         {
-          label: null,
-          paths: [
-            { icon: "mdi-account", text: "My Account", route: "/myaccount" },
-          ],
+          icon: "mdi-card-search-outline",
+          text: "View Labs",
+          route: "/viewLabs",
         },
-        {
-          label: "Create",
-          paths: [
-            { icon: "mdi-file", text: "Quiz", route: "/create/quiz" },
-            { icon: "mdi-text-box", text: "Exam", route: "/create/exam" },
-          ],
-        },
-        {
-          label: "Host",
-          paths: [
-            { icon: "mdi-poll", text: "Poll", route: "/poll" },
-            { icon: "mdi-file", text: "Quiz", route: "/host/quiz" },
-            { icon: "mdi-text-box", text: "Exam", route: "/host/exam" },
-          ],
-        },
-        {
-          label: "Start / Stop / Continue",
-          paths: [
-            {
-              icon: "mdi-chat-processing-outline",
-              text: "Create New",
-              route: "/ssc/start",
-            },
-            {
-              icon: "mdi-card-search-outline",
-              text: "View Results",
-              route: "/ssc/view",
-            },
-          ],
-        },
+        {},
       ],
     };
+  },
+  computed: {
+    ...mapGetters({
+      fullName: "prof/fullName",
+      email: "prof/email"
+    }),
   },
   methods: {
     goHome() {
