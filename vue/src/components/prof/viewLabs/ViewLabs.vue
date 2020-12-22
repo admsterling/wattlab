@@ -16,7 +16,6 @@
             <thead>
               <tr>
                 <th class="text-left">Title</th>
-                <th class="text-left">Lab Helpers</th>
                 <th class="text-left">Code</th>
                 <th class="text-left">Status</th>
                 <th class="text-left"></th>
@@ -36,7 +35,7 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon color="primary" dark v-bind="attrs" v-on="on">
-                        mdi-help-circle-outline
+                        mdi-account
                       </v-icon>
                     </template>
                     <span>Lab Helpers:</span>
@@ -46,7 +45,6 @@
                   </v-tooltip>
                   <span class="ml-4">{{ lab.title }}</span>
                 </td>
-                <td></td>
                 <td>{{ lab.code }}</td>
                 <td>
                   <v-switch v-model="lab.status" color="success"></v-switch>

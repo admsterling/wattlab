@@ -33,8 +33,9 @@
         <v-row align="center">
           <v-col class="text-center">
             <v-btn
-              class="mt-6"
+              class="teal mt-5"
               outlined
+              dark
               @click="submit"
               :loading="submitted"
               :disabled="submitted"
@@ -43,8 +44,6 @@
           </v-col>
         </v-row>
       </v-container>
-
-      
     </v-form>
   </div>
 </template>
