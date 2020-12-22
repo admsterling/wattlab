@@ -85,7 +85,7 @@ export default {
   },
   methods: {
     goHome() {
-      if (!this.$router === "/prof") {
+      if(this.$router.history.current.path !== "/viewLabs"){
         this.$router.push("/prof");
       }
     },
