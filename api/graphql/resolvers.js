@@ -15,6 +15,15 @@ function checkAuth(flag) {
   }
 }
 
+function checkErrors(errors) {
+  if (errors.length > 0) {
+    const error = new Error('Invalid input.');
+    error.data = errors;
+    error.code = 422;
+    throw error;
+  }
+}
+
 module.exports = {
   createProf: async function ({ profInput }) {
     const errors = [];
@@ -33,12 +42,7 @@ module.exports = {
     ) {
       errors.push({ message: 'Password too short!' });
     }
-    if (errors.length > 0) {
-      const error = new Error('Invalid input.');
-      error.data = errors;
-      error.code = 422;
-      throw error;
-    }
+    checkErrors(errors);
 
     const existingProf = await Prof.findOne({ email: profInput.email });
     if (existingProf) {
@@ -99,57 +103,66 @@ module.exports = {
     };
   },
   createLab: async function ({ labInput }, req) {
-    if (!req.isAuth) {
-      const error = new Error('Not authenticated');
-      error.code = 401;
-      throw error;
-    }
+    checkAuth(req.isAuth);
     const errors = [];
     if (
       validator.isEmpty(labInput.title) ||
-      !validator.isLength(labInput.title, { min: 5})
+      !validator.isLength(labInput.title, { min: 5 })
     ) {
       errors.push({ message: 'Title is invalid.' });
     }
-    if (
-      validator.isEmpty(labInput.studentCode) ||
-      !validator.isLength(labInput.studentCode, { min: 5, max: 5 })
-    ) {
-      errors.push({ message: 'Student Code is invalid.' });
-    }
-    if (
-      validator.isEmpty(labInput.labHelperCode) ||
-      !validator.isLength(labInput.labHelperCode, { min: 5, max: 5 })
-    ) {
-      errors.push({ message: 'Lab Helper Code is invalid.' });
-    }
-    if (errors.length > 0) {
-      const error = new Error('Invalid input.');
-      error.data = errors;
-      error.code = 422;
-      throw error;
-    }
+
     const prof = await Prof.findById(req.userId);
     if (!prof) {
       const error = new Error('Invalid professor.');
       error.code = 401;
       throw error;
     }
+    checkErrors(errors);
+
+    const count = await Lab.countDocuments();
+    const code = String('00000' + count).slice(-5);
     const lab = new Lab({
       title: labInput.title,
-      studentCode: labInput.studentCode,
-      labHelperCode: labInput.labHelperCode,
+      helpers: labInput.helpers,
+      code: code,
       desc: labInput.desc,
-      gitLab: labInput.desc,
+      url: labInput.url,
+      creator: prof,
     });
     const createdLab = await lab.save();
     prof.labs.push(createdLab);
     await prof.save();
     return {
       ...createdLab._doc,
-      _id: createdPost._id.toString(),
-      createdAt: createdPost.createdAt.toISOString(),
-      updatedAt: createdPost.updatedAt.toISOString(),
+      _id: createdLab._id.toString(),
+      createdAt: createdLab.createdAt.toISOString(),
+      updatedAt: createdLab.updatedAt.toISOString(),
+    };
+  },
+  getLabs: async function ({ id }, req) {
+    checkAuth(req.isAuth);
+
+    const prof = await Prof.findOne({
+      _id: mongoose.Types.ObjectId(id),
+    }).populate('labs');
+
+    if (!prof) {
+      const error = new Error('No professor found!');
+      error.code = 404;
+      throw error;
+    }
+
+    let labs = prof.labs;
+    return {
+      labs: labs.map((l) => {
+        return {
+          ...l._doc,
+          _id: l._id.toString(),
+          createdAt: l.createdAt.toISOString(),
+          updatedAt: l.updatedAt.toISOString(),
+        };
+      }),
     };
   },
 };

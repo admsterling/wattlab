@@ -28,8 +28,8 @@
       </v-list>
     </div>
     <div v-else>
+      <v-subheader>Helpers: (click to remove)</v-subheader>
       <v-list dense flat>
-        <v-subheader>Helpers: (click to remove)</v-subheader>
         <v-list-item
           v-for="(helper, i) in labHelpers"
           :key="i"

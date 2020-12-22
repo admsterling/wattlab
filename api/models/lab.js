@@ -5,28 +5,34 @@ const labSchema = new Schema(
   {
     title: {
       type: String,
-      required: true
+      required: true,
     },
-    studentCode: {
+    helpers: [
+      {
         type: String,
-    },
-    labHelperCode: {
+        required: true,
+      },
+    ],
+    code: {
       type: String,
-      required: true
     },
     desc: {
       type: String,
-      required: true
+      required: true,
     },
-    gitLab: {
+    url: {
       type: String,
-      required: true
+      required: true,
+    },
+    status: {
+      type: Boolean,
+      default: false,
     },
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'Prof',
-      required: true
-    }
+      required: true,
+    },
   },
   { timestamps: true }
 );

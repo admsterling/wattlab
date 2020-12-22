@@ -96,9 +96,9 @@ export default {
                     lname
                     email
                     approved
+                  }
                 }
               }
-            }
             `,
             variables: {
               email: this.prof.email,

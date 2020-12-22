@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="550px" persistent>
+  <v-dialog v-model="dialog" max-width="550px" persistent scrollable>
     <v-card>
       <v-card-title class="title grey lighten-3">
         Are you sure you want to create this lab?
@@ -25,15 +25,15 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="3">Description:</v-col>
-            <v-col cols="9">
-              {{ lab.desc }}
-            </v-col>
-          </v-row>
-          <v-row>
             <v-col cols="3">URL:</v-col>
             <v-col cols="9">
               {{ lab.url }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">Description:</v-col>
+            <v-col cols="9" style="white-space: pre-wrap;">
+              {{ lab.desc }}
             </v-col>
           </v-row>
         </v-container>

@@ -7,9 +7,9 @@ Vue.use(Router);
 const LoginView = Vue.component('Login', () =>
   import('../components/login/LoginVue')
 );
-const TestComponent = Vue.component('Login', () =>
-  import('../components/TestComponent')
-);
+// const TestComponent = Vue.component('Login', () =>
+//   import('../components/TestComponent')
+// );
 
 const TeacherView = Vue.component('TeacherView', () =>
   import('../components/prof/ProfView.vue')
@@ -17,6 +17,9 @@ const TeacherView = Vue.component('TeacherView', () =>
 
 const CreateLabView = Vue.component('CreateLabView', () =>
   import('../components/prof/create/CreateLab')
+);
+const ViewLabs = Vue.component('ViewLabs', () =>
+  import('../components/prof/viewLabs/ViewLabs')
 );
 
 const NotFound = Vue.component('NotFound', () =>
@@ -43,7 +46,7 @@ const routes = [
     redirect: '/viewLabs',
     children: [
       { path: '/createLab', component: CreateLabView },
-      { path: '/viewLabs', component: TestComponent },
+      { path: '/viewLabs', component: ViewLabs },
     ],
   },
 

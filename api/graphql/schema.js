@@ -17,14 +17,20 @@ module.exports = buildSchema(`
     }
 
     type Lab {
+        _id: ID!
         title: String!
-        studentCode: String!
-        labHelperCode: String!
-        desc: String
-        gitLab: String
+        helpers: [String]
+        status: Boolean!
+        code: String!
+        desc: String!
+        url: String!
         creator: Prof!
         createdAt: String!
         updatedAt: String!
+    }
+
+    type LabList {
+        labs: [Lab!]!
     }
 
     input ProfCreateData {
@@ -36,10 +42,9 @@ module.exports = buildSchema(`
 
     input LabCreateData {
         title: String!
-        studentCode: String!
-        labHelperCode: String!
+        helpers: [String]
         desc: String!
-        gitLab: String!
+        url: String!
     }
 
     type RootMutation {
@@ -49,6 +54,7 @@ module.exports = buildSchema(`
 
     type RootQuery {
         login(email: String!, password: String!): AuthData!
+        getLabs(id: String!): LabList!
         prof(id: String!): Prof!
     }
 

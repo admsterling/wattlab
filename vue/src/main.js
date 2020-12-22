@@ -7,9 +7,8 @@ import store from './store';
 import router from './router/router';
 
 const options = {
-  timeout: 4000,
+  timeout: 5000,
   closeOnClick: true,
-  pauseOnFocusLoss: true,
   pauseOnHover: true,
   rtl: false,
   showCloseButtonOnHover: false,
