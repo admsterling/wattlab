@@ -17,6 +17,7 @@
               <tr>
                 <th class="text-left">Title</th>
                 <th class="text-left">Code</th>
+                <th class="text-left">Created:</th>
                 <th class="text-left">Status</th>
                 <th class="text-left"></th>
               </tr>
@@ -40,25 +41,28 @@
                     </template>
                     <span>Lab Helpers:</span>
                     <ul>
-                      <li v-for="(help, i) in lab.helpers" :key="i">{{help}}</li>
+                      <li v-for="(help, i) in lab.helpers" :key="i">
+                        {{ help }}
+                      </li>
                     </ul>
                   </v-tooltip>
                   <span class="ml-4">{{ lab.title }}</span>
                 </td>
                 <td>{{ lab.code }}</td>
+                <td>{{lab.createdAt | moment("ddd, DD-MM-YY")}}</td>
                 <td>
                   <v-switch v-model="lab.status" color="success"></v-switch>
                 </td>
                 <td>
-                  <v-btn :disabled="!lab.status" class="mx-4 success"
-                    >Join</v-btn
-                  >
-                  <v-btn class="warning mx-4"
-                    ><v-icon left>mdi-pencil</v-icon>Edit</v-btn
-                  >
-                  <v-btn class="error mx-4"
-                    ><v-icon left>mdi-delete-forever</v-icon>Delte</v-btn
-                  >
+                  <v-btn :disabled="!lab.status" class="mx-4 success">
+                    Join
+                  </v-btn>
+                  <v-btn class="warning mx-4">
+                    <v-icon left>mdi-pencil</v-icon>Edit
+                  </v-btn>
+                  <v-btn class="error mx-4">
+                    <v-icon left>mdi-delete-forever</v-icon>Delte
+                  </v-btn>
                 </td>
               </tr>
             </tbody>
@@ -105,6 +109,7 @@ export default {
                       code
                       status
                       helpers
+                      createdAt
                   }
                 }
               }

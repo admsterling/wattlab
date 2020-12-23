@@ -21,6 +21,8 @@ const options = {
 };
 Vue.use(Toast, options);
 
+Vue.use(require('vue-moment'));
+
 new Vue({
   vuetify,
   store,
