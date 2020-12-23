@@ -5,6 +5,23 @@ import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 import store from './store';
 import router from './router/router';
+import VueSocketIO from 'vue-socket.io';
+import SocketIO from 'socket.io-client';
+
+const socketConnection = SocketIO('http://localhost:3000');
+
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: socketConnection,
+    vuex: {
+      store,
+      actionPrefix: 'SOCKET_',
+      mutationPrefix: 'SOCKET_',
+    },
+  }),
+  store
+);
 
 const options = {
   timeout: 5000,

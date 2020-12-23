@@ -173,6 +173,23 @@ module.exports = {
       }),
     };
   },
+  getLab: async function ({ id }, req) {
+    const lab = await Lab.findOne({
+      _id: mongoose.Types.ObjectId(id),
+    }).populate("creator");
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    lab._id = lab._id.toString();
+    lab.createdAt = lab.createdAt.toISOString();
+    lab.updatedAt = lab.updatedAt.toISOString();
+
+    return lab;
+  },
   deleteLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
 

@@ -63,7 +63,7 @@
                   ></v-switch>
                 </td>
                 <td>
-                  <v-btn :disabled="!lab.status" class="mx-4 success">
+                  <v-btn :disabled="!lab.status" class="mx-4 success" @click="joinLab(i)">
                     Join
                   </v-btn>
                   <v-btn class="warning mx-4">
@@ -111,10 +111,13 @@ export default {
     goToCreate() {
       this.$router.push("/createLab");
     },
+    joinLab(i){
+      let lab = this.labs[i];
+      this.$router.push("/profViewLab/"+lab._id)
+    },
     startLab(i) {
       let lab = this.labs[i];
       lab.status = true;
-      
     },
     endLab(i) {
       let lab = this.labs[i];

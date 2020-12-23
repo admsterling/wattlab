@@ -24,6 +24,9 @@ const CreateLabView = Vue.component('CreateLabView', () =>
 const ViewLabs = Vue.component('ViewLabs', () =>
   import('../components/prof/viewLabs/ViewLabs')
 );
+const LabRoomView = Vue.component('LabRoomView', () =>
+  import('../components/prof/labRoom/LabRoom')
+);
 
 const NotFound = Vue.component('NotFound', () =>
   import('../components/NotFound')
@@ -53,7 +56,11 @@ const routes = [
       { path: '/viewLabs', component: ViewLabs },
     ],
   },
-
+  {
+    path: '/profViewLab/:labID',
+    beforeEnter: ifAuth,
+    component: LabRoomView,
+  },
   { path: '*', component: NotFound },
 ];
 
