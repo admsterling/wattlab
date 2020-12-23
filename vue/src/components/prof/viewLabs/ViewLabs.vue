@@ -51,7 +51,16 @@
                 <td>{{ lab.code }}</td>
                 <td>{{ lab.createdAt | moment("ddd, DD-MM-YY") }}</td>
                 <td>
-                  <v-switch v-model="lab.status" color="success"></v-switch>
+                  <v-switch
+                    v-if="!lab.status"
+                    @click="startLab(i)"
+                    color="success"
+                  ></v-switch>
+                  <v-switch
+                    v-else
+                    @click="endLab(i)"
+                    color="success"
+                  ></v-switch>
                 </td>
                 <td>
                   <v-btn :disabled="!lab.status" class="mx-4 success">
@@ -101,6 +110,16 @@ export default {
   methods: {
     goToCreate() {
       this.$router.push("/createLab");
+    },
+    startLab(i) {
+      let lab = this.labs[i];
+      lab.status = true;
+      
+    },
+    endLab(i) {
+      let lab = this.labs[i];
+      lab.status = false;
+      
     },
     deleteLab(i) {
       this.loadingOverlay = true;
