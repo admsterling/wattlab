@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -119,9 +120,16 @@ module.exports = {
       throw error;
     }
     checkErrors(errors);
+    
+    let code;
+    while (true) {
+      code = crypto.randomBytes(3).toString('hex').toUpperCase();
+      let foundLab = await Lab.findOne({ code: code });
+      if (!foundLab) {
+        break;
+      }
+    }
 
-    const count = await Lab.countDocuments();
-    const code = String('00000' + count).slice(-5);
     const lab = new Lab({
       title: labInput.title,
       helpers: labInput.helpers,

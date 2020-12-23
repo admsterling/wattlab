@@ -4,9 +4,11 @@
       <v-container>
         <v-row>
           <v-text-field
-            v-model="labCode"
-            :counter="5"
-            maxlength="5"
+            v-model="labCode" 
+            @input="v => { labCode = v.toUpperCase()}"
+
+            :counter="6"
+            maxlength="6"
             :rules="codeRules"
             required
             label="Lab Code"
@@ -58,7 +60,7 @@ export default {
       validForm: true,
       codeRules: [
         (value) => !!value || "Required",
-        (value) => /^[0-9]{5}/.test(value) || "Incorrect Format",
+        (value) => /^[0-9A-Z]{6}/.test(value) || "Incorrect Format",
       ],
       usernameRules: [
         (value) => !!value || "Required",
