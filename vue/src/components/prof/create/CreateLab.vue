@@ -141,13 +141,8 @@ export default {
         },
       })
         .then(() => {
-          this.$toast.success("Lab Created!", {
-            position: "bottom-center",
-          });
-          this.lab.title = "";
-          this.lab.labHelpers = [];
-          this.lab.desc = "";
-          this.lab.url = "";
+          this.$toast.success("Lab Created!");
+          this.$router.push("/viewLabs");
         })
         .catch((error) => {
           if (error.response) {
