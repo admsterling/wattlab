@@ -120,7 +120,7 @@ module.exports = {
       throw error;
     }
     checkErrors(errors);
-    
+
     let code;
     while (true) {
       code = crypto.randomBytes(3).toString('hex').toUpperCase();
@@ -172,5 +172,26 @@ module.exports = {
         };
       }),
     };
+  },
+  deleteLab: async function ({ id }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findById(id);
+    if (!lab) {
+      const error = new Error('No lab found');
+      error.code = 404;
+      throw error;
+    }
+    if (lab.creator.toString() !== req.userId.toString()) {
+      const error = new Error('Not lab owner.');
+      error.code = 403;
+      throw error;
+    }
+    
+    await Lab.findByIdAndRemove(id);
+    const prof = await Prof.findById(req.userId);
+    prof.labs.pull(id);
+    await prof.save();
+    return true;
   },
 };

@@ -49,7 +49,7 @@
                   <span class="ml-4">{{ lab.title }}</span>
                 </td>
                 <td>{{ lab.code }}</td>
-                <td>{{lab.createdAt | moment("ddd, DD-MM-YY")}}</td>
+                <td>{{ lab.createdAt | moment("ddd, DD-MM-YY") }}</td>
                 <td>
                   <v-switch v-model="lab.status" color="success"></v-switch>
                 </td>
@@ -60,7 +60,7 @@
                   <v-btn class="warning mx-4">
                     <v-icon left>mdi-pencil</v-icon>Edit
                   </v-btn>
-                  <v-btn class="error mx-4">
+                  <v-btn class="error mx-4" @click="deleteLab(i)">
                     <v-icon left>mdi-delete-forever</v-icon>Delte
                   </v-btn>
                 </td>
@@ -69,6 +69,13 @@
           </v-simple-table>
         </v-card-text>
       </v-card>
+      <v-overlay :value="loadingOverlay">
+        <v-progress-circular
+          indeterminate
+          :size="100"
+          color="white"
+        ></v-progress-circular>
+      </v-overlay>
     </div>
     <v-card v-else>
       <v-card-title class="justify-center">No Labs found</v-card-title>
@@ -87,12 +94,55 @@ export default {
   data() {
     return {
       loading: false,
+      loadingOverlay: false,
       labs: [],
     };
   },
   methods: {
     goToCreate() {
       this.$router.push("/createLab");
+    },
+    deleteLab(i) {
+      this.loadingOverlay = true;
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation deleteLab($id: ID!){
+                deleteLab(id: $id)
+              }
+          `,
+          variables: {
+            id: this.labs[i]._id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((res) => {
+          if (res) {
+            this.$toast.success("Deleted Lab");
+            this.labs.splice(i, 1);
+          } else {
+            this.$toast.error("Deletion Failed");
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message, {
+                position: "bottom-center",
+              });
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.loadingOverlay = false;
+        });
     },
   },
   mounted() {
@@ -104,6 +154,7 @@ export default {
               query getLabs($id: String!){
                 getLabs(id: $id) {
                   labs {
+                      _id
                       title
                       desc
                       code

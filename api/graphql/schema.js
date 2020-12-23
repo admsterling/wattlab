@@ -50,6 +50,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
+        deleteLab(id: ID!): Boolean!
     }
 
     type RootQuery {

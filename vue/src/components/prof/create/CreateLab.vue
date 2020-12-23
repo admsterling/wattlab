@@ -158,7 +158,6 @@ export default {
         })
         .finally(() => {
           this.submitted = false;
-          this.$refs.createLabForm.reset();
         });
     },
     cancelled() {
