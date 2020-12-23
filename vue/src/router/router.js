@@ -7,6 +7,9 @@ Vue.use(Router);
 const LoginView = Vue.component('Login', () =>
   import('../components/login/LoginVue')
 );
+const RegisterView = Vue.component('Register', () =>
+  import('../components/login/Register')
+);
 // const TestComponent = Vue.component('Login', () =>
 //   import('../components/TestComponent')
 // );
@@ -38,6 +41,7 @@ const routes = [
   { path: '/', redirect: '/login' },
 
   { path: '/login', component: LoginView },
+  { path: '/register', component: RegisterView },
 
   {
     path: '/prof',

@@ -8,6 +8,7 @@ import router from './router/router';
 
 const options = {
   timeout: 5000,
+  position: "bottom-center",
   closeOnClick: true,
   pauseOnHover: true,
   rtl: false,

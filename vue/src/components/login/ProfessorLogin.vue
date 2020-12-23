@@ -25,7 +25,12 @@
           ></v-text-field>
         </v-row>
         <v-row>
-          <p>Not registered? Click <router-link to="/register">here</router-link></p>
+          <v-col>
+            <p>
+              Not registered? Click
+              <router-link to="/register">here</router-link>
+            </p>
+          </v-col>
         </v-row>
         <!-- <v-row no-gutters>
           <v-col class="text-center">
