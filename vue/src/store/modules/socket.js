@@ -12,6 +12,7 @@ const state = getDefaultState();
 const getters = {
   labInfo: (state) => {
     return {
+      title: state.lab.title,
       desc: state.lab.desc,
       url: state.lab.url,
     }
@@ -20,6 +21,9 @@ const getters = {
 
 const mutations = {
   SET_LAB(state, payload) {
+    state.lab = payload;
+  },
+  START_LAB(state, payload) {
     state.lab = payload;
   },
   SOCKET_CONNECT(state) {

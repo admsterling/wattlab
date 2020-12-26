@@ -58,12 +58,17 @@
                   ></v-switch>
                   <v-switch
                     v-else
+                    input-value="true"
                     @click="endLab(i)"
                     color="success"
                   ></v-switch>
                 </td>
                 <td>
-                  <v-btn :disabled="!lab.status" class="mx-4 success" @click="joinLab(i)">
+                  <v-btn
+                    :disabled="!lab.status"
+                    class="mx-4 success"
+                    @click="joinLab(i)"
+                  >
                     Join
                   </v-btn>
                   <v-btn class="warning mx-4">
@@ -111,18 +116,93 @@ export default {
     goToCreate() {
       this.$router.push("/createLab");
     },
-    joinLab(i){
+    joinLab(i) {
       let lab = this.labs[i];
-      this.$router.push("/profViewLab/"+lab._id)
+      this.$router.push("/profViewLab/" + lab._id);
     },
     startLab(i) {
+      this.loadingOverlay = true;
       let lab = this.labs[i];
-      lab.status = true;
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation startLab($id: ID!){
+                startLab(id: $id)
+              }
+          `,
+          variables: {
+            id: lab._id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((res) => {
+          if (res) {
+            lab.status = true;
+            this.$toast.success("Lab Started");
+          } else {
+            this.$toast.error("Unable to start Lab");
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message, {
+                position: "bottom-center",
+              });
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.loadingOverlay = false;
+        });
     },
     endLab(i) {
+      this.loadingOverlay = true;
       let lab = this.labs[i];
-      lab.status = false;
-      
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation endLab($id: ID!){
+                endLab(id: $id)
+              }
+          `,
+          variables: {
+            id: lab._id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((res) => {
+          if (res) {
+            lab.status = false;
+            this.$toast.success("Lab Ended");
+          } else {
+            this.$toast.error("Unable to end Lab");
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.loadingOverlay = false;
+        });
     },
     deleteLab(i) {
       this.loadingOverlay = true;

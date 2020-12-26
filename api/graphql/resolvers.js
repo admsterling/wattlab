@@ -190,6 +190,44 @@ module.exports = {
 
     return lab;
   },
+  startLab: async function ({ id }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findById(id);
+    if (!lab) {
+      const error = new Error('No lab found.');
+      error.code = 404;
+      throw error;
+    }
+    if (lab.creator.toString() !== req.userId.toString()) {
+      const error = new Error('Not lab owner.');
+      error.code = 403;
+      throw error;
+    }
+    
+    lab.status = true;
+    await lab.save();
+    return true;
+  },
+  endLab: async function ({ id }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findById(id);
+    if (!lab) {
+      const error = new Error('No lab found.');
+      error.code = 404;
+      throw error;
+    }
+    if (lab.creator.toString() !== req.userId.toString()) {
+      const error = new Error('Not lab owner.');
+      error.code = 403;
+      throw error;
+    }
+    
+    lab.status = false;
+    await lab.save();
+    return true;
+  },
   deleteLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
 

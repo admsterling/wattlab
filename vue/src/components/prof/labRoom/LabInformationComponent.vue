@@ -1,14 +1,18 @@
 <template>
-  <v-container>
+  <v-container fluid style="overflow: auto; max-height: calc(95vh - 85px);">
     <v-row>
-      <v-col cols="3">Url:</v-col>
-      <v-col cols="9">
-        <a :href="labInfo.url" target="_blank">{{ labInfo.url }}</a>
+      <v-col>
+        Title: {{labInfo.title}}
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="3">Description:</v-col>
-      <v-col cols="9">
+      <v-col>
+        URL: <a :href="labInfo.url" target="_blank">{{ labInfo.url }}</a>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        Description:<br />
         <span style="white-space: pre-wrap">{{ labInfo.desc }}</span>
       </v-col>
     </v-row>
