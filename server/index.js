@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
 
   socket.on('newMessage', (msg) => {
     console.log(msg.lab_id, msg);
-    socket.emit("newMessage", msg);
+    io.emit("newMessage", msg);
   });
 
   socket.on('disconnect', () => {
