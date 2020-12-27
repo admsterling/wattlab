@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const Prof = require('../models/prof');
 const Lab = require('../models/lab');
+const Message = require('../models/message');
 const { api_key } = require('../../config');
 
 function checkAuth(flag) {
@@ -136,6 +137,7 @@ module.exports = {
       code: code,
       desc: labInput.desc,
       url: labInput.url,
+      messages: [],
       creator: prof,
     });
     const createdLab = await lab.save();
@@ -176,7 +178,9 @@ module.exports = {
   getLab: async function ({ id }, req) {
     const lab = await Lab.findOne({
       _id: mongoose.Types.ObjectId(id),
-    }).populate("creator");
+    })
+      .populate('creator')
+      .populate('messages');
 
     if (!lab) {
       const error = new Error('No lab found!');
@@ -184,11 +188,20 @@ module.exports = {
       throw error;
     }
 
-    lab._id = lab._id.toString();
-    lab.createdAt = lab.createdAt.toISOString();
-    lab.updatedAt = lab.updatedAt.toISOString();
-
-    return lab;
+    return {
+      ...lab._doc,
+      _id: lab._doc._id.toString(),
+      createdAt: lab._doc.createdAt.toISOString(),
+      updatedAt: lab._doc.updatedAt.toISOString(),
+      messages: lab._doc.messages.map((m) => {
+        return {
+          ...m._doc,
+          _id: m._id.toString(),
+          createdAt: m.createdAt.toISOString(),
+          updatedAt: m.updatedAt.toISOString(),
+        };
+      }),
+    };
   },
   startLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
@@ -204,7 +217,7 @@ module.exports = {
       error.code = 403;
       throw error;
     }
-    
+
     lab.status = true;
     await lab.save();
     return true;
@@ -223,7 +236,7 @@ module.exports = {
       error.code = 403;
       throw error;
     }
-    
+
     lab.status = false;
     await lab.save();
     return true;
@@ -242,11 +255,48 @@ module.exports = {
       error.code = 403;
       throw error;
     }
-    
+
     await Lab.findByIdAndRemove(id);
     const prof = await Prof.findById(req.userId);
     prof.labs.pull(id);
     await prof.save();
     return true;
+  },
+  createMessage: async function ({ messageInput }) {
+    const lab = await Lab.findOne({
+      _id: mongoose.Types.ObjectId(messageInput.lab_id),
+    });
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    const message = new Message({
+      sender: messageInput.sender,
+      senderType: messageInput.senderType,
+      text: messageInput.text,
+      lab_id: lab._id,
+    });
+
+    console.log(lab);
+    console.log(message);
+
+    lab.messages.push(message);
+    await lab.save();
+    await message.save();
+
+    message._id = lab._id.toString();
+    message.createdAt = message.createdAt.toISOString();
+    message.updatedAt = message.updatedAt.toISOString();
+
+    console.log(message);
+
+    return {
+      ...message._doc,
+      _id: message._doc._id.toString(),
+      createdAt: message._doc.createdAt.toISOString(),
+      updatedAt: message._doc.updatedAt.toISOString(),
+    };
   },
 };

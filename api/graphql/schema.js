@@ -27,11 +27,28 @@ module.exports = buildSchema(`
         creator: Prof!
         createdAt: String!
         updatedAt: String!
+        messages: [Message!]
     }
 
     type LabList {
         labs: [Lab!]!
     }
+
+    type Message {
+        _id: ID!
+        sender: String!
+        senderType: senderType!
+        text: String!
+        createdAt: String!
+        updatedAt: String!
+        lab_id: String!
+    }
+
+    enum senderType {
+        STUDENT
+        HELPER
+        PROFESSOR
+     }
 
     input ProfCreateData {
         email: String!
@@ -42,14 +59,22 @@ module.exports = buildSchema(`
 
     input LabCreateData {
         title: String!
-        helpers: [String]
+        helpers: [String!]
         desc: String!
         url: String!
+    }
+
+    input MessageCreateData {
+        sender: String!
+        senderType: senderType!
+        text: String!
+        lab_id: String!
     }
 
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
+        createMessage(messageInput: MessageCreateData): Message!
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!

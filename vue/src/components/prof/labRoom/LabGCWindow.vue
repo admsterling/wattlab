@@ -4,19 +4,24 @@
       id="chatWindow"
       color="grey lighten-4"
       class="rounded border"
-      style="overflow-y: auto; max-height: calc(95vh - 80px); height: calc(95vh - 80px);"
-      
+      style="
+        overflow-y: auto;
+        max-height: calc(95vh - 80px);
+        height: calc(95vh - 80px);
+      "
     >
       <v-container fluid>
         <v-row
-          v-for="(msg, i) in chat"
+          v-for="(msg, i) in messages"
           :key="i"
           class="my-2"
           align="center"
           no-gutters
         >
           <v-col cols="2">
-            <span class="ml-2 grey--text text--lighten-1">{{ msg.sent }} </span>
+            <span class="ml-2 grey--text text--lighten-1">
+              {{ msg.createdAt | moment("HH:MM") }}
+            </span>
             <span class="mr-2">{{ msg.sender }}:</span>
           </v-col>
           <v-col cols="10">
@@ -26,12 +31,15 @@
       </v-container>
     </v-sheet>
     <v-text-field
-      v-model="chatInput"
+      v-model="message"
       label="Message:"
       type="text"
       no-details
       outlined
       append-outer-icon="mdi-send"
+      @click:append-outer="sendMessage"
+      :loading="messageSending"
+      :disabled="messageSending"
       hide-details
       class="mt-2"
     />
@@ -39,36 +47,83 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      chatInput: "",
-      chat: [
-        {
-          sender: "as317",
-          text:
-            "test chataaaaaaaaaaaaaaa adddddddd ad asd asda sdasda adsa sd asd adsad asd asd a sa fsdfsdf sdfsd fsd fsd fs df asd asd asd",
-          sent: "12:03",
-        },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-        { sender: "as317", text: "test chat", sent: "12:03" },
-      ],
+      loadingOverlay: false,
+      message: "",
+      messageSending: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      messages: "socket/messages",
+    }),
+  },
+  sockets: {
+    connect: function () {
+      console.log("socket connected");
+    },
+    newMessage: function (data) {
+      this.$store.dispatch("socket/newMessage", data);
+    },
   },
   methods: {
     scrollToEnd() {
       let container = this.$el.querySelector("#chatWindow");
       container.scrollTop = container.scrollHeight;
+    },
+    sendMessage() {
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation createMessage($sender: String!, $senderType: senderType!, $text: String!, $lab_id: String!){
+                createMessage(messageInput: {
+                    sender: $sender
+                    senderType: $senderType
+                    text: $text
+                    lab_id: $lab_id
+                }) {
+                    text
+                    sender
+                    senderType
+                    createdAt
+                    lab_id
+                }
+              }
+            `,
+          variables: {
+            sender: this.$store.state.socket.username,
+            senderType: this.$store.state.socket.senderType,
+            text: this.message,
+            lab_id: this.$store.state.socket.lab._id,
+          },
+        },
+      })
+        .then((res) => {
+          this.message = "";
+          const messageData = res.data.data.createMessage;
+          this.$socket.emit("newMessage", messageData);
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message, {
+                position: "bottom-center",
+              });
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.messageSending = false;
+        });
     },
   },
   mounted() {

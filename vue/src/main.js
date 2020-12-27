@@ -16,8 +16,8 @@ Vue.use(
     connection: socketConnection,
     vuex: {
       store,
-      actionPrefix: 'SOCKET_',
-      mutationPrefix: 'SOCKET_',
+      actionPrefix: 'socket/SOCKET_',
+      mutationPrefix: 'socket/SOCKET_',
     },
   }),
   store

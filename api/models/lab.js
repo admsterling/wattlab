@@ -28,6 +28,13 @@ const labSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    messages: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Message',
+        required: true,
+      }
+    ],
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'Prof',

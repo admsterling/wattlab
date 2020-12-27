@@ -51,13 +51,25 @@ export default {
       this.$router.push("/viewLabs");
     },
   },
-  async created() {
+  async mounted() {
     this.loadingOverlay = true;
-    await this.$store.dispatch("socket/SET_LAB", {
-      labid: this.labID,
-      profid: this.$store.state.prof.token,
-    });
-    this.loadingOverlay = false;
+    await this.$store
+      .dispatch("socket/SET_LAB", {
+        labid: this.labID,
+        username: this.$store.state.prof.profData.email.substring(
+          0,
+          this.$store.state.prof.profData.email.indexOf("@")
+        ),
+        senderType: "PROFESSOR",
+      })
+      .then(() => {
+        this.loadingOverlay = false;
+        this.$socket.emit("joinRoom", this.labID);
+      });
+  },
+  async beforeDestroy() {
+    await this.$socket.emit("leaveRoom", this.labID);
+    await this.$store.dispatch("socket/resetState");
   },
 };
 </script>
