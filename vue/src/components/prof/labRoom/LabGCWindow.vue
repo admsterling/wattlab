@@ -37,6 +37,7 @@
       no-details
       outlined
       append-outer-icon="mdi-send"
+      @keyup.enter="sendMessage"
       @click:append-outer="sendMessage"
       :loading="messageSending"
       :disabled="messageSending"
@@ -77,6 +78,7 @@ export default {
       container.scrollTop = container.scrollHeight;
     },
     sendMessage() {
+      this.messageSending = true;
       axios("http://localhost:4000/graphql", {
         method: "POST",
         data: {
