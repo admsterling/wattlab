@@ -53,19 +53,16 @@ export default {
   },
   async mounted() {
     this.loadingOverlay = true;
-    await this.$store
-      .dispatch("socket/SET_LAB", {
-        labid: this.labID,
-        username: this.$store.state.prof.profData.email.substring(
-          0,
-          this.$store.state.prof.profData.email.indexOf("@")
-        ),
-        senderType: "PROFESSOR",
-      })
-      .then(() => {
-        this.loadingOverlay = false;
-        this.$socket.emit("joinRoom", this.labID);
-      });
+    await this.$store.dispatch("socket/SET_LAB", {
+      labid: this.labID,
+      username: this.$store.state.prof.profData.email.substring(
+        0,
+        this.$store.state.prof.profData.email.indexOf("@")
+      ),
+      senderType: "PROFESSOR",
+    });
+    this.$socket.emit("joinRoom", this.labID);
+    this.loadingOverlay = false;
   },
   async beforeDestroy() {
     await this.$socket.emit("leaveRoom", this.labID);

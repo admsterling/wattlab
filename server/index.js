@@ -10,19 +10,26 @@ const port = require('../config').socket_port;
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
 
-  // socket.on('joinRoom', (labid) => {
-  //   console.log('Join Room: '+ labid);
-  //   socket.join(labid);
-  // });
+  socket.on('joinRoom', (labid) => {
+    console.log('Join Room: '+ labid);
+    socket.join(labid);
+  });
 
-  // socket.on('leaveRoom', (labid) => {
-  //   console.log('Leave Room: '+ labid);
-  //   socket.leave(labid);
-  // });
+  socket.on('leaveRoom', (labid) => {
+    console.log('Leave Room: '+ labid);
+    socket.leave(labid);
+  });
 
-  socket.on('newMessage', (msg) => {
-    console.log(msg.lab_id, msg);
-    io.emit("newMessage", msg);
+  socket.on('newGroupMessage', (msg) => {
+    roomid = msg.lab_id;
+    delete msg["lab_id"];
+    io.to(roomid).emit('newGroupMessage', msg);
+  });
+
+  socket.on('alertGroup', (msg) => {
+    roomid = msg.lab_id;
+    delete msg["lab_id"];
+    socket.broadcast.to(roomid).emit('newGroupAlert', msg);
   });
 
   socket.on('disconnect', () => {

@@ -34,7 +34,7 @@ const mutations = {
     state.username = payload.username;
     state.senderType = payload.senderType;
   },
-  NEW_MESSAGE(state, payload) {
+  NEW_GROUP_MESSAGE(state, payload) {
     state.lab.messages.push(payload);
   }
 };
@@ -88,8 +88,8 @@ const actions = {
       commit('SET_LAB', labData);
     });
   },
-  newMessage({ commit }, context) {
-    commit('NEW_MESSAGE', context);
+  newGroupMessage({ commit }, context) {
+    commit('NEW_GROUP_MESSAGE', context);
   },
 };
 

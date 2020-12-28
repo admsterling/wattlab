@@ -36,9 +36,11 @@
       type="text"
       no-details
       outlined
-      append-outer-icon="mdi-send"
+      append-icon="mdi-send"
+      append-outer-icon="mdi-alert-circle"
       @keyup.enter="sendMessage"
-      @click:append-outer="sendMessage"
+      @click:append-outer="sendAlert"
+      @click:append="sendMessage"
       :loading="messageSending"
       :disabled="messageSending"
       hide-details
@@ -62,14 +64,18 @@ export default {
   computed: {
     ...mapGetters({
       messages: "socket/messages",
+      labid: "socket/labid",
     }),
   },
   sockets: {
     connect: function () {
       console.log("socket connected");
     },
-    newMessage: function (data) {
-      this.$store.dispatch("socket/newMessage", data);
+    newGroupMessage: function (data) {
+      this.$store.dispatch("socket/newGroupMessage", data);
+    },
+    newGroupAlert: function (data) {
+      this.$toast.info(data.message, data.options);
     },
   },
   methods: {
@@ -109,15 +115,13 @@ export default {
         .then((res) => {
           this.message = "";
           const messageData = res.data.data.createMessage;
-          this.$socket.emit("newMessage", messageData);
+          this.$socket.emit("newGroupMessage", messageData);
         })
         .catch((error) => {
           if (error.response) {
             this.errorList = error.response.data.errors;
             for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message, {
-                position: "bottom-center",
-              });
+              this.$toast.error(this.errorList[i].message);
             }
           } else {
             console.log("Error", error.message);
@@ -127,8 +131,31 @@ export default {
           this.messageSending = false;
         });
     },
+    async sendAlert() {
+      if(this.message.length > 0) {
+        this.messageSending = true;
+        const alert_data = {
+        lab_id: this.labid,
+        message: this.message,
+        options: {
+          position: "top-right",
+          timeout: false,
+          hideProgressBar: true,
+        },
+      };
+      const res = await this.$socket.emit("alertGroup", alert_data);
+      if (res) {
+        this.message = "";
+        this.$toast.success("Alert was sent successfully");
+      } else {
+        this.$toast.error("Unable to send alert");
+      }
+      this.messageSending = false;
+      }
+      
+    },
   },
-  mounted() {
+  updated() {
     this.scrollToEnd();
   },
 };
