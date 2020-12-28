@@ -19,12 +19,19 @@
           no-gutters
         >
           <v-col cols="12">
-            <span class="ml-2 grey--text text--lighten-1">
-              {{ msg.createdAt | moment("HH:MM") }} ({{ msg.senderType }})
-            </span>
-            <span class="mr-2">{{ msg.sender }}:</span>
-            <div class="mx-2 text-bubble lighten-4" :class="msg.senderType !== 'STUDENT' ? 'deep-orange' : 'blue'">
-              {{ msg.text }}
+            <div class="wrapper">
+              <div style="white-space: nowrap">
+                <span class="ml-2 grey--text text--lighten-1">
+                  {{ msg.createdAt | moment("HH:MM") }} ({{ msg.senderType }})
+                </span>
+                <span class="mr-2">{{ msg.sender }}:</span>
+              </div>
+              <div
+                class="mx-2 text-bubble lighten-4"
+                :class="msg.senderType !== 'STUDENT' ? 'deep-orange' : 'blue'"
+              >
+                {{ msg.text }}
+              </div>
             </div>
           </v-col>
         </v-row>
@@ -162,6 +169,10 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  display: flex;
+  align-items: center;
+}
 .text-bubble {
   border-radius: 20px;
   padding: 8px 15px;
