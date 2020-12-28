@@ -66,16 +66,16 @@
                 <td>
                   <v-btn
                     :disabled="!lab.status"
-                    class="mx-4 success"
+                    class="ma-1 success"
                     @click="joinLab(i)"
                   >
-                    Join
+                    <v-icon left>mdi-account-multiple-plus</v-icon>Join
                   </v-btn>
-                  <v-btn class="warning mx-4">
+                  <v-btn class="warning ma-1">
                     <v-icon left>mdi-pencil</v-icon>Edit
                   </v-btn>
-                  <v-btn class="error mx-4" @click="deleteLab(i)">
-                    <v-icon left>mdi-delete-forever</v-icon>Delte
+                  <v-btn class="error ma-1" @click="deleteLab(i)">
+                    <v-icon left>mdi-delete-forever</v-icon>Delete
                   </v-btn>
                 </td>
               </tr>
