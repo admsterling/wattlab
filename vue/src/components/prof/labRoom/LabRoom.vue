@@ -21,12 +21,12 @@
               </v-btn>
             </v-card-title>
             <v-card-text>
-              <LabInformationComponent />
+              <LabInformationComponent v-if="fullyLoaded" />
             </v-card-text>
           </v-card>
         </v-col>
         <v-col cols="8" style="padding: 0; margin: 0">
-          <LabGCWindow />
+          <LabGCWindow v-if="fullyLoaded" :username="username"/>
         </v-col>
       </v-row>
     </v-container>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   components: {
     LabInformationComponent: () => import("./LabInformationComponent"),
@@ -42,9 +44,15 @@ export default {
   data() {
     return {
       loadingOverlay: false,
+      fullyLoaded: false,
       labID: this.$route.params.labID,
       tab: null,
     };
+  },
+  computed: {
+    ...mapGetters({
+      username: "socket/username",
+    }),
   },
   methods: {
     goHome() {
@@ -53,16 +61,20 @@ export default {
   },
   async mounted() {
     this.loadingOverlay = true;
-    await this.$store.dispatch("socket/SET_LAB", {
-      labid: this.labID,
-      username: this.$store.state.prof.profData.email.substring(
-        0,
-        this.$store.state.prof.profData.email.indexOf("@")
-      ),
-      senderType: "PROFESSOR",
-    });
-    this.$socket.emit("joinRoom", this.labID);
-    this.loadingOverlay = false;
+    await this.$store
+      .dispatch("socket/SET_LAB", {
+        labid: this.labID,
+        username: this.$store.state.prof.profData.email.substring(
+          0,
+          this.$store.state.prof.profData.email.indexOf("@")
+        ),
+        senderType: "PROFESSOR",
+      })
+      .then(() => {
+        this.$socket.emit("joinRoom", this.labID);
+        this.loadingOverlay = false;
+        this.fullyLoaded = true;
+      });
   },
   async beforeDestroy() {
     await this.$socket.emit("leaveRoom", this.labID);

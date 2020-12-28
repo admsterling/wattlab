@@ -18,14 +18,14 @@
           align="center"
           no-gutters
         >
-          <v-col cols="2">
+          <v-col cols="12">
             <span class="ml-2 grey--text text--lighten-1">
-              {{ msg.createdAt | moment("HH:MM") }}
+              {{ msg.createdAt | moment("HH:MM") }} ({{ msg.senderType }})
             </span>
             <span class="mr-2">{{ msg.sender }}:</span>
-          </v-col>
-          <v-col cols="10">
-            <div class="blue lighten-4 text-bubble">{{ msg.text }}</div>
+            <div class="mx-2 text-bubble lighten-4" :class="msg.senderType !== 'STUDENT' ? 'deep-orange' : 'blue'">
+              {{ msg.text }}
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -65,6 +65,7 @@ export default {
     ...mapGetters({
       messages: "socket/messages",
       labid: "socket/labid",
+      username: "socket/username",
     }),
   },
   sockets: {
@@ -132,27 +133,26 @@ export default {
         });
     },
     async sendAlert() {
-      if(this.message.length > 0) {
+      if (this.message.length > 0) {
         this.messageSending = true;
         const alert_data = {
-        lab_id: this.labid,
-        message: this.message,
-        options: {
-          position: "top-right",
-          timeout: false,
-          hideProgressBar: true,
-        },
-      };
-      const res = await this.$socket.emit("alertGroup", alert_data);
-      if (res) {
-        this.message = "";
-        this.$toast.success("Alert was sent successfully");
-      } else {
-        this.$toast.error("Unable to send alert");
+          lab_id: this.labid,
+          message: this.message,
+          options: {
+            position: "top-right",
+            timeout: false,
+            hideProgressBar: true,
+          },
+        };
+        const res = await this.$socket.emit("alertGroup", alert_data);
+        if (res) {
+          this.message = "";
+          this.$toast.success("Alert was sent successfully");
+        } else {
+          this.$toast.error("Unable to send alert");
+        }
+        this.messageSending = false;
       }
-      this.messageSending = false;
-      }
-      
     },
   },
   updated() {

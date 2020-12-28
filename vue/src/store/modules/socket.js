@@ -2,8 +2,9 @@ import axios from 'axios';
 
 const getDefaultState = () => {
   return {
-    isConnected: false,
     lab: {},
+    senderType: null,
+    username: null,
   };
 };
 
@@ -19,6 +20,9 @@ const getters = {
   },
   labid: (state) => {
     return state.lab._id;
+  },
+  username: (state) => {
+    return state.username;
   },
   messages: (state) => {
     return state.lab.messages;
@@ -36,7 +40,7 @@ const mutations = {
   },
   NEW_GROUP_MESSAGE(state, payload) {
     state.lab.messages.push(payload);
-  }
+  },
 };
 
 const actions = {
@@ -44,8 +48,7 @@ const actions = {
     commit('RESET_STATE');
   },
   SET_LAB({ commit }, context) {
-    console.log();
-    axios('http://localhost:4000/graphql', {
+    return axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
         query: `
@@ -84,7 +87,6 @@ const actions = {
         username: context.username,
         senderType: context.senderType,
       };
-
       commit('SET_LAB', labData);
     });
   },
