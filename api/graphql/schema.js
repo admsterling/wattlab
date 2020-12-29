@@ -94,6 +94,7 @@ module.exports = buildSchema(`
         login(email: String!, password: String!): AuthData!
         getLabs(id: String!): LabList!
         getLab(code: String!): Lab!
+        labExist(code: String!): Boolean!
         prof(id: String!): Prof!
     }
 

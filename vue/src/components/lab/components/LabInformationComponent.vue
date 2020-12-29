@@ -1,7 +1,7 @@
 <template>
   <v-card fill-height>
     <v-card-title class="teal lighten-1 white--text justify-center">
-      {{ labInfo.title }}Test
+      {{ labInfo.title }}
     </v-card-title>
     <v-card-text style="overflow-y: auto; height: calc(100vh - 300px)">
       <v-container>

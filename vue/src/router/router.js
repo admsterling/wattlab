@@ -12,7 +12,7 @@ const RegisterView = Vue.component('Register', () =>
 );
 
 const JoinLabView = Vue.component('Join', () =>
-  import('../components/stu/LabRoom')
+  import('../components/lab/LabRoom')
 );
 // const TestComponent = Vue.component('Login', () =>
 //   import('../components/TestComponent')
@@ -44,6 +44,14 @@ const ifAuth = (to, from, next) => {
   next('/login');
 };
 
+const ifLab = (to, from, next) => {
+  if (store.getters['socket/joinedLabFlag']) {
+    next();
+    return;
+  }
+  next('/login');
+};
+
 const routes = [
   { path: '/', redirect: '/login' },
 
@@ -65,7 +73,7 @@ const routes = [
     beforeEnter: ifAuth,
     component: LabRoomView,
   },
-  { path: '/join/:labCode', component: JoinLabView},
+  { path: '/join/:labCode', beforeEnter: ifLab, component: JoinLabView},
   { path: '*', component: NotFound },
 ];
 

@@ -25,7 +25,7 @@ Vue.use(
 
 const options = {
   timeout: 5000,
-  position: 'bottom-center',
+  position: 'top-right',
   closeOnClick: true,
   pauseOnHover: true,
   rtl: false,

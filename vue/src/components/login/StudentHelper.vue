@@ -54,10 +54,11 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      labCode: "BF5D19",
+      labCode: "3A4721",
       username: "te13",
       submitted: false,
       validForm: true,
@@ -76,14 +77,43 @@ export default {
       if (this.$refs.form.validate()) {
         this.submitted = true;
         this.$emit("flip-tabs");
-        const contextData = {
-          code: this.labCode,
-          username: this.username,
-        };
-        this.$store.dispatch("socket/setLab", contextData).then(() => {
-          this.$socket.emit("joinRoom", this.labCode);
-          this.$router.push("/join/" + this.labCode);
-        });
+        axios("http://localhost:4000/graphql", {
+          method: "POST",
+          data: {
+            query: `
+              query labExist($code: String!) {
+                labExist(code: $code)
+              }
+            `,
+            variables: {
+              code: this.labCode,
+            },
+          },
+        })
+          .then(() => {
+            const contextData = {
+              code: this.labCode,
+              username: this.username,
+            };
+            this.$store.dispatch("socket/setLab", contextData).then(() => {
+              this.$socket.emit("joinRoom", this.labCode);
+              this.$router.push("/join/" + this.labCode);
+            });
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message);
+              }
+            } else {
+              console.log("Error", error.message);
+            }
+          })
+          .finally(() => {
+            this.submitted = false;
+            this.$emit("flip-tabs");
+          });
       }
     },
   },

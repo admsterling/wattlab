@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const getDefaultState = () => {
   return {
+    joinedLabFlag: false,
     lab: {},
     accountType: null,
     username: null,
@@ -33,6 +34,9 @@ const getters = {
   messages: (state) => {
     return state.lab.messages;
   },
+  joinedLabFlag: (state) => {
+    return state.joinedLabFlag;
+  },
 };
 
 const mutations = {
@@ -43,6 +47,7 @@ const mutations = {
     state.lab = payload.lab;
     state.username = payload.username;
     state.accountType = payload.accountType;
+    state.joinedLabFlag = true;
   },
   NEW_GROUP_MESSAGE(state, payload) {
     state.lab.messages.push(payload);
@@ -86,9 +91,13 @@ const actions = {
       },
     }).then((res) => {
       let accountType;
-      if(rootGetters["prof/isLoggedIn"]) { accountType = "PROFESSOR" ;}
-      else if(res.data.data.getLab.helpers.includes(context.username)) { accountType = "HELPER" ;}
-      else { accountType = "STUDENT"}
+      if (rootGetters['prof/isLoggedIn']) {
+        accountType = 'PROFESSOR';
+      } else if (res.data.data.getLab.helpers.includes(context.username)) {
+        accountType = 'HELPER';
+      } else {
+        accountType = 'STUDENT';
+      }
 
       const labData = {
         lab: res.data.data.getLab,

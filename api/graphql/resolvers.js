@@ -262,6 +262,15 @@ module.exports = {
     await prof.save();
     return true;
   },
+  labExist: async function ({ code }) {
+    const lab = await Lab.findOne({ code: code});
+    if (!lab) {
+      const error = new Error('No lab found.');
+      error.code = 404;
+      throw error;
+    }
+    return true;
+  },
   createMessage: async function ({ messageInput }) {
     const lab = await Lab.findOne({
       _id: mongoose.Types.ObjectId(messageInput.lab_id),

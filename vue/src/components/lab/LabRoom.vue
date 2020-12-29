@@ -6,7 +6,7 @@
           <h1 class="font-weight-bold display-3 white--text">WATTLAB</h1>
         </div>
         <v-btn
-          color="grey white--text"
+          color="red lighten-2 white--text"
           style="position: absolute; right: 20px"
           @click="leaveLab"
         >
@@ -15,6 +15,7 @@
       </v-card-title>
 
       <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
+        <v-tabs-slider color="grey"></v-tabs-slider>
         <v-tab v-for="(tabHeader, i) in tabHeaders" :key="i">
           {{ tabHeader }}
         </v-tab>

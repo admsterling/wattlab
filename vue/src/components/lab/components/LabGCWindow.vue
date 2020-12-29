@@ -15,17 +15,41 @@
           no-gutters
         >
           <v-col cols="12">
-            <div class="wrapper">
+            <div v-if="msg.sender === username" class="wrapperRight">
+              <div class="mx-2 text-bubble lighten-4 deep-orange">
+                {{ msg.text }}
+              </div>
               <div style="white-space: nowrap">
                 <span class="ml-2 grey--text text--lighten-1">
-                  {{ msg.createdAt | moment("HH:MM") }} ({{ msg.accountType }})
+                  {{ msg.createdAt | moment("HH:MM") }}
+                  <span class="text-lighten-2"
+                    :class="[
+                      msg.accountType === 'STUDENT' ? 'green--text' : '',
+                      msg.accountType === 'HELPER' ? 'orange--text' : '',
+                      msg.accountType === 'PROFESSOR' ? 'purple--text' : '',
+                    ]"
+                    >({{ msg.accountType }})</span
+                  >
                 </span>
-                <span class="mr-2">{{ msg.sender }}:</span>
+                <span class="ml-2">{{ msg.sender }}:</span>
               </div>
-              <div
-                class="mx-2 text-bubble lighten-4"
-                :class="msg.accountType !== 'STUDENT' ? 'deep-orange' : 'blue'"
-              >
+            </div>
+            <div v-else class="wrapperLeft">
+              <div style="white-space: nowrap">
+                <span class="ml-2 grey--text text--lighten-1">
+                  {{ msg.createdAt | moment("HH:MM") }}
+                  <span class="text-lighten-2"
+                    :class="[
+                      msg.accountType === 'STUDENT' ? 'green--text' : '',
+                      msg.accountType === 'HELPER' ? 'orange--text' : '',
+                      msg.accountType === 'PROFESSOR' ? 'purple--text' : '',
+                    ]"
+                    >({{ msg.accountType }})</span
+                  >
+                </span>
+                <span class="ml-2">{{ msg.sender }}:</span>
+              </div>
+              <div class="mx-2 text-bubble lighten-4 blue">
                 {{ msg.text }}
               </div>
             </div>
@@ -90,7 +114,9 @@ export default {
   },
   sockets: {
     newGroupMessage: function (data) {
-      this.$store.dispatch("socket/newGroupMessage", data);
+      this.$store.dispatch("socket/newGroupMessage", data).then(() => {
+        this.scrollToEnd();
+      });
     },
     newGroupAlert: function (data) {
       this.$toast.info(data.message, data.options);
@@ -172,20 +198,29 @@ export default {
       }
     },
   },
-  updated() {
+  mounted() {
     this.scrollToEnd();
   },
 };
 </script>
 
 <style scoped>
-.wrapper {
+.wrapperLeft {
   display: flex;
   align-items: center;
 }
+.wrapperRight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wrapperRight:first-of-type > div:last-child {
+  order: -1;
+}
+
 .text-bubble {
   border-radius: 20px;
+  max-width: 60%;
   padding: 8px 15px;
-  display: inline-block;
 }
 </style>

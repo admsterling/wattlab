@@ -129,9 +129,7 @@ export default {
             if (error.response) {
               this.errorList = error.response.data.errors;
               for (let i = 0; i < this.errorList.length; i++) {
-                this.$toast.error(this.errorList[i].message, {
-                  position: "bottom-center",
-                });
+                this.$toast.error(this.errorList[i].message);
               }
             } else {
               console.log("Error", error.message);
