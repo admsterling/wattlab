@@ -175,9 +175,9 @@ module.exports = {
       }),
     };
   },
-  getLab: async function ({ id }, req) {
+  getLab: async function ({ code }, req) {
     const lab = await Lab.findOne({
-      _id: mongoose.Types.ObjectId(id),
+      code: code,
     })
       .populate('creator')
       .populate('messages');
@@ -274,13 +274,10 @@ module.exports = {
 
     const message = new Message({
       sender: messageInput.sender,
-      senderType: messageInput.senderType,
+      accountType: messageInput.accountType,
       text: messageInput.text,
       lab_id: lab._id,
     });
-
-    console.log(lab);
-    console.log(message);
 
     lab.messages.push(message);
     await lab.save();
@@ -290,13 +287,12 @@ module.exports = {
     message.createdAt = message.createdAt.toISOString();
     message.updatedAt = message.updatedAt.toISOString();
 
-    console.log(message);
-
     return {
       ...message._doc,
       _id: message._doc._id.toString(),
       createdAt: message._doc.createdAt.toISOString(),
       updatedAt: message._doc.updatedAt.toISOString(),
+      labCode: lab.code,
     };
   },
 };

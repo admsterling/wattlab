@@ -7,7 +7,7 @@
         color="white"
       ></v-progress-circular>
     </v-overlay>
-    <v-container fluid style="padding: 0; margin: 0">
+    <v-container fluid>
       <v-row>
         <v-col cols="4">
           <v-card>
@@ -25,7 +25,7 @@
             </v-card-text>
           </v-card>
         </v-col>
-        <v-col cols="8" style="padding: 0; margin: 0">
+        <v-col cols="8">
           <LabGCWindow v-if="fullyLoaded" :username="username"/>
         </v-col>
       </v-row>
@@ -68,7 +68,7 @@ export default {
           0,
           this.$store.state.prof.profData.email.indexOf("@")
         ),
-        senderType: "PROFESSOR",
+        accountType: "PROFESSOR",
       })
       .then(() => {
         this.$socket.emit("joinRoom", this.labID);

@@ -37,14 +37,24 @@ module.exports = buildSchema(`
     type Message {
         _id: ID!
         sender: String!
-        senderType: senderType!
+        accountType: accountType!
         text: String!
         createdAt: String!
         updatedAt: String!
         lab_id: String!
     }
 
-    enum senderType {
+    type MessageReturn {
+        sender: String!
+        accountType: accountType!
+        text: String!
+        createdAt: String!
+        updatedAt: String!
+        lab_id: String!
+        labCode: String!
+    }
+
+    enum accountType {
         STUDENT
         HELPER
         PROFESSOR
@@ -66,7 +76,7 @@ module.exports = buildSchema(`
 
     input MessageCreateData {
         sender: String!
-        senderType: senderType!
+        accountType: accountType!
         text: String!
         lab_id: String!
     }
@@ -74,7 +84,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
-        createMessage(messageInput: MessageCreateData): Message!
+        createMessage(messageInput: MessageCreateData): MessageReturn!
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!
@@ -83,7 +93,7 @@ module.exports = buildSchema(`
     type RootQuery {
         login(email: String!, password: String!): AuthData!
         getLabs(id: String!): LabList!
-        getLab(id: String!): Lab!
+        getLab(code: String!): Lab!
         prof(id: String!): Prof!
     }
 

@@ -5,7 +5,7 @@
 
       <v-toolbar-title class="text-uppercase grey--text hover" @click="goHome">
         <span class="font-weight-light">watt</span>
-        <span>Quiz</span>
+        <span>Lab</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>

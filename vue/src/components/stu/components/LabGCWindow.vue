@@ -4,11 +4,7 @@
       id="chatWindow"
       color="grey lighten-4"
       class="rounded border"
-      style="
-        overflow-y: auto;
-        max-height: calc(95vh - 80px);
-        height: calc(95vh - 80px);
-      "
+      style="overflow-y: auto; height: calc(100vh - 300px)"
     >
       <v-container fluid>
         <v-row
@@ -38,6 +34,22 @@
       </v-container>
     </v-sheet>
     <v-text-field
+      v-if="accountType !== 'PROFESSOR'"
+      v-model="message"
+      label="Message:"
+      type="text"
+      no-details
+      outlined
+      append-icon="mdi-send"
+      @keyup.enter="sendMessage"
+      @click:append="sendMessage"
+      :loading="messageSending"
+      :disabled="messageSending"
+      hide-details
+      class="mt-2"
+    />
+    <v-text-field
+      v-else
       v-model="message"
       label="Message:"
       type="text"
@@ -71,15 +83,12 @@ export default {
   computed: {
     ...mapGetters({
       messages: "socket/messages",
-      labCode: "socket/labCode",
+      lab_id: "socket/lab_id",
       username: "socket/username",
       accountType: "socket/accountType",
     }),
   },
   sockets: {
-    connect: function () {
-      console.log("socket connected");
-    },
     newGroupMessage: function (data) {
       this.$store.dispatch("socket/newGroupMessage", data);
     },
@@ -123,7 +132,6 @@ export default {
       })
         .then((res) => {
           this.message = "";
-          console.log(res);
           const messageData = res.data.data.createMessage;
           this.$socket.emit("newGroupMessage", messageData);
         })
@@ -145,7 +153,7 @@ export default {
       if (this.message.length > 0) {
         this.messageSending = true;
         const alert_data = {
-          lab_id: this.labid,
+          lab_id: this.lab_id,
           message: this.message,
           options: {
             position: "top-right",

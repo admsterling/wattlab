@@ -1,10 +1,15 @@
 <template>
   <v-app class="grey lighten-4">
-    <v-main class="mx-8 my-6">
+    <v-main>
       <transition name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
     </v-main>
+
+    <v-footer absolute color="teal">
+      <v-spacer></v-spacer>
+      <div class="white--text">&copy; Adam Sterling {{ new Date().getFullYear() }}</div>
+    </v-footer>
   </v-app>
 </template>
 

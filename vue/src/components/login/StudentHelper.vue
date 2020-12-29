@@ -4,9 +4,12 @@
       <v-container>
         <v-row>
           <v-text-field
-            v-model="labCode" 
-            @input="v => { labCode = v.toUpperCase()}"
-
+            v-model="labCode"
+            @input="
+              (v) => {
+                labCode = v.toUpperCase();
+              }
+            "
             :counter="6"
             maxlength="6"
             :rules="codeRules"
@@ -19,7 +22,7 @@
         </v-row>
         <v-row>
           <v-text-field
-            v-model="studentName"
+            v-model="username"
             ref="name"
             maxlength="6"
             :rules="usernameRules"
@@ -54,8 +57,8 @@
 export default {
   data() {
     return {
-      labCode: "",
-      studentName: "",
+      labCode: "BF5D19",
+      username: "te13",
       submitted: false,
       validForm: true,
       codeRules: [
@@ -69,11 +72,18 @@ export default {
     };
   },
   methods: {
-    submit() {
+    async submit() {
       if (this.$refs.form.validate()) {
         this.submitted = true;
         this.$emit("flip-tabs");
-        // continue here...
+        const contextData = {
+          code: this.labCode,
+          username: this.username,
+        };
+        this.$store.dispatch("socket/setLab", contextData).then(() => {
+          this.$socket.emit("joinRoom", this.labCode);
+          this.$router.push("/join/" + this.labCode);
+        });
       }
     },
   },

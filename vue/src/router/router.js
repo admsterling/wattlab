@@ -10,6 +10,10 @@ const LoginView = Vue.component('Login', () =>
 const RegisterView = Vue.component('Register', () =>
   import('../components/login/Register')
 );
+
+const JoinLabView = Vue.component('Join', () =>
+  import('../components/stu/LabRoom')
+);
 // const TestComponent = Vue.component('Login', () =>
 //   import('../components/TestComponent')
 // );
@@ -61,6 +65,7 @@ const routes = [
     beforeEnter: ifAuth,
     component: LabRoomView,
   },
+  { path: '/join/:labCode', component: JoinLabView},
   { path: '*', component: NotFound },
 ];
 

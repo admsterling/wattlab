@@ -7,7 +7,7 @@ const messageSchema = new Schema(
       type: String,
       required: true,
     },
-    senderType: {
+    accountType: {
       type: String,
       enum: ['STUDENT', 'HELPER', 'PROFESSOR'],
       required: true,

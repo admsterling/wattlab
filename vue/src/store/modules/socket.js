@@ -3,7 +3,7 @@ import axios from 'axios';
 const getDefaultState = () => {
   return {
     lab: {},
-    senderType: null,
+    accountType: null,
     username: null,
   };
 };
@@ -18,11 +18,17 @@ const getters = {
       url: state.lab.url,
     };
   },
-  labid: (state) => {
+  lab_id: (state) => {
     return state.lab._id;
+  },
+  labCode: (state) => {
+    return state.lab.code;
   },
   username: (state) => {
     return state.username;
+  },
+  accountType: (state) => {
+    return state.accountType;
   },
   messages: (state) => {
     return state.lab.messages;
@@ -36,7 +42,7 @@ const mutations = {
   SET_LAB(state, payload) {
     state.lab = payload.lab;
     state.username = payload.username;
-    state.senderType = payload.senderType;
+    state.accountType = payload.accountType;
   },
   NEW_GROUP_MESSAGE(state, payload) {
     state.lab.messages.push(payload);
@@ -47,13 +53,13 @@ const actions = {
   resetState({ commit }) {
     commit('RESET_STATE');
   },
-  SET_LAB({ commit }, context) {
+  setLab({ commit, rootGetters }, context) {
     return axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
         query: `
-              query getLab($id: String!){
-                getLab(id: $id){
+              query getLab($code: String!){
+                getLab(code: $code){
                     _id
                     title
                     helpers
@@ -61,7 +67,7 @@ const actions = {
                     messages {
                       text
                       sender
-                      senderType
+                      accountType
                       createdAt
                     }
                     code
@@ -71,21 +77,23 @@ const actions = {
                         fname
                         lname
                     }
-                }
+                  }
                 }
           `,
         variables: {
-          id: context.labid,
+          code: context.code,
         },
       },
-      headers: {
-        Authorization: `Bearer ${context.profid}`,
-      },
     }).then((res) => {
+      let accountType;
+      if(rootGetters["prof/isLoggedIn"]) { accountType = "PROFESSOR" ;}
+      else if(res.data.data.getLab.helpers.includes(context.username)) { accountType = "HELPER" ;}
+      else { accountType = "STUDENT"}
+
       const labData = {
         lab: res.data.data.getLab,
         username: context.username,
-        senderType: context.senderType,
+        accountType: accountType,
       };
       commit('SET_LAB', labData);
     });
