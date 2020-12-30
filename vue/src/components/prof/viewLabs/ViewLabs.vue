@@ -103,7 +103,7 @@
 
 <script>
 import axios from "axios";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -113,16 +113,17 @@ export default {
       labs: [],
     };
   },
-    computed: {
+  computed: {
     ...mapGetters({
-      username: 'prof/username',
-    })
+      username: "prof/username",
+    }),
   },
   methods: {
     goToCreate() {
       this.$router.push("/createLab");
     },
     joinLab(i) {
+      this.loadingOverlay = true;
       let lab = this.labs[i];
       axios("http://localhost:4000/graphql", {
         method: "POST",
@@ -141,6 +142,7 @@ export default {
           const contextData = {
             code: lab.code,
             username: this.username,
+            socketid: this.$socket.id,
           };
           this.$store.dispatch("socket/setLab", contextData).then(() => {
             this.$socket.emit("joinRoom", lab.code);
@@ -156,6 +158,8 @@ export default {
           } else {
             console.log("Error", error.message);
           }
+        }).finally(() => {
+          this.loading = false;
         });
     },
     startLab(i) {
@@ -245,6 +249,7 @@ export default {
     },
     deleteLab(i) {
       this.loadingOverlay = true;
+      this.$socket.emit("endLab", this.labs[i].code);
       axios("http://localhost:4000/graphql", {
         method: "POST",
         data: {
@@ -273,9 +278,7 @@ export default {
           if (error.response) {
             this.errorList = error.response.data.errors;
             for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message, {
-                position: "bottom-center",
-              });
+              this.$toast.error(this.errorList[i].message);
             }
           } else {
             console.log("Error", error.message);
@@ -321,9 +324,7 @@ export default {
         if (error.response) {
           this.errorList = error.response.data.errors;
           for (let i = 0; i < this.errorList.length; i++) {
-            this.$toast.error(this.errorList[i].message, {
-              position: "bottom-center",
-            });
+            this.$toast.error(this.errorList[i].message);
           }
         } else {
           console.log("Error", error.message);

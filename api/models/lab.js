@@ -35,6 +35,13 @@ const labSchema = new Schema(
         required: true,
       }
     ],
+    labMembers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'LabMember',
+        required: true,
+      }
+    ],
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'Prof',

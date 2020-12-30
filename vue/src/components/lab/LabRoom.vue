@@ -65,7 +65,7 @@ export default {
   },
   sockets: {
     endLab: function () {
-      this.$toast.warning("The lab has been stopped");
+      this.$toast.warning("The lab has stopped");
       this.$router.push("/login");
     },
   },

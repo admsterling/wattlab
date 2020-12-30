@@ -177,12 +177,13 @@ module.exports = {
       }),
     };
   },
-  getLab: async function ({ code }, req) {
+  joinLab: async function ({ code, username, socketid }, req) {
     const lab = await Lab.findOne({
       code: code,
     })
       .populate('creator')
-      .populate('messages');
+      .populate('messages')
+      .populate('labMembers');
 
     if (!lab) {
       const error = new Error('No lab found!');
@@ -190,20 +191,68 @@ module.exports = {
       throw error;
     }
 
+    let accountExists = false;
+    let labMember;
+    for (let i = 0; i < lab.labMembers.length; i++) {
+      if (lab.labMembers[i].username === username && lab.labMembers[i].inRoom) {
+        const error = new Error('Account already in lab.');
+        error.code = 404;
+        throw error;
+      } else if (lab.labMembers[i].username === username) {
+        labMember = lab.labMembers[i];
+        accountExists = true;
+        break;
+      }
+    }
+    if(!accountExists){
+      labMember = new LabMember({
+        username: username,
+        socketid: socketid,
+        inRoom: true,
+        lab_id: lab._id,
+      });
+      lab.labMembers.push(labMember);
+      await lab.save();
+    } else {
+      labMember.inRoom = true;
+    }
+    await labMember.save();
+
     return {
-      ...lab._doc,
-      _id: lab._doc._id.toString(),
-      createdAt: lab._doc.createdAt.toISOString(),
-      updatedAt: lab._doc.updatedAt.toISOString(),
-      messages: lab._doc.messages.map((m) => {
-        return {
-          ...m._doc,
-          _id: m._id.toString(),
-          createdAt: m.createdAt.toISOString(),
-          updatedAt: m.updatedAt.toISOString(),
-        };
-      }),
-    };
+      lab: {
+        ...lab._doc,
+        _id: lab._doc._id.toString(),
+        createdAt: lab._doc.createdAt.toISOString(),
+        updatedAt: lab._doc.updatedAt.toISOString(),
+        messages: lab._doc.messages.map((m) => {
+          return {
+            ...m._doc,
+            _id: m._id.toString(),
+            createdAt: m.createdAt.toISOString(),
+            updatedAt: m.updatedAt.toISOString(),
+          };
+        }),
+        labMembers: lab._doc.labMembers.map((lm) => {
+          return {
+            ...lm._doc,
+            _id: lm._id.toString(),
+          };
+        }),
+      },
+      memberid: labMember._id.toString(),
+    }
+  },
+  memberLeaveLab: async function ({ id }, req) {
+    const labMember = await LabMember.findById(id);
+    if (!labMember) {
+      const error = new Error('No lab member found.');
+      error.code = 404;
+      throw error;
+    }
+
+    labMember.inRoom = false;
+    await labMember.save();
+    return true;
   },
   startLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
@@ -258,6 +307,13 @@ module.exports = {
       throw error;
     }
 
+    for(let i=0; i<lab.labMembers.length; i++){
+      await LabMember.findByIdAndDelete(lab.labMembers[i]._id);
+    }
+    for(let i=0; i<lab.messages.length; i++){
+      await Message.findByIdAndDelete(lab.messages[i]._id);
+    }
+
     await Lab.findByIdAndRemove(id);
     const prof = await Prof.findById(req.userId);
     prof.labs.pull(id);
@@ -265,7 +321,7 @@ module.exports = {
     return true;
   },
   labExist: async function ({ code }) {
-    const lab = await Lab.findOne({ code: code});
+    const lab = await Lab.findOne({ code: code });
     if (!lab) {
       const error = new Error('No lab found.');
       error.code = 404;

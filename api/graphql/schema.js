@@ -31,6 +31,11 @@ module.exports = buildSchema(`
         labMembers: [LabMember!]
     }
 
+    type joinLabReturnData {
+        lab: Lab!
+        memberid: String!
+    }
+
     type LabList {
         labs: [Lab!]!
     }
@@ -59,6 +64,7 @@ module.exports = buildSchema(`
         _id: ID!
         username: String!
         socketid: String!
+        inRoom: Boolean!
         lab_id: String!
     }
 
@@ -92,6 +98,8 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
+        joinLab(code: String!, username: String!, socketid: String!): joinLabReturnData!
+        memberLeaveLab(id: ID!): Boolean!
         createMessage(messageInput: MessageCreateData): MessageReturn!
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
@@ -101,7 +109,6 @@ module.exports = buildSchema(`
     type RootQuery {
         login(email: String!, password: String!): AuthData!
         getLabs(id: String!): LabList!
-        getLab(code: String!): Lab!
         labExist(code: String!): Boolean!
         prof(id: String!): Prof!
     }

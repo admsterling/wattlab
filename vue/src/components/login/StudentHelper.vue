@@ -58,7 +58,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      labCode: "3A4721",
+      labCode: "CA13BB",
       username: "te13",
       submitted: false,
       validForm: true,
@@ -94,6 +94,7 @@ export default {
             const contextData = {
               code: this.labCode,
               username: this.username,
+              socketid: this.$socket.id,
             };
             this.$store
               .dispatch("socket/setLab", contextData)
