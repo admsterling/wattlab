@@ -224,6 +224,7 @@ export default {
           if (res) {
             lab.status = false;
             this.$toast.success("Lab Ended");
+            this.$socket.emit("endLab", lab.code);
           } else {
             this.$toast.error("Unable to end Lab");
           }

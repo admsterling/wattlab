@@ -20,6 +20,11 @@ io.on('connection', (socket) => {
     socket.leave(labCode);
   });
 
+  socket.on('endLab', (labCode) => {
+    console.log('Ending Lab: ' + labCode)
+    io.to(labCode).emit('endLab');
+  });
+
   socket.on('newGroupMessage', (msg) => {
     io.to(msg.labCode).emit('newGroupMessage', msg);
   });

@@ -95,10 +95,15 @@ export default {
               code: this.labCode,
               username: this.username,
             };
-            this.$store.dispatch("socket/setLab", contextData).then(() => {
-              this.$socket.emit("joinRoom", this.labCode);
-              this.$router.push("/join/" + this.labCode);
-            });
+            this.$store
+              .dispatch("socket/setLab", contextData)
+              .then(() => {
+                this.$socket.emit("joinRoom", this.labCode);
+                this.$router.push("/join/" + this.labCode);
+              })
+              .catch((err) => {
+                this.$toast.error(err.message);
+              });
           })
           .catch((error) => {
             if (error.response) {

@@ -63,6 +63,12 @@ export default {
       labInfo: "socket/labInfo",
     }),
   },
+  sockets: {
+    endLab: function () {
+      this.$toast.warning("The lab has been stopped");
+      this.$router.push("/login");
+    },
+  },
   methods: {
     async leaveLab() {
       await this.$socket.emit("leaveRoom", this.labCode);

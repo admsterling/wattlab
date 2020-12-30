@@ -90,21 +90,26 @@ const actions = {
         },
       },
     }).then((res) => {
-      let accountType;
-      if (rootGetters['prof/isLoggedIn']) {
-        accountType = 'PROFESSOR';
-      } else if (res.data.data.getLab.helpers.includes(context.username)) {
-        accountType = 'HELPER';
-      } else {
-        accountType = 'STUDENT';
-      }
+      if (res.data.data.getLab.status) {
+        let accountType;
+        if (rootGetters['prof/isLoggedIn']) {
+          accountType = 'PROFESSOR';
+        } else if (res.data.data.getLab.helpers.includes(context.username)) {
+          accountType = 'HELPER';
+        } else {
+          accountType = 'STUDENT';
+        }
 
-      const labData = {
-        lab: res.data.data.getLab,
-        username: context.username,
-        accountType: accountType,
-      };
-      commit('SET_LAB', labData);
+        const labData = {
+          lab: res.data.data.getLab,
+          username: context.username,
+          accountType: accountType,
+        };
+        commit('SET_LAB', labData);
+      } else {
+        const error = new Error('Lab has not started');
+        throw error;
+      }
     });
   },
   newGroupMessage({ commit }, context) {
