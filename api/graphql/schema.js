@@ -28,6 +28,7 @@ module.exports = buildSchema(`
         createdAt: String!
         updatedAt: String!
         messages: [Message!]
+        labMembers: [LabMember!]
     }
 
     type LabList {
@@ -52,6 +53,13 @@ module.exports = buildSchema(`
         updatedAt: String!
         lab_id: String!
         labCode: String!
+    }
+    
+    type LabMember {
+        _id: ID!
+        username: String!
+        socketid: String!
+        lab_id: String!
     }
 
     enum accountType {

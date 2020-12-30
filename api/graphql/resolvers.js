@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const Prof = require('../models/prof');
 const Lab = require('../models/lab');
 const Message = require('../models/message');
+const LabMember = require('../models/labmember');
 const { api_key } = require('../../config');
 
 function checkAuth(flag) {
@@ -138,6 +139,7 @@ module.exports = {
       desc: labInput.desc,
       url: labInput.url,
       messages: [],
+      labMembers: [],
       creator: prof,
     });
     const createdLab = await lab.save();
