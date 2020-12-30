@@ -58,7 +58,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      labCode: "CA13BB",
+      labCode: "79A2A2",
       username: "te13",
       submitted: false,
       validForm: true,
@@ -102,8 +102,15 @@ export default {
                 this.$socket.emit("joinRoom", this.labCode);
                 this.$router.push("/join/" + this.labCode);
               })
-              .catch((err) => {
-                this.$toast.error(err.message);
+              .catch((error) => {
+                if (error.response) {
+                  this.errorList = error.response.data.errors;
+                  for (let i = 0; i < this.errorList.length; i++) {
+                    this.$toast.error(this.errorList[i].message);
+                  }
+                } else {
+                  console.log("Error", error.message);
+                }
               });
           })
           .catch((error) => {

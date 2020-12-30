@@ -1,5 +1,3 @@
-// import axios from 'axios';
-
 const getDefaultState = () => {
   return {
     token: undefined,
@@ -18,7 +16,10 @@ const getters = {
     return state.profData.email;
   },
   username: (state) => {
-    return state.profData.email.substring(0, state.profData.email.indexOf("@")) || undefined;
+    if(state.profData.email){
+      return state.profData.email.substring(0, state.profData.email.indexOf("@"))
+    }
+    return undefined;
   }
 };
 
