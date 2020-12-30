@@ -103,6 +103,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -112,13 +113,50 @@ export default {
       labs: [],
     };
   },
+    computed: {
+    ...mapGetters({
+      username: 'prof/username',
+    })
+  },
   methods: {
     goToCreate() {
       this.$router.push("/createLab");
     },
     joinLab(i) {
       let lab = this.labs[i];
-      this.$router.push("/profViewLab/" + lab._id);
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              query labExist($code: String!) {
+                labExist(code: $code)
+              }
+            `,
+          variables: {
+            code: lab.code,
+          },
+        },
+      })
+        .then(() => {
+          const contextData = {
+            code: lab.code,
+            username: this.username,
+          };
+          this.$store.dispatch("socket/setLab", contextData).then(() => {
+            this.$socket.emit("joinRoom", lab.code);
+            this.$router.push("/join/" + lab.code);
+          });
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        });
     },
     startLab(i) {
       this.loadingOverlay = true;

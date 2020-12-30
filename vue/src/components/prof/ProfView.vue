@@ -2,7 +2,7 @@
   <div>
     <NavBar />
     <transition name="slide-right" mode="out-in">
-      <router-view></router-view>
+      <router-view class="pa-4" style="overflow-y: auto; height: calc(100vh - 97px)"></router-view>
     </transition>
   </div>
 </template>

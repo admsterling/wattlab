@@ -8,7 +8,7 @@
 
     <v-footer absolute color="teal">
       <v-spacer></v-spacer>
-      <div class="white--text">&copy; Adam Sterling {{ new Date().getFullYear() }}</div>
+      <div class="white--text">&copy; Adam Sterling {{ new Date().getFullYear() }} - <span class="font-weight-light">as317@hw.ac.uk</span></div>
     </v-footer>
   </v-app>
 </template>

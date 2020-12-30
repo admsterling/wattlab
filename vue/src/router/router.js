@@ -55,6 +55,8 @@ const ifLab = (to, from, next) => {
 const routes = [
   { path: '/', redirect: '/login' },
 
+  { path: '/join/:labCode', beforeEnter: ifLab, component: JoinLabView },
+
   { path: '/login', component: LoginView },
   { path: '/register', component: RegisterView },
 
@@ -73,7 +75,6 @@ const routes = [
     beforeEnter: ifAuth,
     component: LabRoomView,
   },
-  { path: '/join/:labCode', beforeEnter: ifLab, component: JoinLabView},
   { path: '*', component: NotFound },
 ];
 
