@@ -200,11 +200,12 @@ module.exports = {
         throw error;
       } else if (lab.labMembers[i].username === username) {
         labMember = lab.labMembers[i];
+        labMember.socketid = socketid;
         accountExists = true;
         break;
       }
     }
-    if(!accountExists){
+    if (!accountExists) {
       labMember = new LabMember({
         username: username,
         socketid: socketid,
@@ -240,10 +241,22 @@ module.exports = {
         }),
       },
       memberid: labMember._id.toString(),
-    }
+    };
   },
-  memberLeaveLab: async function ({ id }, req) {
-    const labMember = await LabMember.findById(id);
+  memberLeaveLab: async function ({ id }) {
+    let labMember = await LabMember.findById(id);
+    if (!labMember) {
+      const error = new Error('No lab member found.');
+      error.code = 404;
+      throw error;
+    }
+
+    labMember.inRoom = false;
+    await labMember.save();
+    return true;
+  },
+  socketMemberLeaveLab: async function ({ id }) {
+    let labMember = await LabMember.findOne({ socketid: id });
     if (!labMember) {
       const error = new Error('No lab member found.');
       error.code = 404;
@@ -307,10 +320,10 @@ module.exports = {
       throw error;
     }
 
-    for(let i=0; i<lab.labMembers.length; i++){
+    for (let i = 0; i < lab.labMembers.length; i++) {
       await LabMember.findByIdAndDelete(lab.labMembers[i]._id);
     }
-    for(let i=0; i<lab.messages.length; i++){
+    for (let i = 0; i < lab.messages.length; i++) {
       await Message.findByIdAndDelete(lab.messages[i]._id);
     }
 

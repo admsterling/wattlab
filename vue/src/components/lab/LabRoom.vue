@@ -45,6 +45,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+
 export default {
   components: {
     LabInformationComponent: () =>
@@ -61,6 +62,7 @@ export default {
     ...mapGetters({
       labCode: "socket/labCode",
       labInfo: "socket/labInfo",
+      memberid: "socket/member_id",
     }),
   },
   sockets: {
