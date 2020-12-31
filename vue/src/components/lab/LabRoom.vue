@@ -36,7 +36,11 @@
             </v-container>
           </div>
         </v-tab-item>
-        <v-tab-item><div class="tab-item-wrapper"></div></v-tab-item>
+        <v-tab-item>
+          <div class="tab-item-wrapper">
+            <StudentHelpView v-if="this.accountType === 'STUDENT'" />
+          </div>
+        </v-tab-item>
         <v-tab-item><div class="tab-item-wrapper"></div></v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -51,6 +55,7 @@ export default {
     LabInformationComponent: () =>
       import("./components/LabInformationComponent"),
     LabGCWindow: () => import("./components/LabGCWindow"),
+    StudentHelpView: () => import("./HelpViews/Student/StudentView"),
   },
   data() {
     return {
@@ -63,6 +68,7 @@ export default {
       labCode: "socket/labCode",
       labInfo: "socket/labInfo",
       memberid: "socket/member_id",
+      accountType: "socket/accountType"
     }),
   },
   sockets: {

@@ -34,6 +34,10 @@ io.on('connection', (socket) => {
     socket.broadcast.to(msg.labCode).emit('newGroupAlert', msg);
   });
 
+  socket.on('codeChange', (code) => {
+    console.log(code);
+  });
+
   socket.on('disconnect', (data) => {
     axios('http://localhost:4000/graphql', {
       method: 'POST',
@@ -47,9 +51,7 @@ io.on('connection', (socket) => {
           id: socket.id,
         },
       },
-    }).catch(() => {
-      
-    });
+    }).catch(() => {});
     console.log('Socket Disconnected: ' + socket.id);
   });
 });
