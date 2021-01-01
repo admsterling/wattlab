@@ -10,9 +10,33 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <div class="codeArea">
-          <textarea id="editor"> </textarea>
-        </div>
+        <v-container fluid>
+          <v-row no-gutters>
+            <v-col cols="6" class="px-1">
+              <v-select
+                :items="modes"
+                v-model="defaultMode"
+                item-text="name"
+                item-value="mode"
+                label="Select a language:"
+              ></v-select>
+            </v-col>
+            <v-col cols="6" class="px-1">
+              <v-select
+                :items="themes"
+                v-model="defaultTheme"
+                item-text="name"
+                item-value="theme"
+                label="Select a theme:"
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <textarea id="editor"> </textarea>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-col>
 
       <v-col cols="6">
@@ -104,13 +128,20 @@
 import CodeMirror from "codemirror";
 import { mapGetters } from "vuex";
 
+// Code Mirror Lib
 import "codemirror/lib/codemirror.css";
+// Code Mirror Themes
 import "codemirror/theme/eclipse.css";
-
+import "codemirror/theme/abcdef.css";
+import "codemirror/theme/colorforth.css";
+import "codemirror/theme/lucario.css";
+import "codemirror/theme/monokai.css";
+// Code Mirror Modes
 import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/clike/clike";
+// Code Mirror Addons
 import "codemirror/addon/display/fullscreen.js";
 import "codemirror/addon/display/fullscreen.css";
-
 import "codemirror/addon/selection/active-line";
 import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
@@ -118,9 +149,29 @@ import "codemirror/addon/edit/closebrackets";
 export default {
   data() {
     return {
+      modes: [
+        { name: "Java", mode: "text/x-java" },
+        { name: "Java-Script", mode: "text/javascript" },
+      ],
+      defaultMode: {
+        name: "Java",
+        mode: "text/x-java",
+      },
+      themes: [
+        { name: "Abcdef", theme: "abcdef" },
+        { name: "Colorforth", theme: "colorforth" },
+        { name: "Eclipse", theme: "eclipse" },
+        { name: "Lucario", theme: "lucario" },
+        { name: "Monokai", theme: "monokai" },
+      ],
+      defaultTheme: {
+        name: "Eclipse",
+        theme: "eclipse",
+      },
       loadingOverlay: false,
       message: "",
       messageSending: false,
+      messages: [],
       helper: {
         name: "as317",
         socketid: "24234234234",
@@ -129,11 +180,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      messages: "socket/messages",
-      lab_id: "socket/lab_id",
       username: "socket/username",
       accountType: "socket/accountType",
     }),
+  },
+  watch: {
+    defaultMode: (v) => {
+      document.querySelector(".CodeMirror").CodeMirror.setOption("mode", v);
+    },
+    defaultTheme: (v) => {
+      document.querySelector(".CodeMirror").CodeMirror.setOption("theme", v);
+    },
   },
   sockets: {},
   methods: {
@@ -147,11 +204,12 @@ export default {
   },
   mounted() {
     this.scrollToEnd();
-
-    this.editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-      value: "",
-      mode: "javascript",
-      theme: "eclipse",
+    console.log(this.defaultTheme.theme);
+    CodeMirror.fromTextArea(document.getElementById("editor"), {
+      value: "let i = 0;",
+      mode: this.defaultMode.mode,
+      theme: this.defaultTheme.theme,
+      autoRefresh: true,
       tabSize: 2,
       lineWrapping: true,
       lineNumbers: true,
@@ -168,8 +226,7 @@ export default {
         },
       },
     }).on("change", (editor) => {
-      this.value = editor.getValue();
-      this.$socket.emit("codeChange", this.value);
+      this.$socket.emit("codeChange", editor.getValue());
     });
   },
 };
@@ -198,7 +255,7 @@ export default {
 
 <style>
 .CodeMirror {
-  height: calc(100vh - 285px) !important;
+  height: calc(100vh - 380px) !important;
   border: 1px solid grey !important;
 }
 .CodeMirror-fullscreen {
