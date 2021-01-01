@@ -10,33 +10,37 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <v-container fluid>
-          <v-row no-gutters>
-            <v-col cols="6" class="px-1">
-              <v-select
-                :items="modes"
-                v-model="defaultMode"
-                item-text="name"
-                item-value="mode"
-                label="Select a language:"
-              ></v-select>
-            </v-col>
-            <v-col cols="6" class="px-1">
-              <v-select
-                :items="themes"
-                v-model="defaultTheme"
-                item-text="name"
-                item-value="theme"
-                label="Select a theme:"
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
-              <textarea id="editor"> </textarea>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-card>
+          <v-card-text>
+            <v-container fluid>
+              <v-row no-gutters>
+                <v-col cols="6" class="px-1">
+                  <v-select
+                    :items="modes"
+                    v-model="defaultMode"
+                    item-text="name"
+                    item-value="mode"
+                    label="Select a language:"
+                  ></v-select>
+                </v-col>
+                <v-col cols="6" class="px-1">
+                  <v-select
+                    :items="themes"
+                    v-model="defaultTheme"
+                    item-text="name"
+                    item-value="theme"
+                    label="Select a theme:"
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <textarea id="editor"> </textarea>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
       </v-col>
 
       <v-col cols="6">
@@ -228,6 +232,17 @@ export default {
     }).on("change", (editor) => {
       this.$socket.emit("codeChange", editor.getValue());
     });
+
+    document
+      .querySelector(".CodeMirror")
+      .CodeMirror.setOption(
+        "value",
+        "// Select the editor and use F11 to toggle Full Screen Editing\n// You can also drag and drop files\n"
+      );
+    document.querySelector(".CodeMirror").CodeMirror.focus();
+    document
+      .querySelector(".CodeMirror")
+      .CodeMirror.setCursor({ line: 3, ch: 0 });
   },
 };
 </script>
@@ -255,7 +270,7 @@ export default {
 
 <style>
 .CodeMirror {
-  height: calc(100vh - 380px) !important;
+  height: calc(100vh - 440px) !important;
   border: 1px solid grey !important;
 }
 .CodeMirror-fullscreen {
