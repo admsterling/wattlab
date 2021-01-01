@@ -1,18 +1,17 @@
 <template>
-  <v-container>
-    <v-row class="mx-4">
+  <v-container fluid class="px-4">
+    <v-row>
       <v-col cols="12" class="rounded teal lighten-2" justify="center">
         <span class="white--text text-h5">
-          You are chatting with: {{ helper.name }}</span
-        >
+          You are being helped by: {{ helper.name }}
+        </span>
         <v-btn class="float-right"> Close Help </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="6">
         <div class="codeArea">
-          <textarea id="editor">
-          </textarea>
+          <textarea id="editor"> </textarea>
         </div>
       </v-col>
 
@@ -105,14 +104,16 @@
 import CodeMirror from "codemirror";
 import { mapGetters } from "vuex";
 
-require("codemirror/mode/xml/xml");
-require("codemirror/mode/javascript/javascript");
-require("codemirror/mode/css/css");
-require("codemirror/mode/htmlmixed/htmlmixed");
-import "codemirror/addon/display/fullscreen";
-
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/eclipse.css";
+
+import "codemirror/mode/javascript/javascript";
+import "codemirror/addon/display/fullscreen.js";
+import "codemirror/addon/display/fullscreen.css";
+
+import "codemirror/addon/selection/active-line";
+import "codemirror/addon/edit/matchbrackets";
+import "codemirror/addon/edit/closebrackets";
 
 export default {
   data() {
@@ -149,20 +150,26 @@ export default {
 
     this.editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
       value: "",
-      tabSize: 2,
-      lineNumbers: true,
-      mode: "text/javascript",
+      mode: "javascript",
       theme: "eclipse",
+      tabSize: 2,
+      lineWrapping: true,
+      lineNumbers: true,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      fullScreen: false,
       extraKeys: {
         F11: function (cm) {
           cm.setOption("fullScreen", !cm.getOption("fullScreen"));
         },
         Esc: function (cm) {
-          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+          cm.setOption("fullScreen", false);
         },
       },
     }).on("change", (editor) => {
-      this.$socket.emit("codeChange", editor.getValue());
+      this.value = editor.getValue();
+      this.$socket.emit("codeChange", this.value);
     });
   },
 };
@@ -193,5 +200,9 @@ export default {
 .CodeMirror {
   height: calc(100vh - 285px) !important;
   border: 1px solid grey !important;
+}
+.CodeMirror-fullscreen {
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>
