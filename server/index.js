@@ -35,7 +35,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('getHelp', (queData) => {
-    console.log("get help");
     axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
@@ -57,8 +56,8 @@ io.on('connection', (socket) => {
         console.log(err.errors[0].message);
       });
   });
+  
   socket.on('cancelHelp', (queData) => {
-    console.log("cancel help");
     axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
@@ -94,7 +93,9 @@ io.on('connection', (socket) => {
           id: socket.id,
         },
       },
-    }).catch(() => {});
+    }).catch((err) => {
+      console.log(err.errors[0].message);
+    });
     console.log('Socket Disconnected: ' + socket.id);
   });
 });
