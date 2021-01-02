@@ -108,6 +108,7 @@ export default {
     ...mapGetters({
       messages: "socket/messages",
       lab_id: "socket/lab_id",
+      labCode: "socket/labCode",
       username: "socket/username",
       accountType: "socket/accountType",
     }),
@@ -179,7 +180,7 @@ export default {
       if (this.message.length > 0) {
         this.messageSending = true;
         const alert_data = {
-          lab_id: this.lab_id,
+          labCode: this.labCode,
           message: this.message,
           options: {
             position: "top-right",

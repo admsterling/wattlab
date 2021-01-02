@@ -65,10 +65,12 @@ export default {
   },
   computed: {
     ...mapGetters({
+      queWaiting: "socket/queWaiting",
       labCode: "socket/labCode",
+      lab_id: "socket/lab_id",
       labInfo: "socket/labInfo",
       memberid: "socket/member_id",
-      accountType: "socket/accountType"
+      accountType: "socket/accountType",
     }),
   },
   sockets: {
@@ -80,6 +82,15 @@ export default {
   methods: {
     async leaveLab() {
       await this.$socket.emit("leaveRoom", this.labCode);
+      if (this.queWaiting) {
+        const queData = {
+          lab_id: this.lab_id,
+          labCode: this.labCode,
+          socketid: this.$socket.id,
+        };
+        console.log(queData);
+        await this.$socket.emit("cancelHelp", queData);
+      }
       this.$store.dispatch("socket/resetState").then(() => {
         this.$router.push("/");
       });

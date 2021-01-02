@@ -1,9 +1,17 @@
 <template>
-  <StartQue v-if="show === 'start_que'" />
-  <GettingHelp v-else-if="show === 'getting_help'"/>
+  <v-container>
+    <v-row no-gutters>
+      <v-col cols="12">
+        <StartQue v-if="show === 'start_que'" ref="queComponent" />
+        <GettingHelp v-else-if="show === 'getting_help'" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   components: {
     StartQue: () => import("./components/StartQue"),
@@ -11,8 +19,13 @@ export default {
   },
   data() {
     return {
-      show: "getting_help",
+      show: "start_que",
     };
+  },
+  computed: {
+    ...mapGetters({
+      lab_id: "socket/lab_id",
+    }),
   },
 };
 </script>

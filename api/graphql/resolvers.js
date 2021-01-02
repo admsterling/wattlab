@@ -140,6 +140,7 @@ module.exports = {
       url: labInput.url,
       messages: [],
       labMembers: [],
+      socketIDQue: [],
       creator: prof,
     });
     const createdLab = await lab.save();
@@ -283,6 +284,7 @@ module.exports = {
     }
 
     lab.status = true;
+    lab.socketIDQue = [];
     await lab.save();
     return true;
   },
@@ -302,6 +304,7 @@ module.exports = {
     }
 
     lab.status = false;
+    lab.socketIDQue = [];
     await lab.save();
     return true;
   },
@@ -374,5 +377,62 @@ module.exports = {
       updatedAt: message._doc.updatedAt.toISOString(),
       labCode: lab.code,
     };
+  },
+  getQue: async function ({ lab_id }) {
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    return lab.socketIDQue;
+  },
+  joinQue: async function ({ lab_id, socketid }) {
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    lab.socketIDQue.push(socketid);
+    await lab.save();
+
+    return lab.socketIDQue;
+  },
+  leaveQue: async function ({ lab_id, socketid }) {
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    lab.socketIDQue.splice(lab.socketIDQue.indexOf(socketid), 1);
+    await lab.save();
+
+    return lab.socketIDQue;
+  },
+  getFirstInQueAndShift: async function ({ lab_id }){
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+    if (!lab.socketIDQue.length > 0) {
+      const error = new Error('Que empty');
+      error.code = 404;
+      throw error;
+    }
+
+    const socketid = lab.socketIDQue.shift();
+    await lab.save();
+    return socketid;
   },
 };

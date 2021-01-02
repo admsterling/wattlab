@@ -3,6 +3,7 @@ import axios from 'axios';
 const getDefaultState = () => {
   return {
     joinedLabFlag: false,
+    queWaiting: false,
     lab: {},
     accountType: null,
     username: null,
@@ -41,6 +42,9 @@ const getters = {
   joinedLabFlag: (state) => {
     return state.joinedLabFlag;
   },
+  queWaiting: (state) => {
+    return state.queWaiting;
+  }
 };
 
 const mutations = {
@@ -57,6 +61,12 @@ const mutations = {
   NEW_GROUP_MESSAGE(state, payload) {
     state.lab.messages.push(payload);
   },
+  JOIN_QUE(state) {
+    state.queWaiting = true;
+  },
+  LEAVE_QUE(state) {
+    state.queWaiting = false;
+  }
 };
 
 const actions = {
@@ -143,6 +153,12 @@ const actions = {
   },
   newGroupMessage({ commit }, context) {
     commit('NEW_GROUP_MESSAGE', context);
+  },
+  joinQue({ commit }) {
+    commit("JOIN_QUE");
+  },
+  leaveQue({ commit }) {
+    commit("LEAVE_QUE");
   },
 };
 

@@ -42,6 +42,12 @@ const labSchema = new Schema(
         required: true,
       }
     ],
+    socketIDQue: [
+      {
+        type: String,
+        required: true,
+      }
+    ],
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'Prof',

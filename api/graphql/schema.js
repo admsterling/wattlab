@@ -29,6 +29,7 @@ module.exports = buildSchema(`
         updatedAt: String!
         messages: [Message!]
         labMembers: [LabMember!]
+        socketIDQue: [String]
     }
 
     type joinLabReturnData {
@@ -105,12 +106,16 @@ module.exports = buildSchema(`
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!
+        joinQue(lab_id: ID!, socketid: String!): [String!]
+        leaveQue(lab_id: ID!, socketid: String!): [String!]
+        getFirstInQueAndShift(lab_id : ID!): String!
     }
 
     type RootQuery {
         login(email: String!, password: String!): AuthData!
         getLabs(id: String!): LabList!
         labExist(code: String!): Boolean!
+        getQue(lab_id: ID!): [String]!
         prof(id: String!): Prof!
     }
 
