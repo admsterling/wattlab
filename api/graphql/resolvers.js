@@ -437,8 +437,8 @@ module.exports = {
       throw error;
     }
 
-    const socketid = lab.socketIDQue.shift();
+    lab.socketIDQue.shift();
     await lab.save();
-    return socketid;
+    return lab.socketIDQue;
   },
 };

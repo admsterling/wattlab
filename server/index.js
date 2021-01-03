@@ -80,9 +80,42 @@ io.on('connection', (socket) => {
       });
   });
 
+  socket.on('updateQue', (queData) => {
+    axios('http://localhost:4000/graphql', {
+      method: 'POST',
+      data: {
+        query: `
+              mutation getFirstInQueAndShift($lab_id: ID!){
+                getFirstInQueAndShift(lab_id: $lab_id)
+              }
+          `,
+        variables: {
+          lab_id: queData.lab_id,
+        },
+      },
+    })
+      .then((res) => {
+        io.to(queData.labCode).emit(
+          'updateQue',
+          res.data.data.getFirstInQueAndShift
+        );
+      })
+      .catch((err) => {
+        console.log(err.errors[0].message);
+      });
+  });
+
   socket.on('startHelp', (socketID) => {
     socket.broadcast.to(socketID).emit('startHelp', socket.id);
   });
+
+  socket.on('updateCodeBlock', (codeData) => {
+    console.log(codeData);
+    socket.broadcast
+      .to(codeData.reciever)
+      .emit('updateCodeBlock', codeData.code);
+  });
+
   socket.on('stopHelp', (socketID) => {
     socket.broadcast.to(socketID).emit('stopHelp');
   });

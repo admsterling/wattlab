@@ -9,6 +9,7 @@
             :rules="emailRules"
             :loading="submitted"
             :disabled="submitted"
+            @keyup.enter="submit"
           ></v-text-field>
         </v-row>
         <v-row>
@@ -22,6 +23,7 @@
             hint="Minimum 6 characters"
             :loading="submitted"
             :disabled="submitted"
+            @keyup.enter="submit"
           ></v-text-field>
         </v-row>
         <v-row>

@@ -49,7 +49,7 @@
             id="chatWindow"
             color="grey lighten-4"
             class="rounded border"
-            style="overflow-y: auto; height: calc(100vh - 350px)"
+            style="overflow-y: auto; height: calc(100vh - 370px)"
           >
             <v-container fluid>
               <v-row
@@ -201,6 +201,9 @@ export default {
     stopHelp: function () {
       this.$store.dispatch("socket/stopHelp");
     },
+    updateCodeBlock: function (data) {
+      document.querySelector(".CodeMirror").CodeMirror.setOption("value", data);
+    },
   },
   methods: {
     scrollToEnd() {
@@ -217,7 +220,7 @@ export default {
   },
   mounted() {
     this.scrollToEnd();
-    console.log(this.defaultTheme.theme);
+
     CodeMirror.fromTextArea(document.getElementById("editor"), {
       value: "let i = 0;",
       mode: this.defaultMode.mode,
@@ -230,6 +233,7 @@ export default {
       matchBrackets: true,
       styleActiveLine: true,
       fullScreen: false,
+      dragDrop: false,
       extraKeys: {
         F11: function (cm) {
           cm.setOption("fullScreen", !cm.getOption("fullScreen"));
@@ -238,15 +242,19 @@ export default {
           cm.setOption("fullScreen", false);
         },
       },
-    }).on("change", (editor) => {
-      this.$socket.emit("codeChange", editor.getValue());
+    }).on("keyup", (editor) => {
+      let codeData = {
+        reciever: this.gettingSupport.reciever,
+        code: editor.getValue(),
+      };
+      this.$socket.emit("updateCodeBlock", codeData);
     });
 
     document
       .querySelector(".CodeMirror")
       .CodeMirror.setOption(
         "value",
-        "// Select the editor and use F11 to toggle Full Screen Editing\n// You can also drag and drop files\n"
+        "// Select the editor and use F11 to toggle Full Screen Editing\n"
       );
     document.querySelector(".CodeMirror").CodeMirror.focus();
     document
@@ -279,7 +287,7 @@ export default {
 
 <style>
 .CodeMirror {
-  height: calc(100vh - 440px) !important;
+  height: calc(100vh - 455px) !important;
   border: 1px solid grey !important;
 }
 .CodeMirror-fullscreen {

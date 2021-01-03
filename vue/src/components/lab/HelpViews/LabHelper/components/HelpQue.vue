@@ -57,9 +57,15 @@ export default {
   methods: {
     startHelp() {
       this.waiting = true;
-      const reciever = this.que[0];
+      const reciever = this.que.shift();
+      const queData = {
+        lab_id: this.lab_id,
+        labCode: this.labCode,
+
+      };
       this.$store.dispatch("socket/startHelp", reciever).then(() => {
         this.$socket.emit("startHelp", reciever);
+        this.$socket.emit("updateQue", queData);
       });
     },
   },

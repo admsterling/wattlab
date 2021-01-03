@@ -108,7 +108,7 @@ module.exports = buildSchema(`
         deleteLab(id: ID!): Boolean!
         joinQue(lab_id: ID!, socketid: String!): [String!]
         leaveQue(lab_id: ID!, socketid: String!): [String!]
-        getFirstInQueAndShift(lab_id : ID!): String!
+        getFirstInQueAndShift(lab_id : ID!): [String!]
     }
 
     type RootQuery {

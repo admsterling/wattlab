@@ -18,6 +18,7 @@
             clearable
             :loading="submitted"
             :disabled="submitted"
+            @keyup.enter="submit"
           ></v-text-field>
         </v-row>
         <v-row>
@@ -33,6 +34,7 @@
             clearable
             :loading="submitted"
             :disabled="submitted"
+            @keyup.enter="submit"
           ></v-text-field>
         </v-row>
         <v-row align="center">
@@ -58,7 +60,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      labCode: "3DCB68",
+      labCode: "4AA71C",
       username: "te13",
       submitted: false,
       validForm: true,

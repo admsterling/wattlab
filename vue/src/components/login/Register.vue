@@ -22,6 +22,7 @@
                       :rules="nameRules"
                       :loading="submitted"
                       :disabled="submitted"
+                      @keyup.enter="submit"
                     ></v-text-field>
                   </v-col>
                   <v-col>
@@ -31,6 +32,7 @@
                       :rules="nameRules"
                       :loading="submitted"
                       :disabled="submitted"
+                      @keyup.enter="submit"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -42,6 +44,7 @@
                       :rules="emailRules"
                       :loading="submitted"
                       :disabled="submitted"
+                      @keyup.enter="submit"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -57,6 +60,7 @@
                       hint="Minimum 6 characters"
                       :loading="submitted"
                       :disabled="submitted"
+                      @keyup.enter="submit"
                     ></v-text-field>
                   </v-col>
                   <v-col>
@@ -70,6 +74,7 @@
                       hint="Minimum 6 characters"
                       :loading="submitted"
                       :disabled="submitted"
+                      @keyup.enter="submit"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -175,9 +180,7 @@ export default {
             if (error.response) {
               this.errorList = error.response.data.errors;
               for (let i = 0; i < this.errorList.length; i++) {
-                this.$toast.error(this.errorList[i].message, {
-                  position: "bottom-center",
-                });
+                this.$toast.error(this.errorList[i].message);
               }
             } else {
               console.log("Error", error.message);
