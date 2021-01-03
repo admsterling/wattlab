@@ -257,16 +257,22 @@ module.exports = {
     return true;
   },
   socketMemberLeaveLab: async function ({ id }) {
-    let labMember = await LabMember.findOne({ socketid: id });
+    const labMember = await LabMember.findOne({ socketid: id });
     if (!labMember) {
       const error = new Error('No lab member found.');
       error.code = 404;
       throw error;
     }
-
     labMember.inRoom = false;
     await labMember.save();
-    return true;
+
+    const lab = await Lab.findOne(labMember.lab_id);
+    return {
+      ...lab._doc,
+      _id: lab._doc._id.toString(),
+      createdAt: lab._doc.createdAt.toISOString(),
+      updatedAt: lab._doc.updatedAt.toISOString(),
+    };
   },
   startLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
@@ -417,7 +423,7 @@ module.exports = {
 
     return lab.socketIDQue;
   },
-  getFirstInQueAndShift: async function ({ lab_id }){
+  getFirstInQueAndShift: async function ({ lab_id }) {
     const lab = await Lab.findById(lab_id);
 
     if (!lab) {

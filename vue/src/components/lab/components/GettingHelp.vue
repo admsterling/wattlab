@@ -5,7 +5,7 @@
         <span class="white--text text-h5">
           You are being helped by: {{ helper.name }}
         </span>
-        <v-btn class="float-right"> Close Help </v-btn>
+        <v-btn class="float-right" @click="closeHelp"> Close Help </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -186,6 +186,7 @@ export default {
     ...mapGetters({
       username: "socket/username",
       accountType: "socket/accountType",
+      gettingSupport: "socket/gettingSupport",
     }),
   },
   watch: {
@@ -196,7 +197,11 @@ export default {
       document.querySelector(".CodeMirror").CodeMirror.setOption("theme", v);
     },
   },
-  sockets: {},
+  sockets: {
+    stopHelp: function () {
+      this.$store.dispatch("socket/stopHelp");
+    },
+  },
   methods: {
     scrollToEnd() {
       let container = this.$el.querySelector("#chatWindow");
@@ -204,6 +209,10 @@ export default {
     },
     sendMessage() {
       this.messageSending = true;
+    },
+    closeHelp() {
+      this.$socket.emit("stopHelp", this.gettingSupport.reciever);
+      this.$store.dispatch("socket/stopHelp");
     },
   },
   mounted() {

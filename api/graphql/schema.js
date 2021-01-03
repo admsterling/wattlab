@@ -101,7 +101,7 @@ module.exports = buildSchema(`
         createLab(labInput: LabCreateData): Lab!
         joinLab(code: String!, username: String!, socketid: String!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
-        socketMemberLeaveLab(id: String!): Boolean!
+        socketMemberLeaveLab(id: String!): Lab!
         createMessage(messageInput: MessageCreateData): MessageReturn!
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!

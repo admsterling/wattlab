@@ -11,17 +11,13 @@
     </v-row>
     <v-row>
       <v-col cols="12" align="center" justify="center">
-        <v-btn @click="getHelp" :loading="waiting" :disabled="waiting"
-          >Get Help</v-btn
+        <v-btn
+          v-if="this.queLength > 0"
+          @click="startHelp"
+          :loading="waiting"
+          :disabled="waiting"
+          >Help Student</v-btn
         >
-      </v-col>
-    </v-row>
-    <v-row v-if="waiting">
-      <v-col cols="12" align="center" justify="center">
-        {{ formattedElapsedTime }}<br />
-        <v-btn dark class="deep-orange lighten-2" @click="cancelHelp">
-          <v-icon class="mr-1">mdi-cancel</v-icon>Cancel
-        </v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -59,31 +55,11 @@ export default {
     },
   },
   methods: {
-    getHelp() {
+    startHelp() {
       this.waiting = true;
-      this.timer = setInterval(() => {
-        this.elapsedTime += 1000;
-      }, 1000);
-      const queData = {
-        lab_id: this.lab_id,
-        labCode: this.labCode,
-        socketid: this.$socket.id,
-      };
-      this.$store.dispatch("socket/joinQue").then(() => {
-        this.$socket.emit("getHelp", queData);
-      });
-    },
-    cancelHelp() {
-      this.waiting = false;
-      const queData = {
-        lab_id: this.lab_id,
-        labCode: this.labCode,
-        socketid: this.$socket.id,
-      };
-      this.$store.dispatch("socket/leaveQue").then(() => {
-        this.$socket.emit("cancelHelp", queData);
-        clearInterval(this.timer);
-        this.elapsedTime = 0;
+      const reciever = this.que[0];
+      this.$store.dispatch("socket/startHelp", reciever).then(() => {
+        this.$socket.emit("startHelp", reciever);
       });
     },
   },
@@ -91,9 +67,6 @@ export default {
     updateQue: function (data) {
       this.que = data;
     },
-    startHelp: function (data) {
-      this.$store.dispatch("socket/startHelp", data);
-    }
   },
   mounted() {
     axios("http://localhost:4000/graphql", {

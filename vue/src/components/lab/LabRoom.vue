@@ -39,6 +39,7 @@
         <v-tab-item>
           <div class="tab-item-wrapper">
             <StudentHelpView v-if="this.accountType === 'STUDENT'" />
+            <LabHelperView v-else-if="this.accountType === 'HELPER'" />
           </div>
         </v-tab-item>
         <v-tab-item><div class="tab-item-wrapper"></div></v-tab-item>
@@ -56,6 +57,7 @@ export default {
       import("./components/LabInformationComponent"),
     LabGCWindow: () => import("./components/LabGCWindow"),
     StudentHelpView: () => import("./HelpViews/Student/StudentView"),
+    LabHelperView: () => import("./HelpViews/LabHelper/LabHelperView"),
   },
   data() {
     return {

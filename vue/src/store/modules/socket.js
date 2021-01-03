@@ -8,6 +8,10 @@ const getDefaultState = () => {
     accountType: null,
     username: null,
     member_id: null,
+    gettingSupport: {
+      flag: false,
+      reciever: null,
+    },
   };
 };
 
@@ -44,7 +48,10 @@ const getters = {
   },
   queWaiting: (state) => {
     return state.queWaiting;
-  }
+  },
+  gettingSupport: (state) => {
+    return state.gettingSupport;
+  },
 };
 
 const mutations = {
@@ -66,7 +73,15 @@ const mutations = {
   },
   LEAVE_QUE(state) {
     state.queWaiting = false;
-  }
+  },
+  START_HELP(state, payload) {
+    state.gettingSupport.reciever = payload;
+    state.gettingSupport.flag = true;
+  },
+  STOP_HELP(state) {
+    state.gettingSupport.reciever = null;
+    state.gettingSupport.flag = false;
+  },
 };
 
 const actions = {
@@ -132,7 +147,9 @@ const actions = {
         let accountType;
         if (rootGetters['prof/isLoggedIn']) {
           accountType = 'PROFESSOR';
-        } else if (res.data.data.joinLab.lab.helpers.includes(context.username)) {
+        } else if (
+          res.data.data.joinLab.lab.helpers.includes(context.username)
+        ) {
           accountType = 'HELPER';
         } else {
           accountType = 'STUDENT';
@@ -155,10 +172,16 @@ const actions = {
     commit('NEW_GROUP_MESSAGE', context);
   },
   joinQue({ commit }) {
-    commit("JOIN_QUE");
+    commit('JOIN_QUE');
   },
   leaveQue({ commit }) {
-    commit("LEAVE_QUE");
+    commit('LEAVE_QUE');
+  },
+  startHelp({ commit }, context) {
+    commit('START_HELP', context);
+  },
+  stopHelp({ commit }) {
+    commit('STOP_HELP');
   },
 };
 

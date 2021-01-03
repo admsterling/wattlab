@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
         console.log(err.errors[0].message);
       });
   });
-  
+
   socket.on('cancelHelp', (queData) => {
     axios('http://localhost:4000/graphql', {
       method: 'POST',
@@ -80,22 +80,61 @@ io.on('connection', (socket) => {
       });
   });
 
+  socket.on('startHelp', (socketID) => {
+    socket.broadcast.to(socketID).emit('startHelp', socket.id);
+  });
+  socket.on('stopHelp', (socketID) => {
+    socket.broadcast.to(socketID).emit('stopHelp');
+  });
+
   socket.on('disconnect', () => {
     axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
         query: `
               mutation socketMemberLeaveLab($id: String!){
-                socketMemberLeaveLab(id: $id)
+                socketMemberLeaveLab(id: $id){
+                  _id
+                  code
+                  socketIDQue
+                }
               }
           `,
         variables: {
           id: socket.id,
         },
       },
-    }).catch((err) => {
-      console.log(err.errors[0].message);
-    });
+    })
+      .then((res) => {
+        if (
+          res.data.data.socketMemberLeaveLab.socketIDQue.includes(socket.id)
+        ) {
+          const queData = {
+            lab_id: res.data.data.socketMemberLeaveLab._id,
+            labCode: res.data.data.socketMemberLeaveLab.code,
+            socketid: socket.id,
+          };
+          axios('http://localhost:4000/graphql', {
+            method: 'POST',
+            data: {
+              query: `
+              mutation leaveQue($lab_id: ID!, $socketid: String!){
+                leaveQue(lab_id: $lab_id, socketid: $socketid)
+              }
+          `,
+              variables: {
+                lab_id: queData.lab_id,
+                socketid: queData.socketid,
+              },
+            },
+          })
+            .then((res) => {
+              io.to(queData.labCode).emit('updateQue', res.data.data.leaveQue);
+            })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
     console.log('Socket Disconnected: ' + socket.id);
   });
 });
