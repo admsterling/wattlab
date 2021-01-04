@@ -44,6 +44,9 @@ export default {
     ...mapGetters({
       lab_id: "socket/lab_id",
       labCode: "socket/labCode",
+      username: "socket/username",
+      privateChat: "socket/privateChat",
+      gettingSupport: "socket/gettingSupport"
     }),
     formattedElapsedTime() {
       const date = new Date(null);
@@ -70,7 +73,7 @@ export default {
         socketid: this.$socket.id,
       };
       this.$store.dispatch("socket/joinQue").then(() => {
-        this.$socket.emit("getHelp", queData);
+        this.$socket.emit("joinQue", queData);
       });
     },
     cancelHelp() {
@@ -81,7 +84,7 @@ export default {
         socketid: this.$socket.id,
       };
       this.$store.dispatch("socket/leaveQue").then(() => {
-        this.$socket.emit("cancelHelp", queData);
+        this.$socket.emit("leaveQue", queData);
         clearInterval(this.timer);
         this.elapsedTime = 0;
       });
@@ -92,8 +95,15 @@ export default {
       this.que = data;
     },
     startHelp: function (data) {
-      this.$store.dispatch("socket/startHelp", data);
-    }
+      this.$store.dispatch("socket/privateChatInfo", data).then(() => {
+        const helperInfo = {
+          sendTo: this.gettingSupport.reciever,
+          reciever: this.$socket.id,
+          privateChat: this.privateChat,
+        };
+        this.$socket.emit("startHelper", helperInfo);
+      });
+    },
   },
   mounted() {
     axios("http://localhost:4000/graphql", {

@@ -53,7 +53,7 @@
           >
             <v-container fluid>
               <v-row
-                v-for="(msg, i) in messages"
+                v-for="(msg, i) in privateChatMessages"
                 :key="i"
                 class="my-2"
                 align="center"
@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import CodeMirror from "codemirror";
 import { mapGetters } from "vuex";
 
@@ -185,8 +186,11 @@ export default {
   computed: {
     ...mapGetters({
       username: "socket/username",
+      lab_id: "socket/lab_id",
       accountType: "socket/accountType",
       gettingSupport: "socket/gettingSupport",
+      privateChat: "socket/privateChat",
+      privateChatMessages: "socket/privateChatMessages",
     }),
   },
   watch: {
@@ -204,6 +208,9 @@ export default {
     updateCodeBlock: function (data) {
       document.querySelector(".CodeMirror").CodeMirror.setOption("value", data);
     },
+    newPrivateMessage: function (data) {
+      this.$store.dispatch("socket/addPrivateMessage", data);
+    },
   },
   methods: {
     scrollToEnd() {
@@ -212,6 +219,57 @@ export default {
     },
     sendMessage() {
       this.messageSending = true;
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation createPrivateMessage($sender: String!, $accountType: accountType!, $text: String!, $private_id: String!){
+                createPrivateMessage(privateMessageInput: {
+                    sender: $sender
+                    accountType: $accountType
+                    text: $text
+                    private_id: $private_id
+                }) {
+                    sender
+                    accountType
+                    text
+                    createdAt
+                }
+              }
+            `,
+          variables: {
+            sender: this.username,
+            accountType: this.accountType,
+            text: this.message,
+            private_id: this.privateChat._id,
+          },
+        },
+      })
+        .then((res) => {
+          this.message = "";
+          const messageData = res.data.data.createPrivateMessage;
+          const socketData = {
+            reciever: this.gettingSupport.reciever,
+            message: messageData,
+          };
+          this.$store.dispatch("socket/addPrivateMessage", messageData);
+          this.$socket.emit("newPrivateMessage", socketData);
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.messageSending = false;
+        });
+      // this.$store.dispatch("socket/addPrivateMessage", messageData);
+      // this.$socket.emit("privateMessage", socketData);
     },
     closeHelp() {
       this.$socket.emit("stopHelp", this.gettingSupport.reciever);

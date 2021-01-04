@@ -12,6 +12,7 @@ const getDefaultState = () => {
       flag: false,
       reciever: null,
     },
+    privateChat: {},
   };
 };
 
@@ -52,6 +53,12 @@ const getters = {
   gettingSupport: (state) => {
     return state.gettingSupport;
   },
+  privateChat: (state) => {
+    return state.privateChat;
+  },
+  privateChatMessages: (state) => {
+    return state.privateChat.messages;
+  },
 };
 
 const mutations = {
@@ -81,6 +88,13 @@ const mutations = {
   STOP_HELP(state) {
     state.gettingSupport.reciever = null;
     state.gettingSupport.flag = false;
+    state.privateChat = {};
+  },
+  START_PRIVATE_CHAT(state, payload) {
+    state.privateChat = payload;
+  },
+  ADD_PRIVATE_MESSAGE(state, payload) {
+    state.privateChat.messages.push(payload);
   },
 };
 
@@ -177,11 +191,42 @@ const actions = {
   leaveQue({ commit }) {
     commit('LEAVE_QUE');
   },
-  startHelp({ commit }, context) {
-    commit('START_HELP', context);
-  },
   stopHelp({ commit }) {
     commit('STOP_HELP');
+  },
+  privateChatInfo({ commit, rootGetters }, context) {
+    return axios('http://localhost:4000/graphql', {
+      method: 'POST',
+      data: {
+        query: `
+              mutation createPrivateChat($lab_id: ID!, $student: String!, $staff: String!){
+                createPrivateChat(lab_id: $lab_id, student: $student, staff: $staff){
+                  _id
+                  student
+                  staff
+                  messages {
+                    _id
+                  }
+                }
+              }
+            `,
+        variables: {
+          lab_id: rootGetters['socket/lab_id'],
+          student: rootGetters['socket/username'],
+          staff: context.staff,
+        },
+      },
+    }).then((res) => {
+      commit('START_HELP', context.reciever);
+      commit('START_PRIVATE_CHAT', res.data.data.createPrivateChat);
+    });
+  },
+  setprivateChatInfo({ commit }, context) {
+    commit('START_HELP', context.reciever);
+    commit('START_PRIVATE_CHAT', context.privateChat);
+  },
+  addPrivateMessage({ commit }, context) {
+    commit('ADD_PRIVATE_MESSAGE', context);
   },
 };
 

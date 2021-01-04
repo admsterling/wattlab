@@ -35,6 +35,13 @@ const labSchema = new Schema(
         required: true,
       }
     ],
+    privateChats: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'PrivateMessage',
+        required: true,
+      }
+    ],
     labMembers: [
       {
         type: Schema.Types.ObjectId,

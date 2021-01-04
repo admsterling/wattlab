@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
     socket.broadcast.to(msg.labCode).emit('newGroupAlert', msg);
   });
 
-  socket.on('getHelp', (queData) => {
+  socket.on('joinQue', (queData) => {
     axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
       });
   });
 
-  socket.on('cancelHelp', (queData) => {
+  socket.on('leaveQue', (queData) => {
     axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
@@ -105,12 +105,19 @@ io.on('connection', (socket) => {
       });
   });
 
-  socket.on('startHelp', (socketID) => {
-    socket.broadcast.to(socketID).emit('startHelp', socket.id);
+  socket.on('startHelp', (recieverData) => {
+    socket.broadcast.to(recieverData.sendTo).emit('startHelp', recieverData);
+  });
+
+  socket.on('startHelper', (helperInfo) => {
+    socket.broadcast.to(helperInfo.sendTo).emit('startHelper', helperInfo);
+  });
+
+  socket.on('newPrivateMessage', (socketData) => {
+    io.to(socketData.reciever).emit('newPrivateMessage', socketData.message);
   });
 
   socket.on('updateCodeBlock', (codeData) => {
-    console.log(codeData);
     socket.broadcast
       .to(codeData.reciever)
       .emit('updateCodeBlock', codeData.code);

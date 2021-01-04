@@ -40,6 +40,7 @@ export default {
     ...mapGetters({
       lab_id: "socket/lab_id",
       labCode: "socket/labCode",
+      username: "socket/username",
     }),
     formattedElapsedTime() {
       const date = new Date(null);
@@ -61,17 +62,22 @@ export default {
       const queData = {
         lab_id: this.lab_id,
         labCode: this.labCode,
-
       };
-      this.$store.dispatch("socket/startHelp", reciever).then(() => {
-        this.$socket.emit("startHelp", reciever);
-        this.$socket.emit("updateQue", queData);
-      });
+      const recieverData = {
+        sendTo: reciever,
+        reciever: this.$socket.id,
+        staff: this.username,
+      };
+      this.$socket.emit("updateQue", queData);
+      this.$socket.emit("startHelp", recieverData);
     },
   },
   sockets: {
     updateQue: function (data) {
       this.que = data;
+    },
+    startHelper: function (data) {
+      this.$store.dispatch("socket/setprivateChatInfo", data);
     },
   },
   mounted() {

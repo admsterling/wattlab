@@ -29,6 +29,7 @@ module.exports = buildSchema(`
         updatedAt: String!
         messages: [Message!]
         labMembers: [LabMember!]
+        privateChats: [Message!]
         socketIDQue: [String]
     }
 
@@ -69,6 +70,14 @@ module.exports = buildSchema(`
         lab_id: String!
     }
 
+    type PrivateChat {
+        _id: ID!
+        student: String!
+        staff: String!
+        messages: [Message!]
+        rating: Int!
+    }
+
     enum accountType {
         STUDENT
         HELPER
@@ -96,6 +105,13 @@ module.exports = buildSchema(`
         lab_id: String!
     }
 
+    input PrivateMessageCreateData {
+        sender: String!
+        accountType: accountType!
+        text: String!
+        private_id: String!
+    }
+
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
@@ -109,6 +125,8 @@ module.exports = buildSchema(`
         joinQue(lab_id: ID!, socketid: String!): [String!]
         leaveQue(lab_id: ID!, socketid: String!): [String!]
         getFirstInQueAndShift(lab_id : ID!): [String!]
+        createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
+        createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
     }
 
     type RootQuery {

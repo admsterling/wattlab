@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const Prof = require('../models/prof');
 const Lab = require('../models/lab');
 const Message = require('../models/message');
+const PrivateChat = require('../models/privatechat');
+const PrivateMessage = require('../models/privatemessage');
 const LabMember = require('../models/labmember');
 const { api_key } = require('../../config');
 
@@ -141,6 +143,7 @@ module.exports = {
       messages: [],
       labMembers: [],
       socketIDQue: [],
+      privateChats: [],
       creator: prof,
     });
     const createdLab = await lab.save();
@@ -440,5 +443,61 @@ module.exports = {
     lab.socketIDQue.shift();
     await lab.save();
     return lab.socketIDQue;
+  },
+  createPrivateChat: async function ({ lab_id, student, staff }) {
+    const lab = await Lab.findOne({
+      _id: mongoose.Types.ObjectId(lab_id),
+    });
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    const privateChat = new PrivateChat({
+      student: student,
+      staff: staff,
+      lab_id: lab._id,
+      messages: [],
+    });
+
+    lab.privateChats.push(privateChat);
+    await lab.save();
+    await privateChat.save();
+
+    return {
+      ...privateChat._doc,
+      _id: privateChat._id.toString(),
+    };
+  },
+  createPrivateMessage: async function ({ privateMessageInput }) {
+    const privateChat = await PrivateChat.findById(
+      privateMessageInput.private_id
+    );
+
+    if (!privateChat) {
+      const error = new Error('No private chat found!');
+      error.code = 404;
+      throw error;
+    }
+
+    const privatemessage = new PrivateMessage({
+      sender: privateMessageInput.sender,
+      accountType: privateMessageInput.accountType,
+      text: privateMessageInput.text,
+      private_id: privateMessageInput.private_id,
+    });
+
+    privateChat.messages.push(privatemessage);
+    await privatemessage.save();
+    await privateChat.save();
+
+    return {
+      ...privatemessage._doc,
+      _id: privatemessage._doc._id.toString(),
+      createdAt: privatemessage._doc.createdAt.toISOString(),
+      updatedAt: privatemessage._doc.updatedAt.toISOString(),
+    };
   },
 };
