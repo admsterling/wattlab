@@ -1,9 +1,13 @@
 <template>
   <v-container fluid class="px-4">
     <v-row>
-      <v-col cols="12" class="rounded teal lighten-2" justify="center">
-        <span class="white--text text-h5">
-          You are being helped by: {{ helper.name }}
+      <v-col cols="12" class="rounded teal lighten-2 white--text text-h5" justify="center">
+        You are connected to:
+        <span v-if="this.accountType === 'STUDENT'" class="ml-3 font-weight-bold">
+          {{ this.privateChat.staff }}
+        </span>
+        <span v-else class="ml-3 font-weight-bold">
+          {{ this.privateChat.student }}
         </span>
         <v-btn class="float-right" @click="closeHelp"> Close Help </v-btn>
       </v-col>

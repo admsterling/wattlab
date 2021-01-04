@@ -18,6 +18,10 @@
     </v-row>
     <v-row v-if="waiting">
       <v-col cols="12" align="center" justify="center">
+        You are 
+        <span class="purple--text lighten-text-1">{{ quePosition }}</span>
+        in the que
+        <br />
         {{ formattedElapsedTime }}<br />
         <v-btn dark class="deep-orange lighten-2" @click="cancelHelp">
           <v-icon class="mr-1">mdi-cancel</v-icon>Cancel
@@ -46,13 +50,34 @@ export default {
       labCode: "socket/labCode",
       username: "socket/username",
       privateChat: "socket/privateChat",
-      gettingSupport: "socket/gettingSupport"
+      gettingSupport: "socket/gettingSupport",
+      queWaiting: "socket/queWaiting",
     }),
     formattedElapsedTime() {
       const date = new Date(null);
       date.setSeconds(this.elapsedTime / 1000);
       const utc = date.toUTCString();
       return utc.substr(utc.indexOf(":") + 1, 5);
+    },
+    quePosition() {
+      if (this.que.length > 0) {
+        let response;
+        switch (this.que.indexOf(this.$socket.id)) {
+          case 0:
+            response = "1st";
+            break;
+          case 1:
+            response = "2nd";
+            break;
+          case 2:
+            response = "3rd";
+            break;
+          default:
+            response = (this.que.indexOf(this.$socket.id) + 1).toString() + "th";
+        }
+        return response;
+      }
+      return null;
     },
     queLength() {
       return this.que.length;
