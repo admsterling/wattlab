@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('updateQue', (queData) => {
-    axios('http://localhost:4000/graphql', {
+    return axios('http://localhost:4000/graphql', {
       method: 'POST',
       data: {
         query: `
