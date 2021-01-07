@@ -395,6 +395,13 @@ module.exports = {
       await Message.findByIdAndDelete(lab.messages[i]._id);
     }
 
+    // Fix here
+    for (let i = 0; i < lab.privateChats.length; i++) {
+      let privateChat = await PrivateChat.findById(lab.privateChats[i]);
+      await PrivateMessage.deleteMany({ private_id: privateChat._id });
+      await PrivateChat.findByIdAndRemove(lab.privateChats[i]);
+    }
+
     await Lab.findByIdAndRemove(id);
     const prof = await Prof.findById(req.userId);
     prof.labs.pull(id);

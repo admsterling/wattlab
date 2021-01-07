@@ -22,6 +22,11 @@ const privateChatSchema = new Schema(
       type: Number,
       required: false,
     },
+    lab_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Lab',
+      required: true,
+    },
   },
   { timestamps: true }
 );
