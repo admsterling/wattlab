@@ -194,6 +194,11 @@ module.exports = {
       error.code = 404;
       throw error;
     }
+    if (!lab.status) {
+      const error = new Error('Lab has not started');
+      error.code = 404;
+      throw error;
+    }
 
     let accountExists = false;
     let labMember;

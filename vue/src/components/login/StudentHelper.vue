@@ -7,7 +7,9 @@
             v-model="labCode"
             @input="
               (v) => {
-                labCode = v.toUpperCase();
+                if (v !== null) {
+                  labCode = v.toUpperCase();
+                }
               }
             "
             :counter="6"
