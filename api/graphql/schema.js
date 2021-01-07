@@ -115,6 +115,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
+        updateLab(code: String!, title: String!, desc: String!, url: String!, helpers: [String!]!): Boolean!
         joinLab(code: String!, username: String!, socketid: String!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!
@@ -132,6 +133,7 @@ module.exports = buildSchema(`
     type RootQuery {
         login(email: String!, password: String!): AuthData!
         getLabs(id: String!): LabList!
+        getLab(code: String!): Lab!
         labExist(code: String!): Boolean!
         getQue(lab_id: ID!): [String]!
         prof(id: String!): Prof!

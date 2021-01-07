@@ -181,7 +181,48 @@ module.exports = {
       }),
     };
   },
-  joinLab: async function ({ code, username, socketid }, req) {
+  getLab: async function ({ code }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findOne({
+      code: code,
+    });
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    return {
+      ...lab._doc,
+      _id: lab._doc._id.toString(),
+      createdAt: lab._doc.createdAt.toISOString(),
+      updatedAt: lab._doc.updatedAt.toISOString(),
+    };
+  },
+  updateLab: async function ({ code, title, url, desc, helpers }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findOne({
+      code: code,
+    });
+
+    if (!lab) {
+      const error = new Error('No lab found!');
+      error.code = 404;
+      throw error;
+    }
+
+    lab.title = title;
+    lab.desc = desc;
+    lab.url = url;
+    lab.helpers = helpers;
+
+    lab.save();
+    return true;
+  },
+  joinLab: async function ({ code, username, socketid }) {
     const lab = await Lab.findOne({
       code: code,
     })

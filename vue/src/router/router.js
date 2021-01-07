@@ -28,6 +28,9 @@ const CreateLabView = Vue.component('CreateLabView', () =>
 const ViewLabs = Vue.component('ViewLabs', () =>
   import('../components/prof/viewLabs/ViewLabs')
 );
+const EditLabView = Vue.component('EditLab', () =>
+  import('../components/prof/editLab/EditLab')
+);
 
 const NotFound = Vue.component('NotFound', () =>
   import('../components/NotFound')
@@ -65,6 +68,7 @@ const routes = [
     children: [
       { path: '/createLab', component: CreateLabView },
       { path: '/viewLabs', component: ViewLabs },
+      { path: '/edit/:labCode', component: EditLabView },
     ],
   },
   { path: '*', component: NotFound },

@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="createLabForm" v-on:submit.prevent lazy-validation>
+  <v-form ref="editLabForm" v-on:submit.prevent lazy-validation>
     <v-card>
       <v-card-title>Create a new lab:</v-card-title>
       <v-card-text>
@@ -20,7 +20,7 @@
             <v-col>
               <LabHelperField
                 :submitted="submitted"
-                :labHelpers="lab.labHelpers"
+                :labHelpers="lab.helpers"
               />
             </v-col>
           </v-row>
@@ -57,14 +57,8 @@
                 @click="submit"
                 :loading="submitted"
                 :disabled="submitted"
-                >Create Lab
+                >Save Lab
               </v-btn>
-              <ConfirmModal
-                ref="confirm"
-                :lab="lab"
-                @confirmed="confirmed"
-                @cancelled="cancelled"
-              />
             </v-col>
           </v-row>
         </v-container>
@@ -79,18 +73,18 @@ import axios from "axios";
 export default {
   components: {
     LabHelperField: () => import("../LabHelperField"),
-    ConfirmModal: () => import("./ConfirmDialog"),
   },
   data() {
     return {
+      lab: {
+        code: "",
+        title: "",
+        desc: "",
+        url: "",
+        helpers: [],
+      },
       submitted: false,
       errorList: undefined,
-      lab: {
-        title: "Test Data",
-        labHelpers: ["as317", "test"],
-        desc: "This is a test description for the lab.\nAcross multiple lines.",
-        url: "https://www.google.com",
-      },
       titleRules: [(value) => !!value || "Required"],
       urlRules: [
         (value) =>
@@ -102,65 +96,90 @@ export default {
   },
   methods: {
     submit() {
-      if (this.$refs.createLabForm.validate()) {
+      if (this.$refs.editLabForm.validate()) {
         this.submitted = true;
         this.errorList = undefined;
-        this.$refs.confirm.open();
+
+        axios("http://localhost:4000/graphql", {
+          method: "POST",
+          data: {
+            query: `
+              mutation updateLab($code: String!, $title: String!, $helpers: [String!]!, $desc: String!, $url: String!){
+                updateLab(code: $code, title: $title, helpers: $helpers, desc: $desc, url: $url)
+              }
+          `,
+            variables: {
+              code: this.lab.code,
+              title: this.lab.title,
+              helpers: this.lab.helpers,
+              desc: this.lab.desc,
+              url: this.lab.url,
+            },
+          },
+          headers: {
+            Authorization: `Bearer ${this.$store.state.prof.token}`,
+          },
+        })
+          .then(() => {
+            this.$toast.success("Lab Saved");
+            this.$router.push("/viewLabs");
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message);
+              }
+            } else {
+              console.log("Error", error.message);
+            }
+          })
+          .finally(() => {
+            this.submitted = false;
+          });
       }
     },
-    confirmed() {
-      axios("http://localhost:4000/graphql", {
-        method: "POST",
-        data: {
-          query: `
-              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $url: String!){
-                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, url: $url }) {
+  },
+  mounted() {
+    axios("http://localhost:4000/graphql", {
+      method: "POST",
+      data: {
+        query: `
+              query getLab($labCode: String!){
+                getLab(code: $labCode) {
                   title
-                  code
                   desc
+                  helpers
                   url
-                  creator{
-                    _id
-                    fname
-                    lname
-                  }
-                  createdAt
-                  updatedAt
+                  code
                 }
               }
           `,
-          variables: {
-            title: this.lab.title,
-            helpers: this.lab.labHelpers,
-            desc: this.lab.desc,
-            url: this.lab.url,
-          },
+        variables: {
+          labCode: this.$route.params.labCode,
         },
-        headers: {
-          Authorization: `Bearer ${this.$store.state.prof.token}`,
-        },
+      },
+      headers: {
+        Authorization: `Bearer ${this.$store.state.prof.token}`,
+      },
+    })
+      .then((res) => {
+        this.lab = res.data.data.getLab;
+        console.log(this.lab);
       })
-        .then(() => {
-          this.$toast.success("Lab Created!");
-          this.$router.push("/viewLabs");
-        })
-        .catch((error) => {
-          if (error.response) {
-            this.errorList = error.response.data.errors;
-            for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message);
-            }
-          } else {
-            console.log("Error", error.message);
+      .catch((error) => {
+        if (error.response) {
+          this.errorList = error.response.data.errors;
+          for (let i = 0; i < this.errorList.length; i++) {
+            this.$toast.error(this.errorList[i].message);
           }
-        })
-        .finally(() => {
-          this.submitted = false;
-        });
-    },
-    cancelled() {
-      this.submitted = false;
-    },
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally(() => {
+        this.submitted = false;
+      });
   },
 };
 </script>

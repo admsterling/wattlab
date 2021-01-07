@@ -71,7 +71,7 @@
                   >
                     <v-icon left>mdi-account-multiple-plus</v-icon>Join
                   </v-btn>
-                  <v-btn class="warning ma-1">
+                  <v-btn :disabled="lab.status" class="warning ma-1" @click="editLab(i)">
                     <v-icon left>mdi-pencil</v-icon>Edit
                   </v-btn>
                   <v-btn class="error ma-1" @click="deleteLab(i)">
@@ -158,7 +158,8 @@ export default {
           } else {
             console.log("Error", error.message);
           }
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false;
         });
     },
@@ -244,6 +245,10 @@ export default {
         .finally(() => {
           this.loadingOverlay = false;
         });
+    },
+    editLab(i) {
+      let lab = this.labs[i];
+      this.$router.push("/edit/" + lab.code);
     },
     deleteLab(i) {
       this.loadingOverlay = true;
