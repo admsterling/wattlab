@@ -300,7 +300,7 @@ module.exports = {
   endLab: async function ({ id }, req) {
     checkAuth(req.isAuth);
 
-    const lab = await Lab.findById(id);
+    const lab = await Lab.findById(id).populate('labMembers');
     if (!lab) {
       const error = new Error('No lab found.');
       error.code = 404;
@@ -314,6 +314,16 @@ module.exports = {
 
     lab.status = false;
     lab.socketIDQue = [];
+
+    const labList = lab.labMembers;
+    for (let i = 0; i < labList.length; i++) {
+      if (labList[i].inRoom) {
+        let labMemberChange = await LabMember.findById(labList[i]._id);
+        labMemberChange.inRoom = false;
+        await labMemberChange.save();
+      }
+    }
+
     await lab.save();
     return true;
   },
