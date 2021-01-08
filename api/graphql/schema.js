@@ -75,7 +75,8 @@ module.exports = buildSchema(`
         student: String!
         staff: String!
         messages: [Message!]
-        rating: Int!
+        rating: Int
+        feedback: String
     }
 
     enum accountType {
@@ -128,6 +129,7 @@ module.exports = buildSchema(`
         getFirstInQueAndShift(lab_id : ID!): [String!]
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
+        sendFeedback(id: ID!, value: Int!, feedback: String!): Boolean!
     }
 
     type RootQuery {

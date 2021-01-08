@@ -563,4 +563,23 @@ module.exports = {
       updatedAt: privatemessage._doc.updatedAt.toISOString(),
     };
   },
+  sendFeedback: async function ({ id, value, feedback }) {
+    const privateChat = await PrivateChat.findById(id);
+
+    if (!privateChat) {
+      const error = new Error('No private chat found!');
+      error.code = 404;
+      throw error;
+    }
+
+    if (value > 0) {
+      privateChat.rating = value;
+    }
+    if (feedback.length > 0) {
+      privateChat.feedback = feedback;
+    }
+
+    privateChat.save();
+    return true;
+  },
 };

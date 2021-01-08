@@ -22,6 +22,10 @@ const privateChatSchema = new Schema(
       type: Number,
       required: false,
     },
+    feedback: {
+      type: String,
+      required: false,
+    },
     lab_id: {
       type: Schema.Types.ObjectId,
       ref: 'Lab',

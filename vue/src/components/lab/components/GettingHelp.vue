@@ -1,15 +1,29 @@
 <template>
   <v-container fluid class="px-4">
     <v-row>
-      <v-col cols="12" class="rounded teal lighten-2 white--text text-h5" justify="center">
+      <v-col
+        cols="12"
+        class="rounded teal lighten-2 white--text text-h5"
+        justify="center"
+      >
         You are connected to:
-        <span v-if="this.accountType === 'STUDENT'" class="ml-3 font-weight-bold">
+        <span
+          v-if="this.accountType === 'STUDENT'"
+          class="ml-3 font-weight-bold"
+        >
           {{ this.privateChat.staff }}
         </span>
         <span v-else class="ml-3 font-weight-bold">
           {{ this.privateChat.student }}
         </span>
         <v-btn class="float-right" @click="closeHelp"> Close Help </v-btn>
+        <RatingComponent
+          v-if="this.accountType === 'STUDENT'"
+          :rating="rating"
+          ref="ratingDialog"
+          @confirmed="confirmed"
+          @cancelled="cancelled"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -156,6 +170,9 @@ import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
 
 export default {
+  components: {
+    RatingComponent: () => import("./RatingComponent"),
+  },
   data() {
     return {
       modes: [
@@ -185,6 +202,10 @@ export default {
         name: "as317",
         socketid: "24234234234",
       },
+      rating: {
+        value: 0,
+        feedback: "",
+      },
     };
   },
   computed: {
@@ -207,7 +228,12 @@ export default {
   },
   sockets: {
     stopHelp: function () {
-      this.$store.dispatch("socket/stopHelp");
+      this.$toast.info("Other person closed help request");
+      if (this.accountType === "STUDENT") {
+        this.$refs.ratingDialog.open();
+      } else {
+        this.$store.dispatch("socket/stopHelp");
+      }
     },
     updateCodeBlock: function (data) {
       document.querySelector(".CodeMirror").CodeMirror.setOption("value", data);
@@ -272,11 +298,50 @@ export default {
         .finally(() => {
           this.messageSending = false;
         });
-      // this.$store.dispatch("socket/addPrivateMessage", messageData);
-      // this.$socket.emit("privateMessage", socketData);
     },
     closeHelp() {
-      this.$socket.emit("stopHelp", this.gettingSupport.reciever);
+      if (this.accountType === "STUDENT") {
+        this.$socket.emit("stopHelp", this.gettingSupport.reciever);
+        this.$refs.ratingDialog.open();
+      } else {
+        this.$socket.emit("stopHelp", this.gettingSupport.reciever);
+        this.$store.dispatch("socket/stopHelp");
+      }
+    },
+    confirmed() {
+      axios("http://localhost:4000/graphql", {
+        method: "POST",
+        data: {
+          query: `
+              mutation sendFeedback ($id: ID!, $value: Int!, $feedback: String!){
+                sendFeedback(id: $id, value: $value, feedback: $feedback)
+              }
+          `,
+          variables: {
+            id: this.privateChat._id,
+            value: this.rating.value,
+            feedback: this.rating.feedback,
+          },
+        },
+      })
+        .then(() => {
+          this.$toast.success("Feedback Recieved!");
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.$store.dispatch("socket/stopHelp");
+        });
+    },
+    cancelled() {
       this.$store.dispatch("socket/stopHelp");
     },
   },
