@@ -19,7 +19,7 @@
                 persistent-hint
                 :loading="submitted"
                 :disabled="submitted"
-                @keyup.enter="submit"
+                @keyup.enter="update"
               ></v-text-field>
               <p class="mt-4">
                 Current Submission:
