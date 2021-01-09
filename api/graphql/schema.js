@@ -21,6 +21,7 @@ module.exports = buildSchema(`
         title: String!
         helpers: [String]
         status: Boolean!
+        submission: Boolean!
         code: String!
         desc: String!
         url: String!
@@ -68,6 +69,7 @@ module.exports = buildSchema(`
         socketid: String!
         inRoom: Boolean!
         lab_id: String!
+        submissionLink: String
     }
 
     type PrivateChat {
@@ -97,6 +99,7 @@ module.exports = buildSchema(`
         helpers: [String!]
         desc: String!
         url: String!
+        submission: Boolean!
     }
 
     input MessageCreateData {
@@ -116,7 +119,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
-        updateLab(code: String!, title: String!, desc: String!, url: String!, helpers: [String!]!): Boolean!
+        updateLab(code: String!, title: String!, desc: String!, url: String!, helpers: [String!]!, submission: Boolean!): Boolean!
         joinLab(code: String!, username: String!, socketid: String!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!
@@ -130,6 +133,7 @@ module.exports = buildSchema(`
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
         sendFeedback(id: ID!, value: Int!, feedback: String!): Boolean!
+        addSubmission(member_id: ID!, submissionLink: String!): String!
     }
 
     type RootQuery {
@@ -139,6 +143,7 @@ module.exports = buildSchema(`
         labExist(code: String!): Boolean!
         getQue(lab_id: ID!): [String]!
         prof(id: String!): Prof!
+        getSubmission(member_id: ID!): String!
     }
 
     schema {

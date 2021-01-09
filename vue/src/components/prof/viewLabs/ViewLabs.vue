@@ -74,7 +74,7 @@
                   <v-btn :disabled="lab.status" class="warning ma-1" @click="editLab(i)">
                     <v-icon left>mdi-pencil</v-icon>Edit
                   </v-btn>
-                  <v-btn class="error ma-1" @click="deleteLab(i)">
+                  <v-btn :disabled="lab.status" class="error ma-1" @click="deleteLab(i)">
                     <v-icon left>mdi-delete-forever</v-icon>Delete
                   </v-btn>
                 </td>

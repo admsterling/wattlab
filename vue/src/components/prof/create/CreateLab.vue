@@ -50,6 +50,14 @@
               ></v-textarea>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-checkbox
+                v-model="lab.submission"
+                label="Add Lab Submission Page"
+              ></v-checkbox>
+            </v-col>
+          </v-row>
           <v-row align="center" no-gutter>
             <v-col class="text-center">
               <v-btn
@@ -90,6 +98,7 @@ export default {
         labHelpers: ["as317", "test"],
         desc: "This is a test description for the lab.\nAcross multiple lines.",
         url: "https://www.google.com",
+        submission: true,
       },
       titleRules: [(value) => !!value || "Required"],
       urlRules: [
@@ -113,8 +122,8 @@ export default {
         method: "POST",
         data: {
           query: `
-              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $url: String!){
-                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, url: $url }) {
+              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $url: String!, $submission: Boolean!){
+                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, url: $url, submission: $submission}) {
                   title
                   code
                   desc
@@ -134,6 +143,7 @@ export default {
             helpers: this.lab.labHelpers,
             desc: this.lab.desc,
             url: this.lab.url,
+            submission: this.lab.submission,
           },
         },
         headers: {

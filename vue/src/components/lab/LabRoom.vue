@@ -16,9 +16,9 @@
 
       <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
         <v-tabs-slider color="grey"></v-tabs-slider>
-        <v-tab v-for="(tabHeader, i) in tabHeaders" :key="i">
-          {{ tabHeader }}
-        </v-tab>
+        <v-tab> Main Room </v-tab>
+        <v-tab> Get Help </v-tab>
+        <v-tab v-if="this.studentSubmission"> Submit Work </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab" height="100%">
@@ -42,7 +42,11 @@
             <LabHelperView v-else-if="this.accountType === 'HELPER'" />
           </div>
         </v-tab-item>
-        <v-tab-item><div class="tab-item-wrapper"></div></v-tab-item>
+        <v-tab-item v-if="this.studentSubmission">
+          <div class="tab-item-wrapper">
+            <SubmissionPage v-if="this.studentSubmission" />
+          </div>
+        </v-tab-item>
       </v-tabs-items>
     </v-card>
   </div>
@@ -58,11 +62,11 @@ export default {
     LabGCWindow: () => import("./components/LabGCWindow"),
     StudentHelpView: () => import("./HelpViews/Student/StudentView"),
     LabHelperView: () => import("./HelpViews/LabHelper/LabHelperView"),
+    SubmissionPage: () => import("./components/SubmissionPage"),
   },
   data() {
     return {
       tab: null,
-      tabHeaders: ["Main Room", "Get Help", "Submit Work"],
     };
   },
   computed: {
@@ -73,7 +77,11 @@ export default {
       labInfo: "socket/labInfo",
       memberid: "socket/member_id",
       accountType: "socket/accountType",
+      submission: "socket/submission",
     }),
+    studentSubmission: function () {
+      return this.submission && this.accountType === "STUDENT";
+    },
   },
   sockets: {
     endLab: function () {

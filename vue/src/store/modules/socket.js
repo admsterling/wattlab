@@ -13,6 +13,7 @@ const getDefaultState = () => {
       reciever: null,
     },
     privateChat: {},
+    submission: false,
   };
 };
 
@@ -43,6 +44,9 @@ const getters = {
   },
   messages: (state) => {
     return state.lab.messages;
+  },
+  submission: (state) => {
+    return state.lab.submission;
   },
   joinedLabFlag: (state) => {
     return state.joinedLabFlag;
@@ -145,6 +149,7 @@ const actions = {
                 fname
                 lname
               }
+              submission
             }
             memberid
           }

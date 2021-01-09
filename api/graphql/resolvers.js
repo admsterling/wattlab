@@ -145,6 +145,7 @@ module.exports = {
       socketIDQue: [],
       privateChats: [],
       creator: prof,
+      submission: labInput.submission,
     });
     const createdLab = await lab.save();
     prof.labs.push(createdLab);
@@ -201,7 +202,10 @@ module.exports = {
       updatedAt: lab._doc.updatedAt.toISOString(),
     };
   },
-  updateLab: async function ({ code, title, url, desc, helpers }, req) {
+  updateLab: async function (
+    { code, title, url, desc, helpers, submission },
+    req
+  ) {
     checkAuth(req.isAuth);
 
     const lab = await Lab.findOne({
@@ -218,6 +222,7 @@ module.exports = {
     lab.desc = desc;
     lab.url = url;
     lab.helpers = helpers;
+    lab.submission = submission;
 
     lab.save();
     return true;
@@ -581,5 +586,25 @@ module.exports = {
 
     privateChat.save();
     return true;
+  },
+  addSubmission: async function ({ member_id, submissionLink }) {
+    const labmember = await LabMember.findById(member_id);
+
+    if (submissionLink.substring(0, 3) === 'www') {
+      submissionLink = 'https://' + submissionLink;
+    }
+
+    labmember.submissionLink = submissionLink;
+    labmember.save();
+    return labmember.submissionLink;
+  },
+  getSubmission: async function ({ member_id }) {
+    const labmember = await LabMember.findById(member_id);
+
+    if (!labmember.submissionLink) {
+      return 'No submission link set';
+    } else {
+      return labmember.submissionLink;
+    }
   },
 };

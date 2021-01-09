@@ -15,6 +15,10 @@ const LabMemberSchema = new Schema({
     type: String,
     required: true,
   },
+  submissionLink: {
+    type: String,
+    required: false,
+  },
   lab_id: {
     type: Schema.Types.ObjectId,
     ref: 'Lab',

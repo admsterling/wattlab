@@ -32,9 +32,15 @@
           </v-row>
           <v-row>
             <v-col cols="3">Description:</v-col>
-            <v-col cols="9" style="white-space: pre-wrap;">
+            <v-col cols="9" style="white-space: pre-wrap">
               {{ lab.desc }}
             </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              <v-icon>{{ submissionIcon }}</v-icon>
+            </v-col>
+            <v-col cols="9">Lab Submission Page</v-col>
           </v-row>
         </v-container>
       </v-card-text>
@@ -57,6 +63,11 @@ export default {
     dialog: false,
     resolve: null,
   }),
+  computed: {
+    submissionIcon: function () {
+      return this.lab.submission ? "mdi-check" : "mdi-close";
+    },
+  },
   methods: {
     open() {
       this.dialog = true;

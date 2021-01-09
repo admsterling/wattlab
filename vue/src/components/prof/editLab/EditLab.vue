@@ -50,6 +50,14 @@
               ></v-textarea>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <v-checkbox
+                v-model="lab.submission"
+                label="Add Lab Submission Page"
+              ></v-checkbox>
+            </v-col>
+          </v-row>
           <v-row align="center" no-gutter>
             <v-col class="text-center">
               <v-btn
@@ -82,6 +90,7 @@ export default {
         desc: "",
         url: "",
         helpers: [],
+        submission: false,
       },
       submitted: false,
       errorList: undefined,
@@ -104,8 +113,8 @@ export default {
           method: "POST",
           data: {
             query: `
-              mutation updateLab($code: String!, $title: String!, $helpers: [String!]!, $desc: String!, $url: String!){
-                updateLab(code: $code, title: $title, helpers: $helpers, desc: $desc, url: $url)
+              mutation updateLab($code: String!, $title: String!, $desc: String!, $url: String!, $helpers: [String!]!, $submission: Boolean!){
+                updateLab(code: $code, title: $title, desc: $desc, url: $url, helpers: $helpers, submission: $submission)
               }
           `,
             variables: {
@@ -114,6 +123,7 @@ export default {
               helpers: this.lab.helpers,
               desc: this.lab.desc,
               url: this.lab.url,
+              submission: this.lab.submission,
             },
           },
           headers: {
@@ -152,6 +162,7 @@ export default {
                   helpers
                   url
                   code
+                  submission
                 }
               }
           `,
@@ -165,7 +176,6 @@ export default {
     })
       .then((res) => {
         this.lab = res.data.data.getLab;
-        console.log(this.lab);
       })
       .catch((error) => {
         if (error.response) {
