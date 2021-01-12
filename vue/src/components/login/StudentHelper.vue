@@ -62,7 +62,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      labCode: "",
+      labCode: "ADC1E4",
       username: "te13",
       submitted: false,
       validForm: true,
