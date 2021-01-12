@@ -8,18 +8,12 @@ import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
-const PORT = process.env.PORT || 3000;
-
-let socketConnection;
-if (process.env.VUE_APP_DEV) {
-  socketConnection = SocketIO('http://localhost:' + PORT);
-} else {
-  socketConnection = SocketIO('https://watt-lab-server.herokuapp.com:' + PORT);
-}
+const connectionString = process.env.VUE_APP_SOCKETIO_CONNECTION || window.location.hostname;
+const socketConnection = SocketIO(connectionString);
 
 Vue.use(
   new VueSocketIO({
-    debug: process.env.VUE_APP_DEV,
+    debug: process.env.VUE_APP_DEV_FLAG,
     connection: socketConnection,
     vuex: {
       store,

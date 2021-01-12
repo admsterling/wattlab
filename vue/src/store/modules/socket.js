@@ -104,7 +104,7 @@ const mutations = {
 
 const actions = {
   resetState({ commit, rootGetters }) {
-    return axios('http://localhost:4000/graphql', {
+    return axios(process.env.VUE_APP_ENDPOINT, {
       method: 'POST',
       data: {
         query: `
@@ -121,7 +121,7 @@ const actions = {
     });
   },
   setLab({ commit, rootGetters }, context) {
-    return axios('http://localhost:4000/graphql', {
+    return axios(process.env.VUE_APP_ENDPOINT, {
       method: 'POST',
       data: {
         query: `
@@ -200,7 +200,7 @@ const actions = {
     commit('STOP_HELP');
   },
   privateChatInfo({ commit, rootGetters }, context) {
-    return axios('http://localhost:4000/graphql', {
+    return axios(process.env.VUE_APP_ENDPOINT, {
       method: 'POST',
       data: {
         query: `

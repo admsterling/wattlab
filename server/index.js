@@ -1,4 +1,5 @@
 const express = require('express');
+const history = require('connect-history-api-fallback');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
@@ -6,17 +7,24 @@ const io = require('socket.io')(http, {
     origin: '*',
   },
 });
+
 const PORT = process.env.PORT || 3000;
+const graphQLEndpoint = process.env.API_ENDPOINT || 'http://localhost:4000/graphql';
+console.log(graphQLEndpoint);
 
 const axios = require('axios');
 
 const path = require('path');
 const public = path.join(__dirname, 'dist');
-app.use(express.static(public));
 
-app.get('/', (req, res) => {
-  res.sendFile(path + 'index.html');
-});
+app.use(express.static(public));
+app.use(
+  history({
+    disableDotRule: true,
+    verbose: true,
+  })
+);
+app.use(express.static(public));
 
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
@@ -45,7 +53,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinQue', (queData) => {
-    axios('http://localhost:4000/graphql', {
+    axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
@@ -68,7 +76,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('leaveQue', (queData) => {
-    axios('http://localhost:4000/graphql', {
+    axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
@@ -91,7 +99,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('updateQue', (queData) => {
-    return axios('http://localhost:4000/graphql', {
+    return axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
@@ -138,7 +146,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    axios('http://localhost:4000/graphql', {
+    axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
@@ -164,7 +172,7 @@ io.on('connection', (socket) => {
             labCode: res.data.data.socketMemberLeaveLab.code,
             socketid: socket.id,
           };
-          axios('http://localhost:4000/graphql', {
+          axios(graphQLEndpoint, {
             method: 'POST',
             data: {
               query: `
