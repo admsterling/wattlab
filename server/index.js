@@ -1,4 +1,5 @@
-const app = require('express')();
+const express = require('express');
+const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
   cors: {
@@ -7,6 +8,14 @@ const io = require('socket.io')(http, {
 });
 const port = require('../config').socket_port;
 const axios = require('axios');
+
+const path = require('path');
+const public = path.join(__dirname, 'dist');
+app.use(express.static(public));
+
+app.get('/', (req, res) => {
+  res.sendFile(path + 'index.html');
+});
 
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
