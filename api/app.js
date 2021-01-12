@@ -3,16 +3,18 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { graphqlHTTP } = require('express-graphql');
 
-const { api_port, db, dev_flag } = require('../config');
+const { db, dev_flag } = require('../config');
 
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
 
 const auth = require('./middleware/auth');
 
+const PORT = process.env.PORT || 4000;
+
 const app = express();
 
-app.use(bodyParser.json()); // application/json
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,8 +52,8 @@ app.use(
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
   .then((result) => {
-    app.listen(api_port, () => {
-      console.log('Listening on localhost:' + api_port);
+    app.listen(PORT, () => {
+      console.log('Listening on localhost:' + PORT);
     });
   })
   .catch((err) => console.log(err));
