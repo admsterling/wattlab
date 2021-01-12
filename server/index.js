@@ -9,8 +9,8 @@ const io = require('socket.io')(http, {
 });
 
 const PORT = process.env.PORT || 3000;
-const graphQLEndpoint = process.env.API_ENDPOINT || 'http://localhost:4000/graphql';
-console.log(graphQLEndpoint);
+const graphQLEndpoint =
+  process.env.API_ENDPOINT || 'http://localhost:4000/graphql';
 
 const axios = require('axios');
 
@@ -70,8 +70,15 @@ io.on('connection', (socket) => {
       .then((res) => {
         io.to(queData.labCode).emit('updateQue', res.data.data.joinQue);
       })
-      .catch((err) => {
-        console.log(err.errors[0].message);
+      .catch((error) => {
+        if (error.response) {
+          let errorList = error.response.data.errors;
+          for (let i = 0; i < this.errorList.length; i++) {
+            console.log(errorList[i].message);
+          }
+        } else {
+          console.log('Error', error.message);
+        }
       });
   });
 

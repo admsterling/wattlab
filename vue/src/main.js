@@ -11,9 +11,11 @@ import SocketIO from 'socket.io-client';
 const connectionString = process.env.VUE_APP_SOCKETIO_CONNECTION || window.location.hostname;
 const socketConnection = SocketIO(connectionString);
 
+const devFlag = process.env.VUE_APP_DEV_FLAG || false;
+
 Vue.use(
   new VueSocketIO({
-    debug: process.env.VUE_APP_DEV_FLAG,
+    debug: devFlag,
     connection: socketConnection,
     vuex: {
       store,
