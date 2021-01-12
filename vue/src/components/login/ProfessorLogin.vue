@@ -95,7 +95,7 @@ export default {
         this.errorList = undefined;
         this.$emit("flip-tabs");
 
-        axios("http://localhost:4000/graphql", {
+        axios(process.env.ENDPOINT, {
           method: "POST",
           data: {
             query: `

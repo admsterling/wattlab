@@ -125,7 +125,7 @@ export default {
     joinLab(i) {
       this.loadingOverlay = true;
       let lab = this.labs[i];
-      axios("http://localhost:4000/graphql", {
+      axios(process.env.ENDPOINT, {
         method: "POST",
         data: {
           query: `
@@ -166,7 +166,7 @@ export default {
     startLab(i) {
       this.loadingOverlay = true;
       let lab = this.labs[i];
-      axios("http://localhost:4000/graphql", {
+      axios(process.env.ENDPOINT, {
         method: "POST",
         data: {
           query: `
@@ -207,7 +207,7 @@ export default {
     endLab(i) {
       this.loadingOverlay = true;
       let lab = this.labs[i];
-      axios("http://localhost:4000/graphql", {
+      axios(process.env.ENDPOINT, {
         method: "POST",
         data: {
           query: `
@@ -253,7 +253,7 @@ export default {
     deleteLab(i) {
       this.loadingOverlay = true;
       this.$socket.emit("endLab", this.labs[i].code);
-      axios("http://localhost:4000/graphql", {
+      axios(process.env.ENDPOINT, {
         method: "POST",
         data: {
           query: `
@@ -294,7 +294,7 @@ export default {
   },
   mounted() {
     this.loading = true;
-    axios("http://localhost:4000/graphql", {
+    axios(process.env.ENDPOINT, {
       method: "POST",
       data: {
         query: `

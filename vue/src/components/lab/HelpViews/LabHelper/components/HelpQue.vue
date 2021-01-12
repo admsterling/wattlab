@@ -81,7 +81,7 @@ export default {
     },
   },
   mounted() {
-    axios("http://localhost:4000/graphql", {
+    axios(process.env.ENDPOINT, {
       method: "POST",
       data: {
         query: `

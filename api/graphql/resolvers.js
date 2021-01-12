@@ -10,7 +10,7 @@ const Message = require('../models/message');
 const PrivateChat = require('../models/privatechat');
 const PrivateMessage = require('../models/privatemessage');
 const LabMember = require('../models/labmember');
-const { api_key } = require('../../config');
+const api_key = process.env.KEY;
 
 function checkAuth(flag) {
   if (!flag) {

@@ -148,7 +148,7 @@ export default {
       if (this.$refs.registerForm.validate()) {
         this.submitted = true;
         this.errorList = undefined;
-        axios("http://localhost:4000/graphql", {
+        axios(process.env.ENDPOINT, {
           method: "POST",
           data: {
             query: `

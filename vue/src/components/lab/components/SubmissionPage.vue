@@ -83,7 +83,7 @@ export default {
         this.submissionLink.length > 0
       ) {
         this.submitted = true;
-        axios("http://localhost:4000/graphql", {
+        axios(process.env.ENDPOINT, {
           method: "POST",
           data: {
             query: `
@@ -121,7 +121,7 @@ export default {
   },
   mounted() {
     this.loadingOverlay = true;
-    axios("http://localhost:4000/graphql", {
+    axios(process.env.ENDPOINT, {
       method: "POST",
       data: {
         query: `
