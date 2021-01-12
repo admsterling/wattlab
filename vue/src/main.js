@@ -8,8 +8,8 @@ import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
-const PORT = process.env.PORT || 3000;
-const socketConnection = SocketIO(window.location.protocol + window.location.hostname+ ':' + PORT);
+//const PORT = process.env.PORT || 3000;
+const socketConnection = SocketIO('http://localhost:' + 3000 );
 
 Vue.use(
   new VueSocketIO({

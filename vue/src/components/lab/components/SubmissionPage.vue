@@ -83,7 +83,7 @@ export default {
         this.submissionLink.length > 0
       ) {
         this.submitted = true;
-        axios(process.env.ENDPOINT, {
+        axios(process.env.VUE_APP_ENDPOINT, {
           method: "POST",
           data: {
             query: `
@@ -121,7 +121,7 @@ export default {
   },
   mounted() {
     this.loadingOverlay = true;
-    axios(process.env.ENDPOINT, {
+    axios(process.env.VUE_APP_ENDPOINT, {
       method: "POST",
       data: {
         query: `

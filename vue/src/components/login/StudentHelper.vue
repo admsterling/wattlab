@@ -81,7 +81,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.submitted = true;
         this.$emit("flip-tabs");
-        axios(process.env.ENDPOINT, {
+        axios(process.env.VUE_APP_ENDPOINT, {
           method: "POST",
           data: {
             query: `

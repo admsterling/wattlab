@@ -249,7 +249,7 @@ export default {
     },
     sendMessage() {
       this.messageSending = true;
-      axios(process.env.ENDPOINT, {
+      axios(process.env.VUE_APP_ENDPOINT, {
         method: "POST",
         data: {
           query: `
@@ -309,7 +309,7 @@ export default {
       }
     },
     confirmed() {
-      axios(process.env.ENDPOINT, {
+      axios(process.env.VUE_APP_ENDPOINT, {
         method: "POST",
         data: {
           query: `
