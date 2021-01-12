@@ -6,7 +6,8 @@ const io = require('socket.io')(http, {
     origin: '*',
   },
 });
-const port = require('../config').socket_port;
+const PORT = process.env.PORT || 3000;
+
 const axios = require('axios');
 
 const path = require('path');
@@ -189,5 +190,5 @@ io.on('connection', (socket) => {
 });
 
 http.listen(port, () => {
-  console.log('listening on localhost:' + port);
+  console.log('listening on localhost:' + PORT);
 });
