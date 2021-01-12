@@ -52,7 +52,7 @@ export default {
       return this.que.length;
     },
     queTime() {
-      return "4:12";
+      return "x:xx";
     },
   },
   methods: {
