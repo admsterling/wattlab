@@ -4,7 +4,8 @@
   "description": "Socket.io Server for WattLab Vue Frontend.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,5 +18,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

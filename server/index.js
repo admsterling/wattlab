@@ -189,6 +189,6 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(port, () => {
+http.listen(PORT, () => {
   console.log('listening on localhost:' + PORT);
 });
