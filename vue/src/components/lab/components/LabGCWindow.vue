@@ -19,7 +19,7 @@
               <div class="mx-2 text-bubble lighten-4 deep-orange">
                 {{ msg.text }}
               </div>
-              <div style="white-space: nowrap">
+              <div style="white-space: nowrap; width: 215px; !important">
                 <span class="ml-2 grey--text text--lighten-1">
                   {{ msg.createdAt | moment("HH:MM") }}
                   <span class="text-lighten-2"
@@ -35,7 +35,7 @@
               </div>
             </div>
             <div v-else class="wrapperLeft">
-              <div style="white-space: nowrap">
+              <div style="white-space: nowrap; width: 215px; !important">
                 <span class="ml-2 grey--text text--lighten-1">
                   {{ msg.createdAt | moment("HH:MM") }}
                   <span class="text-lighten-2"
