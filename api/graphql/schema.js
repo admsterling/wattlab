@@ -132,7 +132,7 @@ module.exports = buildSchema(`
         getFirstInQueAndShift(lab_id : ID!): [String!]
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
-        sendFeedback(id: ID!, value: Int!, feedback: String!): Boolean!
+        sendFeedback(id: ID!, value: Int!, feedback: String): Boolean!
         addSubmission(member_id: ID!, submissionLink: String!): String!
     }
 

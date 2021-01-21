@@ -338,10 +338,14 @@ export default {
           }
         })
         .finally(() => {
+          this.rating.value = 0;
+          this.rating.feedback = "";
           this.$store.dispatch("socket/stopHelp");
         });
     },
     cancelled() {
+      this.rating.value = 0;
+      this.rating.feedback = "";
       this.$store.dispatch("socket/stopHelp");
     },
   },

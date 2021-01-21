@@ -580,7 +580,7 @@ module.exports = {
     if (value > 0) {
       privateChat.rating = value;
     }
-    if (feedback.length > 0) {
+    if (feedback && feedback.length > 0) {
       privateChat.feedback = feedback;
     }
 
