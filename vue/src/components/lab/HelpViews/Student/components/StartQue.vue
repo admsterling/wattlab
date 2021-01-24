@@ -147,7 +147,7 @@ export default {
         });
       }
     },
-    cancelHelp() {
+    async cancelHelp() {
       const queData = {
         lab_id: this.lab_id,
         labCode: this.labCode,

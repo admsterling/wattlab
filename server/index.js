@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
           `,
         variables: {
           lab_id: queData.lab_id,
-          socketid: queData.socketid,
+          socketid: socket.id,
         },
       },
     })

@@ -510,7 +510,7 @@ module.exports = {
 
     for (let i = 0; i < lab.socketIDQue.length; i++) {
       if (lab.socketIDQue[i].socketid === socketid) {
-        lab.socketIDQue.splice(lab.socketIDQue.indexOf(i), 1);
+        lab.socketIDQue.splice(i, 1);
         break;
       }
     }

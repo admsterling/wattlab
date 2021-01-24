@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title>
             People in que:
-            <span class="purple--text lighten-text-1">
+            <span class="purple--text lighten-text-1 ml-2">
               {{ queLength }}
             </span>
           </v-card-title>
