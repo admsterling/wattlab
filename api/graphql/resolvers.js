@@ -10,6 +10,7 @@ const Message = require('../models/message');
 const PrivateChat = require('../models/privatechat');
 const PrivateMessage = require('../models/privatemessage');
 const LabMember = require('../models/labmember');
+const QueObj = require('../models/queobj');
 const api_key = process.env.KEY;
 
 function checkAuth(flag) {
@@ -456,7 +457,7 @@ module.exports = {
     };
   },
   getQue: async function ({ lab_id }) {
-    const lab = await Lab.findById(lab_id);
+    const lab = await Lab.findById(lab_id).populate('socketIDQue');
 
     if (!lab) {
       const error = new Error('No lab found!');
@@ -464,10 +465,16 @@ module.exports = {
       throw error;
     }
 
-    return lab.socketIDQue;
+    return lab.socketIDQue.map((q) => {
+      return {
+        ...q._doc,
+        _id: q._id.toString(),
+        lab_id: q._id.toString(),
+      };
+    });
   },
-  joinQue: async function ({ lab_id, socketid }) {
-    const lab = await Lab.findById(lab_id);
+  joinQue: async function ({ queObj }) {
+    let lab = await Lab.findById(queObj.lab_id);
 
     if (!lab) {
       const error = new Error('No lab found!');
@@ -475,24 +482,48 @@ module.exports = {
       throw error;
     }
 
-    lab.socketIDQue.push(socketid);
+    const newQueObj = new QueObj({
+      ...queObj,
+    });
+    await newQueObj.save();
+
+    lab.socketIDQue.push(newQueObj);
     await lab.save();
 
-    return lab.socketIDQue;
+    lab = await Lab.findById(queObj.lab_id).populate('socketIDQue');
+    return lab.socketIDQue.map((q) => {
+      return {
+        ...q._doc,
+        _id: q._id.toString(),
+        lab_id: q._id.toString(),
+      };
+    });
   },
   leaveQue: async function ({ lab_id, socketid }) {
-    const lab = await Lab.findById(lab_id);
-
+    const lab = await Lab.findById(lab_id).populate('socketIDQue');
+   
     if (!lab) {
       const error = new Error('No lab found!');
       error.code = 404;
       throw error;
     }
 
-    lab.socketIDQue.splice(lab.socketIDQue.indexOf(socketid), 1);
+    for (let i = 0; i < lab.socketIDQue.length; i++) {
+      if (lab.socketIDQue[i].socketid === socketid) {
+        lab.socketIDQue.splice(lab.socketIDQue.indexOf(i), 1);
+        break;
+      }
+    }
     await lab.save();
+    await QueObj.deleteOne({ socketid: socketid });
 
-    return lab.socketIDQue;
+    return lab.socketIDQue.map((q) => {
+      return {
+        ...q._doc,
+        _id: q._id.toString(),
+        lab_id: q._id.toString(),
+      };
+    });
   },
   getFirstInQueAndShift: async function ({ lab_id }) {
     const lab = await Lab.findById(lab_id);

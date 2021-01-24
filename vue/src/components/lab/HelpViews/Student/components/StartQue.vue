@@ -1,32 +1,68 @@
 <template>
   <v-container no-gutters>
     <v-row>
-      <v-col cols="12" align="center" justify="center">
-        People in que:
-        <span class="purple--text lighten-text-1">{{ queLength }}</span
-        ><br />
-        Average Wait Time:
-        <span class="purple--text lighten-text-1">{{ queTime }}</span>
+      <v-col></v-col>
+      <v-col class="text-center" cols="8" lg="6" xl="5">
+        <v-card v-if="!loading">
+          <v-form ref="helpForm">
+            <v-card-title>Please fill out the form:</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-select
+                v-model="helpObj.queType"
+                :items="labOptions"
+                label="I need:"
+                outlined
+              ></v-select>
+              <v-text-field
+                v-model="helpObj.title"
+                :rules="[rules.required, rules.notempty]"
+                label="Please enter Lab/Coursework Title:"
+              ></v-text-field>
+              <v-textarea
+                v-if="helpObj.queType == 'Help'"
+                label="Description:"
+                v-model="helpObj.desc"
+                :rules="[rules.required]"
+                counter="200"
+                maxlength="200"
+                auto-grow
+              ></v-textarea>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+              <v-btn
+                class="mb-2"
+                @click="getHelp"
+                :loading="loading"
+                :disabled="loading"
+              >
+                Get Help
+              </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+        <v-card v-else>
+          <v-card-title> You have joined the queue... </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <p class="text-h3">
+              People in que:
+              <span class="purple--text lighten-text-1">{{ queLength }}</span>
+            </p>
+            <p class="text-h3">
+              You are
+              <span class="purple--text lighten-text-1">{{ quePosition }}</span>
+              in the que
+            </p>
+          </v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn class="mb-2 deep-orange lighten-2" dark @click="cancelHelp">
+              <v-icon class="mr-1">mdi-cancel</v-icon>Cancel
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" align="center" justify="center">
-        <v-btn @click="getHelp" :loading="waiting" :disabled="waiting"
-          >Get Help</v-btn
-        >
-      </v-col>
-    </v-row>
-    <v-row v-if="waiting">
-      <v-col cols="12" align="center" justify="center">
-        You are 
-        <span class="purple--text lighten-text-1">{{ quePosition }}</span>
-        in the que
-        <br />
-        {{ formattedElapsedTime }}<br />
-        <v-btn dark class="deep-orange lighten-2" @click="cancelHelp">
-          <v-icon class="mr-1">mdi-cancel</v-icon>Cancel
-        </v-btn>
-      </v-col>
+      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
@@ -38,10 +74,18 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      elapsedTime: 0,
-      timer: undefined,
-      waiting: false,
+      labOptions: ["Help", "Marking"],
+      helpObj: {
+        queType: "Help",
+        title: "",
+        desc: "",
+      },
       que: [],
+      loading: false,
+      rules: {
+        required: (value) => !!value || "Required Field",
+        notempty: (value) => value.length > 0 || "Required Field",
+      },
     };
   },
   computed: {
@@ -53,56 +97,57 @@ export default {
       gettingSupport: "socket/gettingSupport",
       queWaiting: "socket/queWaiting",
     }),
-    formattedElapsedTime() {
-      const date = new Date(null);
-      date.setSeconds(this.elapsedTime / 1000);
-      const utc = date.toUTCString();
-      return utc.substr(utc.indexOf(":") + 1, 5);
-    },
-    quePosition() {
-      if (this.que.length > 0) {
-        let response;
-        switch (this.que.indexOf(this.$socket.id)) {
-          case 0:
-            response = "1st";
-            break;
-          case 1:
-            response = "2nd";
-            break;
-          case 2:
-            response = "3rd";
-            break;
-          default:
-            response = (this.que.indexOf(this.$socket.id) + 1).toString() + "th";
-        }
-        return response;
-      }
-      return null;
-    },
     queLength() {
       return this.que.length;
     },
-    queTime() {
-      return "x:xx";
+    quePosition() {
+      let index = this.que.findIndex((x) => x.socketid === this.$socket.id);
+      let response;
+      switch (index) {
+        case 0:
+          response = "1st";
+          break;
+        case 1:
+          response = "2nd";
+          break;
+        case 2:
+          response = "3rd";
+          break;
+        default:
+          response = index + 1 + "th";
+      }
+      return response;
+    },
+  },
+  watch: {
+    "helpObj.queType": {
+      handler() {
+        this.helpObj.desc = "";
+      },
+      deep: true,
     },
   },
   methods: {
-    getHelp() {
-      this.waiting = true;
-      this.timer = setInterval(() => {
-        this.elapsedTime += 1000;
-      }, 1000);
-      const queData = {
-        lab_id: this.lab_id,
-        labCode: this.labCode,
-        socketid: this.$socket.id,
-      };
-      this.$store.dispatch("socket/joinQue").then(() => {
-        this.$socket.emit("joinQue", queData);
-      });
+    async getHelp() {
+      if (this.$refs.helpForm.validate()) {
+        this.loading = true;
+        const queData = {
+          ...this.helpObj,
+          lab_id: this.lab_id,
+          labCode: this.labCode,
+          socketid: this.$socket.id,
+        };
+        await this.$socket.emit("joinQue", queData);
+        this.$store.dispatch("socket/joinQue").then(() => {
+          this.helpObj = {
+            queType: "Help",
+            title: "",
+            desc: "",
+          };
+        });
+      }
     },
     cancelHelp() {
-      this.waiting = false;
       const queData = {
         lab_id: this.lab_id,
         labCode: this.labCode,
@@ -110,8 +155,7 @@ export default {
       };
       this.$store.dispatch("socket/leaveQue").then(() => {
         this.$socket.emit("leaveQue", queData);
-        clearInterval(this.timer);
-        this.elapsedTime = 0;
+        this.loading = false;
       });
     },
   },
@@ -136,7 +180,9 @@ export default {
       data: {
         query: `
               query getQue($lab_id: ID!){
-                getQue(lab_id: $lab_id)
+                getQue(lab_id: $lab_id){
+                  socketid
+                }
               }
             `,
         variables: {

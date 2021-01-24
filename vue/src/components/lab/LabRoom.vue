@@ -99,7 +99,7 @@ export default {
           socketid: this.$socket.id,
         };
         console.log(queData);
-        await this.$socket.emit("cancelHelp", queData);
+        await this.$socket.emit("leaveQue", queData);
       }
       this.$store.dispatch("socket/resetState").then(() => {
         this.$router.push("/");

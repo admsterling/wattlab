@@ -31,7 +31,21 @@ module.exports = buildSchema(`
         messages: [Message!]
         labMembers: [LabMember!]
         privateChats: [Message!]
-        socketIDQue: [String]
+        socketIDQue: [QueObj!]
+    }
+
+    type QueObj {
+        _id: ID!
+        socketid: String!
+        queType: queType!
+        title: String!
+        desc: String
+        lab_id: ID!
+    }
+
+    enum queType {
+        Help
+        Marking
     }
 
     type joinLabReturnData {
@@ -85,13 +99,21 @@ module.exports = buildSchema(`
         STUDENT
         HELPER
         PROFESSOR
-     }
+    }
 
     input ProfCreateData {
         email: String!
         fname: String!
         lname: String!
         password: String!
+    }
+
+    input QueCreateData {
+        socketid: String!
+        queType: queType!
+        title: String!
+        desc: String
+        lab_id: ID!
     }
 
     input LabCreateData {
@@ -127,8 +149,8 @@ module.exports = buildSchema(`
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!
-        joinQue(lab_id: ID!, socketid: String!): [String!]
-        leaveQue(lab_id: ID!, socketid: String!): [String!]
+        joinQue(queObj: QueCreateData!): [QueObj]!
+        leaveQue(lab_id: ID!, socketid: String!): [QueObj]!
         getFirstInQueAndShift(lab_id : ID!): [String!]
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
@@ -141,7 +163,7 @@ module.exports = buildSchema(`
         getLabs(id: String!): LabList!
         getLab(code: String!): Lab!
         labExist(code: String!): Boolean!
-        getQue(lab_id: ID!): [String]!
+        getQue(lab_id: ID!): [QueObj]!
         prof(id: String!): Prof!
         getSubmission(member_id: ID!): String!
     }

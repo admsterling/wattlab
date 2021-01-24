@@ -95,7 +95,7 @@ export default {
       errorList: undefined,
       lab: {
         title: "Test Data",
-        labHelpers: ["as317", "test"],
+        labHelpers: ["as317", "bd12"],
         desc: "This is a test description for the lab.\nAcross multiple lines.",
         url: "https://www.google.com",
         submission: true,

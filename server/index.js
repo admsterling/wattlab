@@ -15,6 +15,7 @@ const graphQLEndpoint =
 const axios = require('axios');
 
 const path = require('path');
+const { log } = require('console');
 const public = path.join(__dirname, 'dist');
 
 app.use(express.static(public));
@@ -53,32 +54,31 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinQue', (queData) => {
+    const room = queData.labCode;
+    delete queData.labCode;
     axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
-              mutation joinQue($lab_id: ID!, $socketid: String!){
-                joinQue(lab_id: $lab_id, socketid: $socketid)
+              mutation joinQue($queObj: QueCreateData!) {
+                joinQue(queObj: $queObj){
+                  socketid
+                  queType
+                  title
+                  desc
+                }
               }
           `,
         variables: {
-          lab_id: queData.lab_id,
-          socketid: queData.socketid,
+          queObj: queData,
         },
       },
     })
       .then((res) => {
-        io.to(queData.labCode).emit('updateQue', res.data.data.joinQue);
+        io.to(room).emit('updateQue', res.data.data.joinQue);
       })
-      .catch((error) => {
-        if (error.response) {
-          let errorList = error.response.data.errors;
-          for (let i = 0; i < this.errorList.length; i++) {
-            console.log(errorList[i].message);
-          }
-        } else {
-          console.log('Error', error.message);
-        }
+      .catch((err) => {
+        console.log(err);
       });
   });
 
@@ -88,7 +88,12 @@ io.on('connection', (socket) => {
       data: {
         query: `
               mutation leaveQue($lab_id: ID!, $socketid: String!){
-                leaveQue(lab_id: $lab_id, socketid: $socketid)
+                leaveQue(lab_id: $lab_id, socketid: $socketid){
+                  socketid
+                  queType
+                  title
+                  desc
+                }
               }
           `,
         variables: {
@@ -101,17 +106,22 @@ io.on('connection', (socket) => {
         io.to(queData.labCode).emit('updateQue', res.data.data.leaveQue);
       })
       .catch((err) => {
-        console.log(err.errors[0].message);
+        console.log(err.response.data);
       });
   });
 
   socket.on('updateQue', (queData) => {
-    return axios(graphQLEndpoint, {
+    axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
-              mutation getFirstInQueAndShift($lab_id: ID!){
-                getFirstInQueAndShift(lab_id: $lab_id)
+              query getQue($lab_id: ID!) {
+                getQue(lab_id: $lab_id) {
+                  socketid
+                  queType
+                  title
+                  desc
+                }
               }
           `,
         variables: {
@@ -120,10 +130,7 @@ io.on('connection', (socket) => {
       },
     })
       .then((res) => {
-        io.to(queData.labCode).emit(
-          'updateQue',
-          res.data.data.getFirstInQueAndShift
-        );
+        io.to(queData.labCode).emit('updateQue', res.data.data.getQue);
       })
       .catch((err) => {
         console.log(err.errors[0].message);
@@ -131,7 +138,37 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startHelp', (recieverData) => {
-    socket.broadcast.to(recieverData.sendTo).emit('startHelp', recieverData);
+    axios(graphQLEndpoint, {
+      method: 'POST',
+      data: {
+        query: `
+              mutation leaveQue($lab_id: ID!, $socketid: String!){
+                leaveQue(lab_id: $lab_id, socketid: $socketid){
+                  socketid
+                  queType
+                  title
+                  desc
+                }
+              }
+          `,
+        variables: {
+          lab_id: recieverData.lab_id,
+          socketid: recieverData.socketid,
+        },
+      },
+    })
+      .then((res) => {
+        io.to(recieverData.labCode).emit('updateQue', res.data.data.leaveQue);
+        delete recieverData.lab_id;
+        delete recieverData.socketid;
+        delete recieverData.labCode;
+        socket.broadcast
+          .to(recieverData.sendTo)
+          .emit('startHelp', recieverData);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
   });
 
   socket.on('startHelper', (helperInfo) => {
@@ -153,6 +190,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    let code;
     axios(graphQLEndpoint, {
       method: 'POST',
       data: {
@@ -161,7 +199,6 @@ io.on('connection', (socket) => {
                 socketMemberLeaveLab(id: $id){
                   _id
                   code
-                  socketIDQue
                 }
               }
           `,
@@ -171,33 +208,30 @@ io.on('connection', (socket) => {
       },
     })
       .then((res) => {
-        if (
-          res.data.data.socketMemberLeaveLab.socketIDQue.includes(socket.id)
-        ) {
-          const queData = {
-            lab_id: res.data.data.socketMemberLeaveLab._id,
-            labCode: res.data.data.socketMemberLeaveLab.code,
-            socketid: socket.id,
-          };
-          axios(graphQLEndpoint, {
-            method: 'POST',
-            data: {
-              query: `
+        code = res.data.data.socketMemberLeaveLab.code;
+        axios(graphQLEndpoint, {
+          method: 'POST',
+          data: {
+            query: `
               mutation leaveQue($lab_id: ID!, $socketid: String!){
-                leaveQue(lab_id: $lab_id, socketid: $socketid)
+                leaveQue(lab_id: $lab_id, socketid: $socketid){
+                  socketid
+                  queType
+                  title
+                  desc
+                }
               }
           `,
-              variables: {
-                lab_id: queData.lab_id,
-                socketid: queData.socketid,
-              },
+            variables: {
+              lab_id: res.data.data.socketMemberLeaveLab._id,
+              socketid: socket.id,
             },
+          },
+        })
+          .then((res) => {
+            io.to(code).emit('updateQue', res.data.data.leaveQue);
           })
-            .then((res) => {
-              io.to(queData.labCode).emit('updateQue', res.data.data.leaveQue);
-            })
-            .catch(() => {});
-        }
+          .catch(() => {});
       })
       .catch(() => {});
     console.log('Socket Disconnected: ' + socket.id);

@@ -37,27 +37,28 @@ const labSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'Message',
         required: true,
-      }
+      },
     ],
     privateChats: [
       {
         type: Schema.Types.ObjectId,
         ref: 'PrivateMessage',
         required: true,
-      }
+      },
     ],
     labMembers: [
       {
         type: Schema.Types.ObjectId,
         ref: 'LabMember',
         required: true,
-      }
+      },
     ],
     socketIDQue: [
       {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'QueObj',
         required: true,
-      }
+      },
     ],
     creator: {
       type: Schema.Types.ObjectId,
