@@ -1,1 +1,57 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>vue</title><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"><link href="/css/chunk-07fc68c4.9bfcd596.css" rel="prefetch"><link href="/css/chunk-12108212.cbdbeadb.css" rel="prefetch"><link href="/css/chunk-15b21b26.fba5bb1e.css" rel="prefetch"><link href="/css/chunk-1a88815e.fba5bb1e.css" rel="prefetch"><link href="/css/chunk-1c8486c4.2242c310.css" rel="prefetch"><link href="/css/chunk-38339793.21473867.css" rel="prefetch"><link href="/css/chunk-41d3db51.4b83cbbc.css" rel="prefetch"><link href="/css/chunk-573c4e92.04cb4dd2.css" rel="prefetch"><link href="/css/chunk-60f8607a.ff2d1a18.css" rel="prefetch"><link href="/css/chunk-6c71d745.df1c2509.css" rel="prefetch"><link href="/css/chunk-7dd3fd86.bdf70c1d.css" rel="prefetch"><link href="/css/chunk-7e3fb4f6.85e964b6.css" rel="prefetch"><link href="/css/chunk-7efec134.46053e0c.css" rel="prefetch"><link href="/css/chunk-b4031610.cce48b1d.css" rel="prefetch"><link href="/css/chunk-bb02ba04.df1c2509.css" rel="prefetch"><link href="/css/chunk-e367a31e.532a3e71.css" rel="prefetch"><link href="/css/chunk-e6f6c86c.4c442003.css" rel="prefetch"><link href="/css/chunk-e9fe4c08.e20e5162.css" rel="prefetch"><link href="/js/chunk-07fc68c4.2e8239d6.js" rel="prefetch"><link href="/js/chunk-12108212.5e798335.js" rel="prefetch"><link href="/js/chunk-15b21b26.75100ef0.js" rel="prefetch"><link href="/js/chunk-1a88815e.1b405f8d.js" rel="prefetch"><link href="/js/chunk-1c8486c4.aa48a3ae.js" rel="prefetch"><link href="/js/chunk-2d0b9823.5d52083b.js" rel="prefetch"><link href="/js/chunk-2d0be0de.88df204d.js" rel="prefetch"><link href="/js/chunk-2d0c4206.4a0200ec.js" rel="prefetch"><link href="/js/chunk-2d0d0540.7cc7c235.js" rel="prefetch"><link href="/js/chunk-2d0d5fcc.e8021e91.js" rel="prefetch"><link href="/js/chunk-2d0da6d8.7cb0267a.js" rel="prefetch"><link href="/js/chunk-2d21af29.52d4749c.js" rel="prefetch"><link href="/js/chunk-38339793.7a7b8154.js" rel="prefetch"><link href="/js/chunk-41d3db51.e52fc9a1.js" rel="prefetch"><link href="/js/chunk-435d2f2b.93414785.js" rel="prefetch"><link href="/js/chunk-573c4e92.fa996dd0.js" rel="prefetch"><link href="/js/chunk-60f8607a.2a836579.js" rel="prefetch"><link href="/js/chunk-6c71d745.269a3e31.js" rel="prefetch"><link href="/js/chunk-7dd3fd86.c1d6c917.js" rel="prefetch"><link href="/js/chunk-7e3fb4f6.fca89aa6.js" rel="prefetch"><link href="/js/chunk-7efec134.34fd4421.js" rel="prefetch"><link href="/js/chunk-9f977a14.39633131.js" rel="prefetch"><link href="/js/chunk-b4031610.5b938d92.js" rel="prefetch"><link href="/js/chunk-bb02ba04.99222448.js" rel="prefetch"><link href="/js/chunk-e367a31e.0f39a2d0.js" rel="prefetch"><link href="/js/chunk-e6f6c86c.bc15f619.js" rel="prefetch"><link href="/js/chunk-e9fe4c08.d6fc6e01.js" rel="prefetch"><link href="/css/app.4f005e0d.css" rel="preload" as="style"><link href="/css/chunk-vendors.41180e0d.css" rel="preload" as="style"><link href="/js/app.4ca0edfb.js" rel="preload" as="script"><link href="/js/chunk-vendors.2567d856.js" rel="preload" as="script"><link href="/css/chunk-vendors.41180e0d.css" rel="stylesheet"><link href="/css/app.4f005e0d.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="/js/chunk-vendors.2567d856.js"></script><script src="/js/app.4ca0edfb.js"></script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/hw_icon.ico"><title>WattLab</title><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"><style>#loading-wrapper {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+    }
+
+    #loading-text {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      color: rgb(20, 121, 60);
+      width: 100px;
+      height: 30px;
+      margin: -7px 0 0 -45px;
+      text-align: center;
+      font-family: 'PT Sans Narrow', sans-serif;
+      font-size: 20px;
+    }
+
+    #loading-content {
+      display: block;
+      position: relative;
+      left: 50%;
+      top: 50%;
+      width: 170px;
+      height: 170px;
+      margin: -85px 0 0 -85px;
+      border: 3px solid #F00;
+    }
+
+    #loading-content {
+      border: 3px solid transparent;
+      border-top-color: rgb(121, 61, 185);
+      border-bottom-color: rgb(121, 61, 185);
+      border-radius: 50%;
+      -webkit-animation: loader 2s linear infinite;
+      -moz-animation: loader 2s linear infinite;
+      -o-animation: loader 2s linear infinite;
+      animation: loader 2s linear infinite;
+    }
+
+    @keyframes loader {
+      0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }</style><link href="/css/chunk-07fc68c4.9bfcd596.css" rel="prefetch"><link href="/css/chunk-15b21b26.fba5bb1e.css" rel="prefetch"><link href="/css/chunk-1a88815e.fba5bb1e.css" rel="prefetch"><link href="/css/chunk-1c8486c4.2242c310.css" rel="prefetch"><link href="/css/chunk-3cc26e82.3452b704.css" rel="prefetch"><link href="/css/chunk-41d3db51.4b83cbbc.css" rel="prefetch"><link href="/css/chunk-573c4e92.04cb4dd2.css" rel="prefetch"><link href="/css/chunk-60c2cec6.a88c6662.css" rel="prefetch"><link href="/css/chunk-60f8607a.ff2d1a18.css" rel="prefetch"><link href="/css/chunk-6c71d745.df1c2509.css" rel="prefetch"><link href="/css/chunk-70219bcc.af295e5e.css" rel="prefetch"><link href="/css/chunk-7cf39dd9.9d21c0d7.css" rel="prefetch"><link href="/css/chunk-7dd3fd86.bdf70c1d.css" rel="prefetch"><link href="/css/chunk-7e3fb4f6.85e964b6.css" rel="prefetch"><link href="/css/chunk-86bf3fd8.64532eec.css" rel="prefetch"><link href="/css/chunk-959d7f04.76de4435.css" rel="prefetch"><link href="/css/chunk-b4031610.cce48b1d.css" rel="prefetch"><link href="/css/chunk-bb02ba04.df1c2509.css" rel="prefetch"><link href="/css/chunk-bc4a25b6.e95357a8.css" rel="prefetch"><link href="/css/chunk-df61a3da.cbdbeadb.css" rel="prefetch"><link href="/css/chunk-e9fe4c08.e20e5162.css" rel="prefetch"><link href="/js/chunk-07fc68c4.2e8239d6.js" rel="prefetch"><link href="/js/chunk-15b21b26.39f9eea3.js" rel="prefetch"><link href="/js/chunk-1a88815e.82e08aee.js" rel="prefetch"><link href="/js/chunk-1c8486c4.df68ecbb.js" rel="prefetch"><link href="/js/chunk-2d0b9823.c2bf54e2.js" rel="prefetch"><link href="/js/chunk-2d0be0de.a9adaeed.js" rel="prefetch"><link href="/js/chunk-2d0c4206.8fd60933.js" rel="prefetch"><link href="/js/chunk-2d0d0540.823eeb77.js" rel="prefetch"><link href="/js/chunk-2d21af29.30e5ed36.js" rel="prefetch"><link href="/js/chunk-3cc26e82.38dcd376.js" rel="prefetch"><link href="/js/chunk-3e12fc76.7f007168.js" rel="prefetch"><link href="/js/chunk-41d3db51.e52fc9a1.js" rel="prefetch"><link href="/js/chunk-573c4e92.fa996dd0.js" rel="prefetch"><link href="/js/chunk-60c2cec6.36575da6.js" rel="prefetch"><link href="/js/chunk-60f8607a.1941898b.js" rel="prefetch"><link href="/js/chunk-6c71d745.910a8bb3.js" rel="prefetch"><link href="/js/chunk-70219bcc.29ce8990.js" rel="prefetch"><link href="/js/chunk-7cf39dd9.94ab61bc.js" rel="prefetch"><link href="/js/chunk-7dd3fd86.c301d25c.js" rel="prefetch"><link href="/js/chunk-7e3fb4f6.fca89aa6.js" rel="prefetch"><link href="/js/chunk-86bf3fd8.658e47b3.js" rel="prefetch"><link href="/js/chunk-959d7f04.673ea8ee.js" rel="prefetch"><link href="/js/chunk-9f977a14.73c7a039.js" rel="prefetch"><link href="/js/chunk-b4031610.5b938d92.js" rel="prefetch"><link href="/js/chunk-bb02ba04.e2573298.js" rel="prefetch"><link href="/js/chunk-bc4a25b6.a4b8bb0f.js" rel="prefetch"><link href="/js/chunk-df61a3da.e821d2c6.js" rel="prefetch"><link href="/js/chunk-e9fe4c08.a2162712.js" rel="prefetch"><link href="/css/app.4f005e0d.css" rel="preload" as="style"><link href="/css/chunk-vendors.41180e0d.css" rel="preload" as="style"><link href="/js/app.7a5f0491.js" rel="preload" as="script"><link href="/js/chunk-vendors.2567d856.js" rel="preload" as="script"><link href="/css/chunk-vendors.41180e0d.css" rel="stylesheet"><link href="/css/app.4f005e0d.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but vue doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"><div id="loading-wrapper"><div id="loading-text">LOADING</div><div id="loading-content"></div></div></div><script src="/js/chunk-vendors.2567d856.js"></script><script src="/js/app.7a5f0491.js"></script></body></html>
