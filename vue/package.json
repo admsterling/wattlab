@@ -16,6 +16,7 @@
     "socket.io-client": "^3.0.4",
     "vue": "^2.6.11",
     "vue-moment": "^4.1.0",
+    "vue-pincode-input": "^0.4.0",
     "vue-router": "^3.4.9",
     "vue-socket.io": "^3.0.10",
     "vue-toastification": "^1.7.8",

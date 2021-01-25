@@ -125,8 +125,8 @@ const actions = {
       method: 'POST',
       data: {
         query: `
-        mutation joinLab($code: String!, $username: String!, $socketid: String!) {
-          joinLab(code: $code, username: $username, socketid: $socketid) {
+        mutation joinLab($code: String!, $username: String!, $helperPIN: Int, $socketid: String!) {
+          joinLab(code: $code, username: $username, helperPIN: $helperPIN, socketid: $socketid) {
             lab {
               _id
               title
@@ -158,6 +158,7 @@ const actions = {
         variables: {
           code: context.code,
           username: context.username,
+          helperPIN: context.helperPIN,
           socketid: context.socketid,
         },
       },

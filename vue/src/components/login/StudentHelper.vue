@@ -39,6 +39,17 @@
             @keyup.enter="submit"
           ></v-text-field>
         </v-row>
+        <v-row class="mt-2" align="center">
+          <v-col>
+            <span class="text-subtitle-1">Lab Helper PIN number:</span>
+            <br />
+            <PincodeInput
+              v-model="helperPIN"
+              placeholder="0"
+              :autofocus="false"
+            />
+          </v-col>
+        </v-row>
         <v-row align="center">
           <v-col class="text-center">
             <v-btn
@@ -59,10 +70,16 @@
 
 <script>
 import axios from "axios";
+import PincodeInput from "vue-pincode-input";
+
 export default {
+  components: {
+    PincodeInput,
+  },
   data() {
     return {
-      labCode: "987BD2",
+      labCode: "92BC01",
+      helperPIN: "",
       username: "te13",
       submitted: false,
       validForm: true,
@@ -98,6 +115,7 @@ export default {
             const contextData = {
               code: this.labCode,
               username: this.username,
+              helperPIN: parseFloat(this.helperPIN),
               socketid: this.$socket.id,
             };
             this.$store

@@ -23,6 +23,7 @@ module.exports = buildSchema(`
         status: Boolean!
         submission: Boolean!
         code: String!
+        helperPIN: Int!
         desc: String!
         url: String!
         creator: Prof!
@@ -142,7 +143,7 @@ module.exports = buildSchema(`
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Lab!
         updateLab(code: String!, title: String!, desc: String!, url: String!, helpers: [String!]!, submission: Boolean!): Boolean!
-        joinLab(code: String!, username: String!, socketid: String!): joinLabReturnData!
+        joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!
         createMessage(messageInput: MessageCreateData): MessageReturn!

@@ -15,6 +15,11 @@ const labSchema = new Schema(
     ],
     code: {
       type: String,
+      required: true,
+    },
+    helperPIN: {
+      type: String,
+      required: true,
     },
     desc: {
       type: String,

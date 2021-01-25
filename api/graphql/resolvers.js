@@ -135,10 +135,13 @@ module.exports = {
       }
     }
 
+    const helperPIN = Math.floor(1000 + Math.random() * 9000);
+
     const lab = new Lab({
       title: labInput.title,
       helpers: labInput.helpers,
       code: code,
+      helperPIN: helperPIN,
       desc: labInput.desc,
       url: labInput.url,
       messages: [],
@@ -228,7 +231,7 @@ module.exports = {
     lab.save();
     return true;
   },
-  joinLab: async function ({ code, username, socketid }) {
+  joinLab: async function ({ code, username, helperPIN, socketid }) {
     const lab = await Lab.findOne({
       code: code,
     })
@@ -243,6 +246,14 @@ module.exports = {
     }
     if (!lab.status) {
       const error = new Error('Lab has not started');
+      error.code = 404;
+      throw error;
+    }
+    if (
+      lab.helpers.includes(username) &&
+      helperPIN != lab.helperPIN
+    ) {
+      const error = new Error('Lab Helper PIN Incorrect');
       error.code = 404;
       throw error;
     }
@@ -501,7 +512,7 @@ module.exports = {
   },
   leaveQue: async function ({ lab_id, socketid }) {
     const lab = await Lab.findById(lab_id).populate('socketIDQue');
-   
+
     if (!lab) {
       const error = new Error('No lab found!');
       error.code = 404;

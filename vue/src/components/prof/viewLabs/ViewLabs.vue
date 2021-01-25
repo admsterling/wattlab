@@ -17,6 +17,7 @@
               <tr>
                 <th class="text-left">Title</th>
                 <th class="text-left">Code</th>
+                <th class="text-left">Lab Helper PIN</th>
                 <th class="text-left">Created:</th>
                 <th class="text-left">Status</th>
                 <th class="text-left"></th>
@@ -49,6 +50,7 @@
                   <span class="ml-4">{{ lab.title }}</span>
                 </td>
                 <td>{{ lab.code }}</td>
+                <td>{{ lab.helperPIN }}</td>
                 <td>{{ lab.createdAt | moment("ddd, DD-MM-YY") }}</td>
                 <td>
                   <v-switch
@@ -71,10 +73,18 @@
                   >
                     <v-icon left>mdi-account-multiple-plus</v-icon>Join
                   </v-btn>
-                  <v-btn :disabled="lab.status" class="warning ma-1" @click="editLab(i)">
+                  <v-btn
+                    :disabled="lab.status"
+                    class="warning ma-1"
+                    @click="editLab(i)"
+                  >
                     <v-icon left>mdi-pencil</v-icon>Edit
                   </v-btn>
-                  <v-btn :disabled="lab.status" class="error ma-1" @click="deleteLab(i)">
+                  <v-btn
+                    :disabled="lab.status"
+                    class="error ma-1"
+                    @click="deleteLab(i)"
+                  >
                     <v-icon left>mdi-delete-forever</v-icon>Delete
                   </v-btn>
                 </td>
@@ -305,6 +315,7 @@ export default {
                       title
                       desc
                       code
+                      helperPIN
                       status
                       helpers
                       createdAt
