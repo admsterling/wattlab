@@ -249,10 +249,7 @@ module.exports = {
       error.code = 404;
       throw error;
     }
-    if (
-      lab.helpers.includes(username) &&
-      helperPIN != lab.helperPIN
-    ) {
+    if (lab.helpers.includes(username) && helperPIN != lab.helperPIN) {
       const error = new Error('Lab Helper PIN Incorrect');
       error.code = 404;
       throw error;
@@ -648,5 +645,19 @@ module.exports = {
     } else {
       return labmember.submissionLink;
     }
+  },
+  requireCall: async function ({ private_chat_id }) {
+    const privateChat = await PrivateChat.findById(private_chat_id);
+
+    if (!privateChat) {
+      const error = new Error('No Private Chat found.');
+      error.code = 404;
+      throw error;
+    }
+
+    privateChat.requiredCall = true;
+    privateChat.save();
+
+    return true;
   },
 };

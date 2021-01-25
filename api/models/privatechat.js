@@ -26,6 +26,11 @@ const privateChatSchema = new Schema(
       type: String,
       required: false,
     },
+    requiredCall: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     lab_id: {
       type: Schema.Types.ObjectId,
       ref: 'Lab',

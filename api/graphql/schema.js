@@ -94,6 +94,7 @@ module.exports = buildSchema(`
         messages: [Message!]
         rating: Int
         feedback: String
+        requiredCall: Boolean!
     }
 
     enum accountType {
@@ -157,6 +158,7 @@ module.exports = buildSchema(`
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
         sendFeedback(id: ID!, value: Int!, feedback: String): Boolean!
         addSubmission(member_id: ID!, submissionLink: String!): String!
+        requireCall(private_chat_id: ID!): Boolean!
     }
 
     type RootQuery {

@@ -179,6 +179,10 @@ io.on('connection', (socket) => {
     io.to(socketData.reciever).emit('newPrivateMessage', socketData.message);
   });
 
+  socket.on('callStudent', (reciever) => {
+    io.to(reciever).emit('newCall');
+  });
+
   socket.on('updateCodeBlock', (codeData) => {
     socket.broadcast
       .to(codeData.reciever)

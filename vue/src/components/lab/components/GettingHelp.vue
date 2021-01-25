@@ -17,6 +17,30 @@
           {{ this.privateChat.student }}
         </span>
         <v-btn class="float-right" @click="closeHelp"> Close Help </v-btn>
+        <v-btn
+          v-if="this.accountType === 'HELPER'"
+          class="mr-2 float-right"
+          @click="callStudent"
+        >
+          Call Student
+          <v-icon small class="ml-2"> mdi-phone </v-icon>
+        </v-btn>
+        <v-dialog v-model="callingDialog" max-width="400">
+          <v-card>
+            <v-card-title class="headline">
+              A Lab Helper is trying to contact you on teams
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text class="my-2 justify-center">
+              Please open teams and accept the call.
+            </v-card-text>
+            <v-card-actions class="mb-2 justify-center">
+              <v-btn class="purple lighten-1" dark @click="openTeams">
+                Open Microsoft Teams
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <RatingComponent
           v-if="this.accountType === 'STUDENT'"
           :rating="rating"
@@ -206,6 +230,7 @@ export default {
         value: 0,
         feedback: "",
       },
+      callingDialog: false,
     };
   },
   computed: {
@@ -240,6 +265,9 @@ export default {
     },
     newPrivateMessage: function (data) {
       this.$store.dispatch("socket/addPrivateMessage", data);
+    },
+    newCall: function () {
+      this.callingDialog = true;
     },
   },
   methods: {
@@ -307,6 +335,38 @@ export default {
         this.$socket.emit("stopHelp", this.gettingSupport.reciever);
         this.$store.dispatch("socket/stopHelp");
       }
+    },
+    callStudent() {
+      console.log(this.privateChat._id);
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              mutation requireCall($private_chat_id: ID!){
+                requireCall(private_chat_id: $private_chat_id)
+              }
+            `,
+          variables: {
+            private_chat_id: this.privateChat._id,
+          },
+        },
+      })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.$socket.emit("callStudent", this.gettingSupport.reciever);
+          const username = this.privateChat.student;
+          const url = "callto:" + username + "@hw.ac.uk";
+
+          window.open(url, "_blank");
+        });
+    },
+    openTeams() {
+      const url = "https://teams.microsoft.com";
+
+      const win = window.open(url, "_blank");
+      win.focus();
     },
     confirmed() {
       axios(process.env.VUE_APP_ENDPOINT, {
