@@ -27,7 +27,7 @@
           <v-text-field
             v-model="username"
             ref="name"
-            maxlength="6"
+            maxlength="7"
             :rules="usernameRules"
             label="Heriot-Watt Username:"
             hint="Your username is the start of your HW e-mail xxx@hw.ac.uk"
@@ -89,7 +89,7 @@ export default {
       ],
       usernameRules: [
         (value) => !!value || "Required",
-        (value) => /^[a-z]{2}[0-9]{1,4}$/.test(value) || "Incorrect Format",
+        (value) => /^[a-z]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
       ],
     };
   },
