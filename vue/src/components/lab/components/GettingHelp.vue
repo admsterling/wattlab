@@ -37,6 +37,7 @@
             <v-card-actions class="mb-2 justify-center">
               <v-btn class="purple lighten-1" dark @click="openTeams">
                 Open Microsoft Teams
+                <v-icon class="ml-2"> mdi-account-group </v-icon>
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -241,6 +242,7 @@ export default {
       gettingSupport: "socket/gettingSupport",
       privateChat: "socket/privateChat",
       privateChatMessages: "socket/privateChatMessages",
+      volume: "application/volume",
     }),
   },
   watch: {
@@ -411,6 +413,11 @@ export default {
   },
   mounted() {
     this.scrollToEnd();
+
+    if (this.volume) {
+      const audio = new Audio(require("../../../assets/helper_connected.mp3"));
+      audio.play();
+    }
 
     CodeMirror.fromTextArea(document.getElementById("editor"), {
       value: "let i = 0;",

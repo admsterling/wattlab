@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import prof from './modules/prof';
 import socket from './modules/socket';
+import application from './modules/application';
 
 Vue.use(Vuex);
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
   modules: {
     prof: prof,
     socket: socket,
+    application: application,
   },
   strict: debug,
 });
