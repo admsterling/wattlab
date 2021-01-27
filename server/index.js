@@ -27,6 +27,12 @@ app.use(
 );
 app.use(express.static(public));
 
+app.get('/.well-known/acme-challenge/:content', function (req, res) {
+  res.send(
+    'e1Kl85VL6scG0nMLOSh30XbqI8_38Jt_ytH2f6oWOVw.F9zQ2p2U8uNz-QWPE6ERcgvf66-afXkWIV023lydv6I'
+  );
+});
+
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
 
