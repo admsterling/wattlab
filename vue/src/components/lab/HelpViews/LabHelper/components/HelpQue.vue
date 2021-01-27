@@ -1,6 +1,6 @@
 <template>
   <v-container no-gutters>
-    <v-row>
+    <v-row no-gutters>
       <v-col cols="12" align="center" justify="center">
         <v-card>
           <v-card-title>
@@ -8,17 +8,36 @@
             <span class="purple--text lighten-text-1 ml-2">
               {{ queLength }}
             </span>
+            <v-spacer></v-spacer>
+            <v-btn
+              class="purple--text lighten-text-1 mx-2"
+              outlined
+              @click="helpNext"
+            >
+              Help Next Student
+            </v-btn>
+            <v-btn
+              class="purple--text lighten-text-1 mx-2"
+              outlined
+              @click="markNext"
+            >
+              Mark Next Student
+            </v-btn>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
-            <v-simple-table fixed-header height="300px">
+            <v-simple-table
+              fixed-header
+              style="height: calc(100vh - 340px); overflow-y: scroll"
+              scrollable
+            >
               <thead>
                 <tr>
-                  <th class="text-left">Time Elapsed</th>
-                  <th class="text-left">Type</th>
-                  <th class="text-left">Title</th>
-                  <th class="text-left">Description</th>
-                  <th class="text-left"></th>
+                  <th class="text-left" style="width: 107px">Time Elapsed</th>
+                  <th class="text-left" style="width: 60px">Type</th>
+                  <th class="text-left" style="width: 20%">Title</th>
+                  <th class="text-left" style="width: 100%">Description</th>
+                  <th class="text-left" style="width: 180px"></th>
                 </tr>
               </thead>
               <tbody>
@@ -91,6 +110,24 @@ export default {
       };
       this.$socket.emit("startHelp", recieverData);
       this.waiting = false;
+    },
+    helpNext() {
+      let indexPos = this.que
+        .map(function (x) {
+          return x.queType;
+        })
+        .indexOf("Help");
+      console.log(indexPos);
+      this.startHelp(indexPos);
+    },
+    markNext() {
+      let indexPos = this.que
+        .map(function (x) {
+          return x.queType;
+        })
+        .indexOf("Marking");
+      console.log(indexPos);
+      this.startHelp(indexPos);
     },
   },
   sockets: {
