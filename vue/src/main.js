@@ -8,7 +8,8 @@ import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
-const connectionString = process.env.VUE_APP_SOCKETIO_CONNECTION || window.location.hostname;
+const connectionString =
+  process.env.VUE_APP_SOCKETIO_CONNECTION || window.location.hostname;
 const socketConnection = SocketIO(connectionString);
 
 const devFlag = process.env.VUE_APP_DEV_FLAG || false;
@@ -42,6 +43,14 @@ const options = {
 Vue.use(Toast, options);
 
 Vue.use(require('vue-moment'));
+import moment from 'moment';
+
+Vue.prototype.moment = moment;
+Vue.filter('momentAgo', function(date) {
+  let now = Date.now();
+  let diff = now - new Date(date);
+  return moment(diff).format('mm:ss');
+});
 
 new Vue({
   vuetify,

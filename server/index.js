@@ -73,6 +73,7 @@ io.on('connection', (socket) => {
                   queType
                   title
                   desc
+                  createdAt
                 }
               }
           `,
@@ -100,6 +101,7 @@ io.on('connection', (socket) => {
                   queType
                   title
                   desc
+                  createdAt
                 }
               }
           `,
@@ -128,6 +130,7 @@ io.on('connection', (socket) => {
                   queType
                   title
                   desc
+                  createdAt
                 }
               }
           `,
@@ -155,6 +158,7 @@ io.on('connection', (socket) => {
                   queType
                   title
                   desc
+                  createdAt
                 }
               }
           `,

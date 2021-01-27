@@ -14,6 +14,7 @@
             <v-simple-table fixed-header height="300px">
               <thead>
                 <tr>
+                  <th class="text-left">Time Elapsed</th>
                   <th class="text-left">Type</th>
                   <th class="text-left">Title</th>
                   <th class="text-left">Description</th>
@@ -22,6 +23,9 @@
               </thead>
               <tbody>
                 <tr v-for="(queItem, i) in que" :key="i">
+                  <td>
+                    {{ queItem.createdAt | momentAgo }}
+                  </td>
                   <td>{{ queItem.queType }}</td>
                   <td>{{ queItem.title }}</td>
                   <td>{{ queItem.desc }}</td>
@@ -59,6 +63,7 @@ export default {
         { text: "Help Student" },
       ],
       que: [],
+      now: Date.now(),
     };
   },
   computed: {
@@ -97,6 +102,9 @@ export default {
     },
   },
   mounted() {
+    this.interval = setInterval(() => {
+      this.$forceUpdate();
+    }, 1000);
     axios(process.env.VUE_APP_ENDPOINT, {
       method: "POST",
       data: {
@@ -107,6 +115,7 @@ export default {
                   queType
                   title
                   desc
+                  createdAt
                 }
               }
             `,
@@ -116,7 +125,6 @@ export default {
       },
     })
       .then((res) => {
-        console.log(res.data.data.getQue);
         this.que = res.data.data.getQue;
       })
       .catch((error) => {
@@ -129,6 +137,9 @@ export default {
           console.log("Error", error.message);
         }
       });
+  },
+  beforeDestroy() {
+    clearInterval(this.interval);
   },
 };
 </script>

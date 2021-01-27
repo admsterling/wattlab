@@ -478,6 +478,8 @@ module.exports = {
         ...q._doc,
         _id: q._id.toString(),
         lab_id: q._id.toString(),
+        createdAt: q.createdAt.toISOString(),
+        updatedAt: q.updatedAt.toISOString(),
       };
     });
   },
@@ -504,6 +506,8 @@ module.exports = {
         ...q._doc,
         _id: q._id.toString(),
         lab_id: q._id.toString(),
+        createdAt: q.createdAt.toISOString(),
+        updatedAt: q.updatedAt.toISOString(),
       };
     });
   },
@@ -530,6 +534,8 @@ module.exports = {
         ...q._doc,
         _id: q._id.toString(),
         lab_id: q._id.toString(),
+        createdAt: q.createdAt.toISOString(),
+        updatedAt: q.updatedAt.toISOString(),
       };
     });
   },

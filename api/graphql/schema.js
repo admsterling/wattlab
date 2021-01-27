@@ -42,6 +42,8 @@ module.exports = buildSchema(`
         title: String!
         desc: String
         lab_id: ID!
+        createdAt: String!
+        updatedAt: String!
     }
 
     enum queType {
