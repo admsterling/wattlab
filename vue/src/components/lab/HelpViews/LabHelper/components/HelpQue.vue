@@ -112,22 +112,28 @@ export default {
       this.waiting = false;
     },
     helpNext() {
-      let indexPos = this.que
+      const indexPos = this.que
         .map(function (x) {
           return x.queType;
         })
         .indexOf("Help");
-      console.log(indexPos);
-      this.startHelp(indexPos);
+      if (indexPos) {
+        this.startHelp(indexPos);
+      } else {
+        this.$toast.error("No Students need help");
+      }
     },
     markNext() {
-      let indexPos = this.que
+      const indexPos = this.que
         .map(function (x) {
           return x.queType;
         })
         .indexOf("Marking");
-      console.log(indexPos);
-      this.startHelp(indexPos);
+      if (indexPos) {
+        this.startHelp(indexPos);
+      } else {
+        this.$toast.error("No Students need marking");
+      }
     },
   },
   sockets: {
