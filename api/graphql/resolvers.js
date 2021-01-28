@@ -667,7 +667,9 @@ module.exports = {
 
     return true;
   },
-  getActiveMembers: async function ({ lab_id }) {
+  getActiveMembers: async function ({ lab_id }, req) {
+    checkAuth(req.isAuth);
+
     const lab = await Lab.findById(lab_id);
 
     if (!lab) {
@@ -679,7 +681,7 @@ module.exports = {
     const result = await LabMember.find({
       lab_id: lab_id,
       inRoom: true,
-    }).count();
+    }).countDocuments();
 
     return result;
   },

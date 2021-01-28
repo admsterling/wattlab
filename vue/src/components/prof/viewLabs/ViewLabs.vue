@@ -336,7 +336,6 @@ export default {
       event.target.classList.remove("blue--text");
 
       if (labCount) {
-        this.$toast.success("Count fetched");
         if (event.target.parentNode.childNodes.length != 1) {
           document.getElementById("count-" + i).remove();
         }
