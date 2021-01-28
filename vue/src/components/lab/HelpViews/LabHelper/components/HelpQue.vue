@@ -117,7 +117,7 @@ export default {
           return x.queType;
         })
         .indexOf("Help");
-      if (indexPos) {
+      if (indexPos != -1) {
         this.startHelp(indexPos);
       } else {
         this.$toast.error("No Students need help");
@@ -129,7 +129,7 @@ export default {
           return x.queType;
         })
         .indexOf("Marking");
-      if (indexPos) {
+      if (indexPos != -1) {
         this.startHelp(indexPos);
       } else {
         this.$toast.error("No Students need marking");
