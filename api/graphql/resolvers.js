@@ -11,6 +11,7 @@ const PrivateChat = require('../models/privatechat');
 const PrivateMessage = require('../models/privatemessage');
 const LabMember = require('../models/labmember');
 const QueObj = require('../models/queobj');
+const lab = require('../models/lab');
 const api_key = process.env.KEY;
 
 function checkAuth(flag) {
@@ -665,5 +666,21 @@ module.exports = {
     privateChat.save();
 
     return true;
+  },
+  getActiveMembers: async function ({ lab_id }) {
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No Lab found.');
+      error.code = 404;
+      throw error;
+    }
+
+    const result = await LabMember.find({
+      lab_id: lab_id,
+      inRoom: true,
+    }).count();
+
+    return result;
   },
 };

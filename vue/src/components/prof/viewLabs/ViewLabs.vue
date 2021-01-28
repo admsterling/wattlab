@@ -16,6 +16,7 @@
             <thead>
               <tr>
                 <th class="text-left">Title</th>
+                <th class="text-left">Students In Lab</th>
                 <th class="text-left">Code</th>
                 <th class="text-left">Lab Helper PIN</th>
                 <th class="text-left">Created:</th>
@@ -48,6 +49,11 @@
                     </ul>
                   </v-tooltip>
                   <span class="ml-4">{{ lab.title }}</span>
+                </td>
+                <td>
+                  <v-icon class="mr-2" @click="loadMembers(i, $event)"
+                    >mdi-refresh</v-icon
+                  >
                 </td>
                 <td>{{ lab.code }}</td>
                 <td>{{ lab.helperPIN }}</td>
@@ -301,10 +307,51 @@ export default {
           this.loadingOverlay = false;
         });
     },
+    async loadMembers(i, event) {
+      event.target.classList.add("blue--text");
+      const labCount = await axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getActiveMembers($lab_id: ID!) {
+                  getActiveMembers(lab_id: $lab_id)
+                }
+          `,
+          variables: {
+            lab_id: this.labs[i]._id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      });
+
+      function insertAfter(referenceNode, newNode) {
+        referenceNode.parentNode.insertBefore(
+          newNode,
+          referenceNode.nextSibling
+        );
+      }
+
+      event.target.classList.remove("blue--text");
+
+      if (labCount) {
+        this.$toast.success("Count fetched");
+        if (event.target.parentNode.childNodes.length != 1) {
+          document.getElementById("count-" + i).remove();
+        }
+        let el = document.createElement("span");
+        el.setAttribute("id", "count-" + i);
+        el.innerHTML = labCount.data.data.getActiveMembers;
+        insertAfter(event.target, el);
+      } else {
+        this.$toast.error("Unable to fetch count");
+      }
+    },
   },
-  mounted() {
+  async mounted() {
     this.loading = true;
-    axios(process.env.VUE_APP_ENDPOINT, {
+    const labList = await axios(process.env.VUE_APP_ENDPOINT, {
       method: "POST",
       data: {
         query: `
@@ -319,6 +366,7 @@ export default {
                       status
                       helpers
                       createdAt
+
                   }
                 }
               }
@@ -330,23 +378,11 @@ export default {
       headers: {
         Authorization: `Bearer ${this.$store.state.prof.token}`,
       },
-    })
-      .then((res) => {
-        this.labs = res.data.data.getLabs.labs;
-      })
-      .catch((error) => {
-        if (error.response) {
-          this.errorList = error.response.data.errors;
-          for (let i = 0; i < this.errorList.length; i++) {
-            this.$toast.error(this.errorList[i].message);
-          }
-        } else {
-          console.log("Error", error.message);
-        }
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+    });
+
+    this.labs = labList.data.data.getLabs.labs;
+
+    this.loading = false;
   },
 };
 </script>
