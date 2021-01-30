@@ -214,8 +214,26 @@ io.on('connection', (socket) => {
       .emit('updateCodeBlock', codeData.code);
   });
 
-  socket.on('stopHelp', (socketID) => {
-    socket.broadcast.to(socketID).emit('stopHelp');
+  socket.on('stopHelp', (data) => {
+    console.log(data);
+
+    socket.broadcast.to(data.socketid).emit('stopHelp');
+
+    axios(graphQLEndpoint, {
+      method: 'POST',
+      data: {
+        query: `
+              mutation stopHelp($priv_id: ID!) {
+                stopHelp(priv_id: $priv_id)
+              }
+          `,
+        variables: {
+          priv_id: data.priv_id,
+        },
+      },
+    }).catch((err) => {
+      console.log(err.response.data.errors[0]);
+    });
   });
 
   socket.on('disconnect', () => {

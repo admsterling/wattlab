@@ -16,15 +16,18 @@
         <span v-else class="ml-3 font-weight-bold">
           {{ this.privateChat.student }}
         </span>
-        <v-btn class="float-right" @click="closeHelp"> Close Help </v-btn>
-        <v-btn
-          v-if="this.accountType === 'HELPER'"
-          class="mr-2 float-right"
-          @click="callStudent"
-        >
-          Call Student
-          <v-icon small class="ml-2"> mdi-phone </v-icon>
-        </v-btn>
+        <div class="float-right">
+          <v-btn
+            v-if="this.accountType === 'HELPER'"
+            class="mr-2"
+            @click="callStudent"
+          >
+            Call Student
+            <v-icon small class="ml-2"> mdi-phone </v-icon>
+          </v-btn>
+          <v-btn @click="closeHelp"> Close Help </v-btn>
+        </div>
+
         <v-dialog v-model="callingDialog" max-width="400">
           <v-card>
             <v-card-title class="headline">
@@ -330,11 +333,18 @@ export default {
         });
     },
     closeHelp() {
+      const data = {
+        socketid: this.gettingSupport.reciever,
+        priv_id: this.privateChat._id,
+      };
+
+      console.log(data);
+
+      this.$socket.emit("stopHelp", data);
+
       if (this.accountType === "STUDENT") {
-        this.$socket.emit("stopHelp", this.gettingSupport.reciever);
         this.$refs.ratingDialog.open();
       } else {
-        this.$socket.emit("stopHelp", this.gettingSupport.reciever);
         this.$store.dispatch("socket/stopHelp");
       }
     },

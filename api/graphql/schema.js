@@ -104,6 +104,7 @@ module.exports = buildSchema(`
         rating: Int
         feedback: String
         requiredCall: Boolean!
+        active: Boolean!
     }
 
     type queReturn {
@@ -174,6 +175,7 @@ module.exports = buildSchema(`
         sendFeedback(id: ID!, value: Int!, feedback: String): Boolean!
         addSubmission(member_id: ID!, submissionLink: String!): String!
         requireCall(private_chat_id: ID!): Boolean!
+        stopHelp(priv_id: ID!) : Boolean!
     }
 
     type RootQuery {

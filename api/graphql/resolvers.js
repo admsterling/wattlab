@@ -705,4 +705,13 @@ module.exports = {
 
     return result;
   },
+  stopHelp: async function ({ priv_id }) {
+    const privateChat = await PrivateChat.findById(priv_id);
+
+    privateChat.active = false;
+
+    privateChat.save();
+
+    return true;
+  },
 };
