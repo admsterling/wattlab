@@ -33,7 +33,7 @@ module.exports = buildSchema(`
         labMembers: [LabMember!]
         privateChats: [Message!]
         socketIDQue: [QueObj!]
-        queTimes: queTimes!
+        queTimes: [Int]!
     }
 
     type QueObj {
@@ -45,10 +45,6 @@ module.exports = buildSchema(`
         lab_id: ID!
         createdAt: String!
         updatedAt: String!
-    }
-    type queTimes {
-        times: [Int]!
-        total: Int!
     }
 
     enum queType {
@@ -102,6 +98,11 @@ module.exports = buildSchema(`
         rating: Int
         feedback: String
         requiredCall: Boolean!
+    }
+
+    type queReturn {
+        que: [QueObj]!
+        averageTime: Int!
     }
 
     enum accountType {
@@ -158,8 +159,8 @@ module.exports = buildSchema(`
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!
-        joinQue(queObj: QueCreateData!): [QueObj]!
-        leaveQue(lab_id: ID!, socketid: String!, helpingTime: Int): [QueObj]!
+        joinQue(queObj: QueCreateData!): queReturn!
+        leaveQue(lab_id: ID!, socketid: String!, helpingTime: Int): queReturn!
         getFirstInQueAndShift(lab_id : ID!): [String!]
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!
@@ -173,7 +174,7 @@ module.exports = buildSchema(`
         getLabs(id: String!): LabList!
         getLab(code: String!): Lab!
         labExist(code: String!): Boolean!
-        getQue(lab_id: ID!): [QueObj]!
+        getQue(lab_id: ID!): queReturn!
         prof(id: String!): Prof!
         getSubmission(member_id: ID!): String!
         getActiveMembers(lab_id: ID!): Int!

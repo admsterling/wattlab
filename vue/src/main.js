@@ -51,6 +51,9 @@ Vue.filter('momentAgo', function(date) {
   let diff = now - new Date(date);
   return moment(diff).format('mm:ss');
 });
+Vue.filter('mmss', function(date) {
+  return moment(date).format('mm:ss');
+});
 
 new Vue({
   vuetify,

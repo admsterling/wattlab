@@ -2,7 +2,7 @@
   <v-container no-gutters>
     <v-row>
       <v-col></v-col>
-      <v-col class="text-center" cols="8" lg="6" xl="5">
+      <v-col class="text-center" cols="8" md="11" lg="10" xl="8">
         <v-card v-if="!loading">
           <v-form ref="helpForm">
             <v-card-title>Please fill out the form:</v-card-title>
@@ -54,6 +54,10 @@
               <span class="purple--text lighten-text-1">{{ quePosition }}</span>
               in the que
             </p>
+            <p class="text-h3">
+              Average Wait Time:
+              <span class="purple--text lighten-text-1">{{ averageTime | mmss }}</span>
+            </p>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn class="mb-2 deep-orange lighten-2" dark @click="cancelHelp">
@@ -81,6 +85,7 @@ export default {
         desc: "",
       },
       que: [],
+      averageTime: 0,
       loading: false,
       rules: {
         required: (value) => !!value || "Required Field",
@@ -161,7 +166,8 @@ export default {
   },
   sockets: {
     updateQue: function (data) {
-      this.que = data;
+      this.que = data.que;
+      this.averageTime = data.averageTime;
     },
     startHelp: function (data) {
       this.$store.dispatch("socket/privateChatInfo", data).then(() => {
@@ -181,7 +187,9 @@ export default {
         query: `
               query getQue($lab_id: ID!){
                 getQue(lab_id: $lab_id){
-                  socketid
+                  que {
+                    socketid
+                  }
                 }
               }
             `,
@@ -191,7 +199,7 @@ export default {
       },
     })
       .then((res) => {
-        this.que = res.data.data.getQue;
+        this.que = res.data.data.getQue.que;
       })
       .catch((error) => {
         if (error.response) {

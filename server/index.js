@@ -69,11 +69,14 @@ io.on('connection', (socket) => {
         query: `
               mutation joinQue($queObj: QueCreateData!) {
                 joinQue(queObj: $queObj){
-                  socketid
-                  queType
-                  title
-                  desc
-                  createdAt
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
           `,
@@ -86,7 +89,7 @@ io.on('connection', (socket) => {
         io.to(room).emit('updateQue', res.data.data.joinQue);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response.data.errors[0]);
       });
   });
 
@@ -97,11 +100,14 @@ io.on('connection', (socket) => {
         query: `
               mutation leaveQue($lab_id: ID!, $socketid: String!){
                 leaveQue(lab_id: $lab_id, socketid: $socketid){
-                  socketid
-                  queType
-                  title
-                  desc
-                  createdAt
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
           `,
@@ -115,7 +121,7 @@ io.on('connection', (socket) => {
         io.to(queData.labCode).emit('updateQue', res.data.data.leaveQue);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err.response.data.errors[0]);
       });
   });
 
@@ -126,11 +132,14 @@ io.on('connection', (socket) => {
         query: `
               query getQue($lab_id: ID!) {
                 getQue(lab_id: $lab_id) {
-                  socketid
-                  queType
-                  title
-                  desc
-                  createdAt
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
           `,
@@ -143,23 +152,25 @@ io.on('connection', (socket) => {
         io.to(queData.labCode).emit('updateQue', res.data.data.getQue);
       })
       .catch((err) => {
-        console.log(err.errors[0].message);
+        console.log(err.response.data.errors[0]);
       });
   });
 
   socket.on('startHelp', (recieverData) => {
-    console.log(recieverData);
     axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
               mutation leaveQue($lab_id: ID!, $socketid: String!, $helpingTime: Int){
                 leaveQue(lab_id: $lab_id, socketid: $socketid, helpingTime: $helpingTime){
-                  socketid
-                  queType
-                  title
-                  desc
-                  createdAt
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
           `,
@@ -233,10 +244,14 @@ io.on('connection', (socket) => {
             query: `
               mutation leaveQue($lab_id: ID!, $socketid: String!){
                 leaveQue(lab_id: $lab_id, socketid: $socketid){
-                  socketid
-                  queType
-                  title
-                  desc
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
           `,

@@ -4,31 +4,40 @@
       <v-col cols="12" align="center" justify="center">
         <v-card>
           <v-card-title>
-            People in que:
-            <span class="purple--text lighten-text-1 ml-2">
-              {{ queLength }}
-            </span>
-            <v-spacer></v-spacer>
-            <v-btn
-              class="purple--text lighten-text-1 mx-2"
-              outlined
-              @click="helpNext"
-            >
-              Help Next Student
-            </v-btn>
-            <v-btn
-              class="purple--text lighten-text-1 mx-2"
-              outlined
-              @click="markNext"
-            >
-              Mark Next Student
-            </v-btn>
+            <div class="text-left">
+              People in que:
+              <span class="purple--text lighten-text-1 ml-2">
+                {{ queLength }}
+              </span>
+              <br />
+              Avg. Wait Time:
+              <span class="purple--text lighten-text-1 ml-2">
+                {{ averageTime | mmss }}
+              </span>
+            </div>
+            <v-spacer> </v-spacer>
+            <div>
+              <v-btn
+                class="purple--text lighten-text-1 ma-2"
+                outlined
+                @click="helpNext"
+              >
+                Help Next Student
+              </v-btn>
+              <v-btn
+                class="purple--text lighten-text-1 ma-2"
+                outlined
+                @click="markNext"
+              >
+                Mark Next Student
+              </v-btn>
+            </div>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-simple-table
               fixed-header
-              style="height: calc(100vh - 340px); overflow-y: scroll"
+              style="height: calc(100vh - 370px); overflow-y: scroll"
               scrollable
             >
               <thead>
@@ -82,6 +91,7 @@ export default {
         { text: "Help Student" },
       ],
       que: [],
+      averageTime: 0,
       now: Date.now(),
     };
   },
@@ -139,7 +149,8 @@ export default {
   },
   sockets: {
     updateQue: function (data) {
-      this.que = data;
+      this.que = data.que;
+      this.averageTime = data.averageTime;
     },
     startHelper: function (data) {
       this.$store.dispatch("socket/setprivateChatInfo", data);
@@ -155,11 +166,14 @@ export default {
         query: `
               query getQue($lab_id: ID!){
                 getQue(lab_id: $lab_id){
-                  socketid
-                  queType
-                  title
-                  desc
-                  createdAt
+                  que {
+                    socketid
+                    queType
+                    title
+                    desc
+                    createdAt
+                  }
+                  averageTime
                 }
               }
             `,
@@ -169,7 +183,8 @@ export default {
       },
     })
       .then((res) => {
-        this.que = res.data.data.getQue;
+        this.que = res.data.data.getQue.que;
+        this.averageTime = res.data.data.getQue.averageTime;
       })
       .catch((error) => {
         if (error.response) {

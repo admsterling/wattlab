@@ -148,6 +148,7 @@ module.exports = {
       messages: [],
       labMembers: [],
       socketIDQue: [],
+      queTimes: [],
       privateChats: [],
       creator: prof,
       submission: labInput.submission,
@@ -474,15 +475,21 @@ module.exports = {
       throw error;
     }
 
-    return lab.socketIDQue.map((q) => {
-      return {
-        ...q._doc,
-        _id: q._id.toString(),
-        lab_id: q._id.toString(),
-        createdAt: q.createdAt.toISOString(),
-        updatedAt: q.updatedAt.toISOString(),
-      };
-    });
+    const sum = lab.queTimes.reduce((a, b) => a + b, 0);
+    const avg = Math.floor(sum / lab.queTimes.length) || 0;
+
+    return {
+      que: lab.socketIDQue.map((q) => {
+        return {
+          ...q._doc,
+          _id: q._id.toString(),
+          lab_id: q._id.toString(),
+          createdAt: q.createdAt.toISOString(),
+          updatedAt: q.updatedAt.toISOString(),
+        };
+      }),
+      averageTime: avg,
+    };
   },
   joinQue: async function ({ queObj }) {
     let lab = await Lab.findById(queObj.lab_id);
@@ -502,15 +509,22 @@ module.exports = {
     await lab.save();
 
     lab = await Lab.findById(queObj.lab_id).populate('socketIDQue');
-    return lab.socketIDQue.map((q) => {
-      return {
-        ...q._doc,
-        _id: q._id.toString(),
-        lab_id: q._id.toString(),
-        createdAt: q.createdAt.toISOString(),
-        updatedAt: q.updatedAt.toISOString(),
-      };
-    });
+
+    const sum = lab.queTimes.reduce((a, b) => a + b, 0);
+    const avg = Math.floor(sum / lab.queTimes.length) || 0;
+
+    return {
+      que: lab.socketIDQue.map((q) => {
+        return {
+          ...q._doc,
+          _id: q._id.toString(),
+          lab_id: q._id.toString(),
+          createdAt: q.createdAt.toISOString(),
+          updatedAt: q.updatedAt.toISOString(),
+        };
+      }),
+      averageTime: avg,
+    };
   },
   leaveQue: async function ({ lab_id, socketid, helpingTime }) {
     const lab = await Lab.findById(lab_id).populate('socketIDQue');
@@ -522,8 +536,7 @@ module.exports = {
     }
 
     if (helpingTime) {
-      lab.queTimes.times.push(helpingTime);
-      lab.queTimes.total += 1;
+      lab.queTimes.push(helpingTime);
     }
 
     for (let i = 0; i < lab.socketIDQue.length; i++) {
@@ -535,15 +548,21 @@ module.exports = {
     await lab.save();
     await QueObj.deleteOne({ socketid: socketid });
 
-    return lab.socketIDQue.map((q) => {
-      return {
-        ...q._doc,
-        _id: q._id.toString(),
-        lab_id: q._id.toString(),
-        createdAt: q.createdAt.toISOString(),
-        updatedAt: q.updatedAt.toISOString(),
-      };
-    });
+    const sum = lab.queTimes.reduce((a, b) => a + b, 0);
+    const avg = Math.floor(sum / lab.queTimes.length) || 0;
+
+    return {
+      que: lab.socketIDQue.map((q) => {
+        return {
+          ...q._doc,
+          _id: q._id.toString(),
+          lab_id: q._id.toString(),
+          createdAt: q.createdAt.toISOString(),
+          updatedAt: q.updatedAt.toISOString(),
+        };
+      }),
+      averageTime: avg,
+    };
   },
   getFirstInQueAndShift: async function ({ lab_id }) {
     const lab = await Lab.findById(lab_id);
