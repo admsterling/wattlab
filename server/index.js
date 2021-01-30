@@ -148,12 +148,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startHelp', (recieverData) => {
+    console.log(recieverData);
     axios(graphQLEndpoint, {
       method: 'POST',
       data: {
         query: `
-              mutation leaveQue($lab_id: ID!, $socketid: String!){
-                leaveQue(lab_id: $lab_id, socketid: $socketid){
+              mutation leaveQue($lab_id: ID!, $socketid: String!, $helpingTime: Int){
+                leaveQue(lab_id: $lab_id, socketid: $socketid, helpingTime: $helpingTime){
                   socketid
                   queType
                   title
@@ -165,6 +166,7 @@ io.on('connection', (socket) => {
         variables: {
           lab_id: recieverData.lab_id,
           socketid: recieverData.socketid,
+          helpingTime: recieverData.timeDiff,
         },
       },
     })
@@ -173,6 +175,7 @@ io.on('connection', (socket) => {
         delete recieverData.lab_id;
         delete recieverData.socketid;
         delete recieverData.labCode;
+        delete recieverData.timeDiff;
         socket.broadcast
           .to(recieverData.sendTo)
           .emit('startHelp', recieverData);

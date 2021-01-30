@@ -33,6 +33,7 @@ module.exports = buildSchema(`
         labMembers: [LabMember!]
         privateChats: [Message!]
         socketIDQue: [QueObj!]
+        queTimes: queTimes!
     }
 
     type QueObj {
@@ -44,6 +45,10 @@ module.exports = buildSchema(`
         lab_id: ID!
         createdAt: String!
         updatedAt: String!
+    }
+    type queTimes {
+        times: [Int]!
+        total: Int!
     }
 
     enum queType {
@@ -154,7 +159,7 @@ module.exports = buildSchema(`
         endLab(id: ID!): Boolean!
         deleteLab(id: ID!): Boolean!
         joinQue(queObj: QueCreateData!): [QueObj]!
-        leaveQue(lab_id: ID!, socketid: String!): [QueObj]!
+        leaveQue(lab_id: ID!, socketid: String!, helpingTime: Int): [QueObj]!
         getFirstInQueAndShift(lab_id : ID!): [String!]
         createPrivateChat(lab_id: ID!, student: String!, staff: String!): PrivateChat!
         createPrivateMessage(privateMessageInput: PrivateMessageCreateData): Message!

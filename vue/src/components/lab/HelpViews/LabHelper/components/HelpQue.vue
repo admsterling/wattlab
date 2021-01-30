@@ -107,6 +107,7 @@ export default {
         lab_id: this.lab_id,
         labCode: this.labCode,
         socketid: reciever.socketid,
+        timeDiff: Date.now() - Date.parse(reciever.createdAt),
       };
       this.$socket.emit("startHelp", recieverData);
       this.waiting = false;

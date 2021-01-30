@@ -512,13 +512,18 @@ module.exports = {
       };
     });
   },
-  leaveQue: async function ({ lab_id, socketid }) {
+  leaveQue: async function ({ lab_id, socketid, helpingTime }) {
     const lab = await Lab.findById(lab_id).populate('socketIDQue');
 
     if (!lab) {
       const error = new Error('No lab found!');
       error.code = 404;
       throw error;
+    }
+
+    if (helpingTime) {
+      lab.queTimes.times.push(helpingTime);
+      lab.queTimes.total += 1;
     }
 
     for (let i = 0; i < lab.socketIDQue.length; i++) {

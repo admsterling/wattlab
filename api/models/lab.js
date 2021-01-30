@@ -65,6 +65,19 @@ const labSchema = new Schema(
         required: true,
       },
     ],
+    queTimes: {
+      times: [
+        {
+          type: Number,
+          required: false,
+        },
+      ],
+      total: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+    },
     creator: {
       type: Schema.Types.ObjectId,
       ref: 'Prof',
