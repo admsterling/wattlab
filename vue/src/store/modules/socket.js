@@ -24,7 +24,8 @@ const getters = {
     return {
       title: state.lab.title,
       desc: state.lab.desc,
-      url: state.lab.url,
+      urlLinks: state.lab.urlLinks,
+      urlTitles: state.lab.urlTitles,
     };
   },
   lab_id: (state) => {
@@ -144,7 +145,8 @@ const actions = {
               }
               code
               desc
-              url
+              urlTitles
+              urlLinks
               creator {
                 fname
                 lname

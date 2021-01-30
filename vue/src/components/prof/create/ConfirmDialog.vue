@@ -25,9 +25,11 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="3">URL:</v-col>
+            <v-col cols="3">URL's:</v-col>
             <v-col cols="9">
-              {{ lab.url }}
+              <li v-for="(title, i) in lab.urlTitles" :key="i">
+                {{ title }}
+              </li>
             </v-col>
           </v-row>
           <v-row>

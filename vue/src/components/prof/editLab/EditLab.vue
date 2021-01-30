@@ -26,16 +26,11 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
-              <v-text-field
-                v-model="lab.url"
-                label="URL Link:"
-                :rules="urlRules"
-                hint="https://gitlab.com/xxx/xxx.git"
-                persistent-hint
-                :loading="submitted"
-                :disabled="submitted"
-                @keyup.enter="submit"
-              ></v-text-field>
+              <URLHelperFrield
+                :submitted="submitted"
+                :URLTitles="lab.urlTitles"
+                :URLLinks="lab.urlLinks"
+              />
             </v-col>
           </v-row>
           <v-row no-gutter>
@@ -81,6 +76,7 @@ import axios from "axios";
 export default {
   components: {
     LabHelperField: () => import("../LabHelperField"),
+    URLHelperFrield: () => import("../URLHelperFrield"),
   },
   data() {
     return {
@@ -88,7 +84,8 @@ export default {
         code: "",
         title: "",
         desc: "",
-        url: "",
+        urlTitles: [],
+        urlLinks: [],
         helpers: [],
         submission: false,
       },
@@ -113,8 +110,8 @@ export default {
           method: "POST",
           data: {
             query: `
-              mutation updateLab($code: String!, $title: String!, $desc: String!, $url: String!, $helpers: [String!]!, $submission: Boolean!){
-                updateLab(code: $code, title: $title, desc: $desc, url: $url, helpers: $helpers, submission: $submission)
+              mutation updateLab($code: String!, $title: String!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $helpers: [String!]!, $submission: Boolean!){
+                updateLab(code: $code, title: $title, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, helpers: $helpers, submission: $submission)
               }
           `,
             variables: {
@@ -122,7 +119,8 @@ export default {
               title: this.lab.title,
               helpers: this.lab.helpers,
               desc: this.lab.desc,
-              url: this.lab.url,
+              urlTitles: this.lab.urlTitles,
+              urLinks: this.lab.urlLinks,
               submission: this.lab.submission,
             },
           },
@@ -160,7 +158,8 @@ export default {
                   title
                   desc
                   helpers
-                  url
+                  urlTitles
+                  urlLinks
                   code
                   submission
                 }

@@ -26,16 +26,11 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
-              <v-text-field
-                v-model="lab.url"
-                label="URL Link:"
-                :rules="urlRules"
-                hint="https://gitlab.com/xxx/xxx.git"
-                persistent-hint
-                :loading="submitted"
-                :disabled="submitted"
-                @keyup.enter="submit"
-              ></v-text-field>
+              <URLHelperFrield
+                :submitted="submitted"
+                :URLTitles="lab.urlTitles"
+                :URLLinks="lab.urlLinks"
+              />
             </v-col>
           </v-row>
           <v-row no-gutter>
@@ -87,6 +82,7 @@ import axios from "axios";
 export default {
   components: {
     LabHelperField: () => import("../LabHelperField"),
+    URLHelperFrield: () => import("../URLHelperFrield"),
     ConfirmModal: () => import("./ConfirmDialog"),
   },
   data() {
@@ -97,7 +93,8 @@ export default {
         title: "Test Data",
         labHelpers: ["as317", "bd12"],
         desc: "This is a test description for the lab.\nAcross multiple lines.",
-        url: "https://www.google.com",
+        urlTitles: ["test"],
+        urlLinks: ["http://www.google.com"],
         submission: true,
       },
       titleRules: [(value) => !!value || "Required"],
@@ -122,27 +119,16 @@ export default {
         method: "POST",
         data: {
           query: `
-              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $url: String!, $submission: Boolean!){
-                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, url: $url, submission: $submission}) {
-                  title
-                  code
-                  desc
-                  url
-                  creator{
-                    _id
-                    fname
-                    lname
-                  }
-                  createdAt
-                  updatedAt
-                }
+              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $submission: Boolean!){
+                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, submission: $submission})
               }
           `,
           variables: {
             title: this.lab.title,
             helpers: this.lab.labHelpers,
             desc: this.lab.desc,
-            url: this.lab.url,
+            urlTitles: this.lab.urlTitles,
+            urLinks: this.lab.urlLinks,
             submission: this.lab.submission,
           },
         },

@@ -25,10 +25,18 @@ const labSchema = new Schema(
       type: String,
       required: true,
     },
-    url: {
-      type: String,
-      required: true,
-    },
+    urlTitles: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    urlLinks: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     status: {
       type: Boolean,
       default: false,

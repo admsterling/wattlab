@@ -11,7 +11,6 @@ const PrivateChat = require('../models/privatechat');
 const PrivateMessage = require('../models/privatemessage');
 const LabMember = require('../models/labmember');
 const QueObj = require('../models/queobj');
-const lab = require('../models/lab');
 const api_key = process.env.KEY;
 
 function checkAuth(flag) {
@@ -144,7 +143,8 @@ module.exports = {
       code: code,
       helperPIN: helperPIN,
       desc: labInput.desc,
-      url: labInput.url,
+      urlTitles: labInput.urlTitles,
+      urlLinks: labInput.urlLinks,
       messages: [],
       labMembers: [],
       socketIDQue: [],
@@ -156,12 +156,7 @@ module.exports = {
     const createdLab = await lab.save();
     prof.labs.push(createdLab);
     await prof.save();
-    return {
-      ...createdLab._doc,
-      _id: createdLab._id.toString(),
-      createdAt: createdLab.createdAt.toISOString(),
-      updatedAt: createdLab.updatedAt.toISOString(),
-    };
+    return true;
   },
   getLabs: async function ({ id }, req) {
     checkAuth(req.isAuth);
@@ -209,7 +204,7 @@ module.exports = {
     };
   },
   updateLab: async function (
-    { code, title, url, desc, helpers, submission },
+    { code, title, urlTitles, urlLinks, desc, helpers, submission },
     req
   ) {
     checkAuth(req.isAuth);
@@ -226,7 +221,8 @@ module.exports = {
 
     lab.title = title;
     lab.desc = desc;
-    lab.url = url;
+    lab.urlTitles = urlTitles;
+    lab.urlLinks = urlLinks;
     lab.helpers = helpers;
     lab.submission = submission;
 

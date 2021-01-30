@@ -7,7 +7,14 @@
       <v-container>
         <v-row>
           <v-col>
-            <b>URL:</b> <a :href="labInfo.url" target="_blank">{{ labInfo.url }}</a>
+            <b>URL's:</b>
+            <ul v-for="(title, i) in labInfo.urlTitles" :key="i">
+              <li>
+                <a :href="labInfo.urlLinks[i]" target="_blank">
+                  {{ title }}
+                </a>
+              </li>
+            </ul>
           </v-col>
         </v-row>
         <v-row>
