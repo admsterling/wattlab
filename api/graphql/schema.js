@@ -187,6 +187,7 @@ module.exports = buildSchema(`
         prof(id: String!): Prof!
         getSubmission(member_id: ID!): String!
         getActiveMembers(lab_id: ID!): Int!
+        getActiveChats(lab_id: ID!): Int!
     }
 
     schema {

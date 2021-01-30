@@ -705,6 +705,24 @@ module.exports = {
 
     return result;
   },
+  getActiveChats: async function ({ lab_id }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findById(lab_id);
+
+    if (!lab) {
+      const error = new Error('No Lab found.');
+      error.code = 404;
+      throw error;
+    }
+
+    const result = await PrivateChat.find({
+      lab_id: lab_id,
+      active: true,
+    }).countDocuments();
+
+    return result;
+  },
   stopHelp: async function ({ priv_id }) {
     const privateChat = await PrivateChat.findById(priv_id);
 
