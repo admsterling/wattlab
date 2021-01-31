@@ -1,177 +1,200 @@
 <template>
-  <v-container fluid class="px-4">
-    <v-row>
-      <v-col
-        cols="12"
-        class="rounded teal lighten-2 white--text text-h5"
-        justify="center"
-      >
-        You are connected to:
-        <span
-          v-if="this.accountType === 'STUDENT'"
-          class="ml-3 font-weight-bold"
+  <div>
+    <v-container fluid class="px-4">
+      <v-row>
+        <v-col
+          cols="12"
+          class="rounded teal lighten-2 white--text text-h5"
+          justify="center"
         >
-          {{ this.privateChat.staff }}
-        </span>
-        <span v-else class="ml-3 font-weight-bold">
-          {{ this.privateChat.student }}
-        </span>
-        <div class="float-right">
-          <v-btn
-            v-if="this.accountType === 'HELPER'"
-            class="mr-2"
-            @click="callStudent"
+          You are connected to:
+          <span
+            v-if="this.accountType === 'STUDENT'"
+            class="ml-3 font-weight-bold"
           >
-            Call Student
-            <v-icon small class="ml-2"> mdi-phone </v-icon>
-          </v-btn>
-          <v-btn @click="closeHelp"> Close Help </v-btn>
-        </div>
+            {{ this.privateChat.staff }}
+          </span>
+          <span v-else class="ml-3 font-weight-bold">
+            {{ this.privateChat.student }}
+          </span>
+          <div class="float-right">
+            <v-btn
+              v-if="this.accountType === 'HELPER'"
+              class="mr-2"
+              @click="nativeCall"
+            >
+              Site Call
+              <v-icon small class="ml-2"> mdi-phone </v-icon>
+            </v-btn>
+            <v-btn
+              v-if="this.accountType === 'HELPER'"
+              class="mr-2"
+              @click="callStudent"
+            >
+              Call on Teams
+              <v-icon small class="ml-2"> mdi-phone </v-icon>
+            </v-btn>
+            <v-btn @click="closeHelp"> Close Help </v-btn>
+          </div>
 
-        <v-dialog v-model="callingDialog" max-width="400">
-          <v-card>
-            <v-card-title class="headline">
-              A Lab Helper is trying to contact you on teams
-            </v-card-title>
-            <v-divider></v-divider>
-            <v-card-text class="my-2 justify-center">
-              Please open teams and accept the call.
-            </v-card-text>
-            <v-card-actions class="mb-2 justify-center">
-              <v-btn class="purple lighten-1" dark @click="openTeams">
-                Open Microsoft Teams
-                <v-icon class="ml-2"> mdi-account-group </v-icon>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <RatingComponent
-          v-if="this.accountType === 'STUDENT'"
-          :rating="rating"
-          ref="ratingDialog"
-          @confirmed="confirmed"
-          @cancelled="cancelled"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-card>
-          <v-card-text>
-            <v-container fluid>
-              <v-row no-gutters>
-                <v-col cols="6" class="px-1">
-                  <v-select
-                    :items="modes"
-                    v-model="defaultMode"
-                    item-text="name"
-                    item-value="mode"
-                    label="Select a language:"
-                  ></v-select>
-                </v-col>
-                <v-col cols="6" class="px-1">
-                  <v-select
-                    :items="themes"
-                    v-model="defaultTheme"
-                    item-text="name"
-                    item-value="theme"
-                    label="Select a theme:"
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="12">
-                  <textarea id="editor"> </textarea>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="6">
-        <div>
-          <v-sheet
-            id="chatWindow"
-            color="grey lighten-4"
-            class="rounded border"
-            style="overflow-y: auto; height: calc(100vh - 370px)"
-          >
-            <v-container fluid>
-              <v-row
-                v-for="(msg, i) in privateChatMessages"
-                :key="i"
-                class="my-2"
-                align="center"
-                no-gutters
-              >
-                <v-col cols="12">
-                  <div v-if="msg.sender === username" class="wrapperRight">
-                    <div class="mx-2 text-bubble lighten-4 deep-orange">
-                      {{ msg.text }}
-                    </div>
-                    <div style="white-space: nowrap; width: 215px; !important">
-                      <span class="ml-2 grey--text text--lighten-1">
-                        {{ msg.createdAt | moment("HH:MM") }}
-                        <span
-                          class="text-lighten-2"
-                          :class="[
-                            msg.accountType === 'STUDENT' ? 'green--text' : '',
-                            msg.accountType === 'HELPER' ? 'orange--text' : '',
-                            msg.accountType === 'PROFESSOR'
-                              ? 'purple--text'
-                              : '',
-                          ]"
-                          >({{ msg.accountType }})</span
-                        >
-                      </span>
-                      <span class="ml-2">{{ msg.sender }}:</span>
-                    </div>
-                  </div>
-                  <div v-else class="wrapperLeft">
-                    <div style="white-space: nowrap; width: 215px; !important">
-                      <span class="ml-2 grey--text text--lighten-1">
-                        {{ msg.createdAt | moment("HH:MM") }}
-                        <span
-                          class="text-lighten-2"
-                          :class="[
-                            msg.accountType === 'STUDENT' ? 'green--text' : '',
-                            msg.accountType === 'HELPER' ? 'orange--text' : '',
-                            msg.accountType === 'PROFESSOR'
-                              ? 'purple--text'
-                              : '',
-                          ]"
-                          >({{ msg.accountType }})</span
-                        >
-                      </span>
-                      <span class="ml-2">{{ msg.sender }}:</span>
-                    </div>
-                    <div class="mx-2 text-bubble lighten-4 blue">
-                      {{ msg.text }}
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-sheet>
-          <v-text-field
-            v-model="message"
-            label="Message:"
-            type="text"
-            no-details
-            outlined
-            append-icon="mdi-send"
-            @keyup.enter="sendMessage"
-            @click:append="sendMessage"
-            :loading="messageSending"
-            :disabled="messageSending"
-            hide-details
-            class="mt-2"
+          <v-dialog v-model="callingDialog" max-width="400">
+            <v-card>
+              <v-card-title class="headline">
+                A Lab Helper is trying to contact you on teams
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text class="my-2 justify-center">
+                Please open teams and accept the call.
+              </v-card-text>
+              <v-card-actions class="mb-2 justify-center">
+                <v-btn class="purple lighten-1" dark @click="openTeams">
+                  Open Microsoft Teams
+                  <v-icon class="ml-2"> mdi-account-group </v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <RatingComponent
+            v-if="this.accountType === 'STUDENT'"
+            :rating="rating"
+            ref="ratingDialog"
+            @confirmed="confirmed"
+            @cancelled="cancelled"
           />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6">
+          <v-card>
+            <v-card-text>
+              <v-container fluid>
+                <v-row no-gutters>
+                  <v-col cols="6" class="px-1">
+                    <v-select
+                      :items="modes"
+                      v-model="defaultMode"
+                      item-text="name"
+                      item-value="mode"
+                      label="Select a language:"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="6" class="px-1">
+                    <v-select
+                      :items="themes"
+                      v-model="defaultTheme"
+                      item-text="name"
+                      item-value="theme"
+                      label="Select a theme:"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <textarea id="editor"> </textarea>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="6">
+          <div>
+            <v-sheet
+              id="chatWindow"
+              color="grey lighten-4"
+              class="rounded border"
+              style="overflow-y: auto; height: calc(100vh - 370px)"
+            >
+              <v-container fluid>
+                <v-row
+                  v-for="(msg, i) in privateChatMessages"
+                  :key="i"
+                  class="my-2"
+                  align="center"
+                  no-gutters
+                >
+                  <v-col cols="12">
+                    <div v-if="msg.sender === username" class="wrapperRight">
+                      <div class="mx-2 text-bubble lighten-4 deep-orange">
+                        {{ msg.text }}
+                      </div>
+                      <div
+                        style="white-space: nowrap; width: 215px; !important"
+                      >
+                        <span class="ml-2 grey--text text--lighten-1">
+                          {{ msg.createdAt | moment("HH:MM") }}
+                          <span
+                            class="text-lighten-2"
+                            :class="[
+                              msg.accountType === 'STUDENT'
+                                ? 'green--text'
+                                : '',
+                              msg.accountType === 'HELPER'
+                                ? 'orange--text'
+                                : '',
+                              msg.accountType === 'PROFESSOR'
+                                ? 'purple--text'
+                                : '',
+                            ]"
+                            >({{ msg.accountType }})</span
+                          >
+                        </span>
+                        <span class="ml-2">{{ msg.sender }}:</span>
+                      </div>
+                    </div>
+                    <div v-else class="wrapperLeft">
+                      <div
+                        style="white-space: nowrap; width: 215px; !important"
+                      >
+                        <span class="ml-2 grey--text text--lighten-1">
+                          {{ msg.createdAt | moment("HH:MM") }}
+                          <span
+                            class="text-lighten-2"
+                            :class="[
+                              msg.accountType === 'STUDENT'
+                                ? 'green--text'
+                                : '',
+                              msg.accountType === 'HELPER'
+                                ? 'orange--text'
+                                : '',
+                              msg.accountType === 'PROFESSOR'
+                                ? 'purple--text'
+                                : '',
+                            ]"
+                            >({{ msg.accountType }})</span
+                          >
+                        </span>
+                        <span class="ml-2">{{ msg.sender }}:</span>
+                      </div>
+                      <div class="mx-2 text-bubble lighten-4 blue">
+                        {{ msg.text }}
+                      </div>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-sheet>
+            <v-text-field
+              v-model="message"
+              label="Message:"
+              type="text"
+              no-details
+              outlined
+              append-icon="mdi-send"
+              @keyup.enter="sendMessage"
+              @click:append="sendMessage"
+              :loading="messageSending"
+              :disabled="messageSending"
+              hide-details
+              class="mt-2"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <video id="videoStream" width="160" height="120"></video>
+  </div>
 </template>
 
 <script>
@@ -196,6 +219,14 @@ import "codemirror/addon/display/fullscreen.css";
 import "codemirror/addon/selection/active-line";
 import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
+
+function addStream(stream) {
+  const video = document.getElementById("videoStream");
+  video.srcObject = stream;
+  video.addEventListener("loadedmetadata", () => {
+    video.play();
+  });
+}
 
 export default {
   components: {
@@ -245,6 +276,7 @@ export default {
       gettingSupport: "socket/gettingSupport",
       privateChat: "socket/privateChat",
       privateChatMessages: "socket/privateChatMessages",
+      peerid: "socket/peerid",
       volume: "application/volume",
     }),
   },
@@ -258,6 +290,9 @@ export default {
   },
   sockets: {
     stopHelp: function () {
+      if (this.call) {
+        this.call.close();
+      }
       this.$toast.info("Other person closed help request");
       if (this.accountType === "STUDENT") {
         this.$refs.ratingDialog.open();
@@ -333,12 +368,14 @@ export default {
         });
     },
     closeHelp() {
+      if (this.call) {
+        this.call.close();
+      }
+
       const data = {
         socketid: this.gettingSupport.reciever,
         priv_id: this.privateChat._id,
       };
-
-      console.log(data);
 
       this.$socket.emit("stopHelp", data);
 
@@ -420,6 +457,32 @@ export default {
       this.rating.feedback = "";
       this.$store.dispatch("socket/stopHelp");
     },
+    nativeCall() {
+      const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+
+      getUserMedia(
+        { video: false, audio: true },
+        (stream) => {
+          this.stream = stream;
+          this.call = this.$peer.call(this.peerid, stream);
+          this.call.on("stream", (remoteStream) => {
+            addStream(remoteStream);
+          });
+          this.call.on("close", () => {
+            console.log("recognised close");
+            stream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+          });
+        },
+        (err) => {
+          console.log("Failed to get local stream", err);
+        }
+      );
+    },
   },
   mounted() {
     this.scrollToEnd();
@@ -468,6 +531,33 @@ export default {
     document
       .querySelector(".CodeMirror")
       .CodeMirror.setCursor({ line: 3, ch: 0 });
+
+    const getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
+
+    this.$peer.on("call", (call) => {
+      getUserMedia(
+        { video: false, audio: true },
+        (stream) => {
+          this.call = call;
+          this.call.answer(stream);
+          this.call.on("stream", (remoteStream) => {
+            addStream(remoteStream);
+          });
+          this.call.on("close", () => {
+            console.log("recognised close");
+            stream.getTracks().forEach(function (track) {
+              track.stop();
+            });
+          });
+        },
+        (err) => {
+          console.log("Failed to get local stream", err);
+        }
+      );
+    });
   },
 };
 </script>

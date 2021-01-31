@@ -56,7 +56,9 @@
             </p>
             <p class="text-h3">
               Average Wait Time:
-              <span class="purple--text lighten-text-1">{{ averageTime | mmss }}</span>
+              <span class="purple--text lighten-text-1">{{
+                averageTime | mmss
+              }}</span>
             </p>
           </v-card-text>
           <v-card-actions class="justify-center">
@@ -175,6 +177,7 @@ export default {
           sendTo: this.gettingSupport.reciever,
           reciever: this.$socket.id,
           privateChat: this.privateChat,
+          peerid: this.$peer._id,
         };
         this.$socket.emit("startHelper", helperInfo);
       });

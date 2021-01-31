@@ -14,6 +14,7 @@ const getDefaultState = () => {
     },
     privateChat: {},
     submission: false,
+    peerid: null,
   };
 };
 
@@ -64,6 +65,9 @@ const getters = {
   privateChatMessages: (state) => {
     return state.privateChat.messages;
   },
+  peerid: (state) => {
+    return state.peerid;
+  },
 };
 
 const mutations = {
@@ -100,6 +104,9 @@ const mutations = {
   },
   ADD_PRIVATE_MESSAGE(state, payload) {
     state.privateChat.messages.push(payload);
+  },
+  PEER_ID(state, payload) {
+    state.peerid = payload;
   },
 };
 
@@ -232,6 +239,7 @@ const actions = {
   setprivateChatInfo({ commit }, context) {
     commit('START_HELP', context.reciever);
     commit('START_PRIVATE_CHAT', context.privateChat);
+    commit('PEER_ID', context.peerid);
   },
   addPrivateMessage({ commit }, context) {
     commit('ADD_PRIVATE_MESSAGE', context);

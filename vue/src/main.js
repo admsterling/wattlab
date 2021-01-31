@@ -8,6 +8,9 @@ import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
+import VuePeerJS from 'vue-peerjs';
+import Peer from 'peerjs';
+
 const connectionString =
   process.env.VUE_APP_SOCKETIO_CONNECTION || window.location.hostname;
 const socketConnection = SocketIO(connectionString);
@@ -54,6 +57,8 @@ Vue.filter('momentAgo', function(date) {
 Vue.filter('mmss', function(date) {
   return moment(date).format('mm:ss');
 });
+
+Vue.use(VuePeerJS, new Peer(socketConnection.id));
 
 new Vue({
   vuetify,
