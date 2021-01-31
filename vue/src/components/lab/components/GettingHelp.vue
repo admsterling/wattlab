@@ -386,7 +386,6 @@ export default {
       }
     },
     callStudent() {
-      console.log(this.privateChat._id);
       axios(process.env.VUE_APP_ENDPOINT, {
         method: "POST",
         data: {
@@ -472,7 +471,6 @@ export default {
             addStream(remoteStream);
           });
           this.call.on("close", () => {
-            console.log("recognised close");
             stream.getTracks().forEach(function (track) {
               track.stop();
             });
@@ -547,7 +545,6 @@ export default {
             addStream(remoteStream);
           });
           this.call.on("close", () => {
-            console.log("recognised close");
             stream.getTracks().forEach(function (track) {
               track.stop();
             });
