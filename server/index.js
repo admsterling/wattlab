@@ -208,6 +208,10 @@ io.on('connection', (socket) => {
     io.to(reciever).emit('newCall');
   });
 
+  socket.on('closeCall', (reciever) => {
+    io.to(reciever).emit('closeCall');
+  });
+
   socket.on('updateCodeBlock', (codeData) => {
     socket.broadcast
       .to(codeData.reciever)
@@ -215,8 +219,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('stopHelp', (data) => {
-    console.log(data);
-
     socket.broadcast.to(data.socketid).emit('stopHelp');
 
     axios(graphQLEndpoint, {

@@ -19,12 +19,16 @@
           </span>
           <div class="float-right">
             <v-btn
-              v-if="this.accountType === 'HELPER'"
+              v-if="this.accountType === 'HELPER' && !this.inCall"
               class="mr-2"
               @click="nativeCall"
             >
               Site Call
               <v-icon small class="ml-2"> mdi-phone </v-icon>
+            </v-btn>
+            <v-btn v-if="this.inCall" dark class="deep-orange lighten-2 mr-2" @click="closeCall">
+              Close Site Call
+              <v-icon small class="ml-2"> mdi-cancel </v-icon>
             </v-btn>
             <v-btn
               v-if="this.accountType === 'HELPER'"
@@ -234,6 +238,7 @@ export default {
   },
   data() {
     return {
+      inCall: false,
       modes: [
         { name: "Java", mode: "text/x-java" },
         { name: "Java-Script", mode: "text/javascript" },
@@ -308,6 +313,12 @@ export default {
     },
     newCall: function () {
       this.callingDialog = true;
+    },
+    closeCall: function () {
+      if (this.call) {
+        this.call.close();
+        this.inCall = false;
+      }
     },
   },
   methods: {
@@ -457,29 +468,55 @@ export default {
       this.$store.dispatch("socket/stopHelp");
     },
     nativeCall() {
-      const getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-
-      getUserMedia(
-        { video: false, audio: true },
-        (stream) => {
-          this.stream = stream;
-          this.call = this.$peer.call(this.peerid, stream);
-          this.call.on("stream", (remoteStream) => {
-            addStream(remoteStream);
-          });
-          this.call.on("close", () => {
-            stream.getTracks().forEach(function (track) {
-              track.stop();
-            });
-          });
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              mutation requireCall($private_chat_id: ID!){
+                requireCall(private_chat_id: $private_chat_id)
+              }
+            `,
+          variables: {
+            private_chat_id: this.privateChat._id,
+          },
         },
-        (err) => {
-          console.log("Failed to get local stream", err);
-        }
-      );
+      })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          const getUserMedia =
+            navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia;
+
+          getUserMedia(
+            { video: false, audio: true },
+            (stream) => {
+              this.stream = stream;
+              this.call = this.$peer.call(this.peerid, stream);
+              this.call.on("stream", (remoteStream) => {
+                this.inCall = true;
+                addStream(remoteStream);
+              });
+              this.call.on("close", () => {
+                stream.getTracks().forEach(function (track) {
+                  track.stop();
+                });
+              });
+            },
+            (err) => {
+              console.log("Failed to get local stream", err);
+            }
+          );
+        });
+    },
+    closeCall() {
+      if (this.call) {
+        this.call.close();
+        this.$socket.emit("closeCall", this.gettingSupport.reciever);
+        this.inCall = false;
+      }
     },
   },
   mounted() {
@@ -542,6 +579,7 @@ export default {
           this.call = call;
           this.call.answer(stream);
           this.call.on("stream", (remoteStream) => {
+            this.inCall = true;
             addStream(remoteStream);
           });
           this.call.on("close", () => {

@@ -78,8 +78,8 @@ export default {
   },
   data() {
     return {
-      labCode: "9FC2E7",
-      helperPIN: "3556",
+      labCode: "6708A8",
+      helperPIN: "7384",
       username: "te13",
       submitted: false,
       validForm: true,
