@@ -41,7 +41,7 @@ DB=""               # Connection string to the Mongo DB
 KEY=""              # Key used for encrypting and verifying passwords
 ```
 
-## Environemt Variables for development
+## Environemt Variables for deployment
 For the server:
 ```env
 API_ENDPOINT=""     # HTTP String to API location
