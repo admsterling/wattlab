@@ -17,6 +17,7 @@ npm run build
 
 And move the newly created dist folder back into the server folder to be served.
 ```bash
+cd vue
 move "dist" "../server"
 ```
 
