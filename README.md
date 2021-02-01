@@ -26,7 +26,7 @@ For the client builds, create a .env.development.local with the keys:
 VUE_APP_DEV_FLAG = true;
 # String pointing to localhost with socket server port being served on
 VUE_APP_SOCKETIO_CONNECTION = "http://localhost:3000"
- # String pointing to localhost with API server port being served on
+# String pointing to localhost with API server port being served on
 VUE_APP_ENDPOINT="http://localhost:4000/graphql"
 ```
 
