@@ -1,2 +1,51 @@
 # WATTLAB
 This is a lab management system developed for Heriot-Watt University and for my final year dissertation project.
+
+## Making Chanages to Client
+Use the [vue/cli](https://www.npmjs.com/package/@vue/cli) to create a build with
+```bash
+cd vue
+npm run build
+```
+
+And move the newly created dist folder back into the server folder to be served.
+```bash
+move "dist" "../server"
+```
+
+## Environemt Variables for development
+For the client builds, create a .env.development.local with the keys: 
+```env
+VUE_APP_DEV_FLAG = true;
+VUE_APP_SOCKETIO_CONNECTION = "http://localhost:3000"   # String pointing to localhost with socket server port being served on
+VUE_APP_ENDPOINT="http://localhost:4000/graphql"        # String pointing to localhost with API server port being served on
+```
+
+For the production builds, create a .env.production.local with the keys:
+```env
+VUE_APP_ENDPOINT="https://watt-lab-api.herokuapp.com/graphql"    # String pointing to https link that API is deployed too
+```
+
+The server must have a .env file with the port to be deployed too for development
+```env
+PORT= 3000
+```
+
+API Development must be supplied with these keys in a .env file:
+```env
+PORT= 4000          # For Devlopment serve to port 4000
+DB=""               # Connection string to the Mongo DB
+KEY=""              # Key used for encrypting and verifying passwords
+```
+
+## Environemt Variables for development
+For the server:
+```env
+API_ENDPOINT=""     # HTTP String to API location
+```
+
+For the API:
+```env
+DB=""               # Connection string to the Mongo DB
+KEY=""              # Key used for encrypting and verifying passwords
+```
