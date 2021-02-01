@@ -17,13 +17,16 @@ move "dist" "../server"
 For the client builds, create a .env.development.local with the keys: 
 ```env
 VUE_APP_DEV_FLAG = true;
-VUE_APP_SOCKETIO_CONNECTION = "http://localhost:3000"   # String pointing to localhost with socket server port being served on
-VUE_APP_ENDPOINT="http://localhost:4000/graphql"        # String pointing to localhost with API server port being served on
+# String pointing to localhost with socket server port being served on
+VUE_APP_SOCKETIO_CONNECTION = "http://localhost:3000"
+ # String pointing to localhost with API server port being served on
+VUE_APP_ENDPOINT="http://localhost:4000/graphql"
 ```
 
 For the production builds, create a .env.production.local with the keys:
 ```env
-VUE_APP_ENDPOINT="https://watt-lab-api.herokuapp.com/graphql"    # String pointing to https link that API is deployed too
+# String pointing to https link that API is deployed too
+VUE_APP_ENDPOINT="https://watt-lab-api.herokuapp.com/graphql"    
 ```
 
 The server must have a .env file with the port to be deployed too for development
