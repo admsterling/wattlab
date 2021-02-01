@@ -1,6 +1,13 @@
 # WATTLAB
 This is a lab management system developed for Heriot-Watt University and for my final year dissertation project.
 
+A running version of this can be found at:
+[wattlab.tech](https://wattlab.tech)
+
+Backup Link:
+[Heroku App](https://watt-lab-server.herokuapp.com)
+
+
 ## Making Chanages to Client
 Use the [vue/cli](https://www.npmjs.com/package/@vue/cli) to create a build with
 ```bash
