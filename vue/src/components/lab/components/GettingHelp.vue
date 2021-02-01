@@ -26,7 +26,12 @@
               Site Call
               <v-icon small class="ml-2"> mdi-phone </v-icon>
             </v-btn>
-            <v-btn v-if="this.inCall" dark class="deep-orange lighten-2 mr-2" @click="closeCall">
+            <v-btn
+              v-if="this.inCall"
+              dark
+              class="deep-orange lighten-2 mr-2"
+              @click="closeCall"
+            >
               Close Site Call
               <v-icon small class="ml-2"> mdi-cancel </v-icon>
             </v-btn>
@@ -217,6 +222,7 @@ import "codemirror/theme/monokai.css";
 // Code Mirror Modes
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/clike/clike";
+import "codemirror/mode/sql/sql";
 // Code Mirror Addons
 import "codemirror/addon/display/fullscreen.js";
 import "codemirror/addon/display/fullscreen.css";
@@ -242,6 +248,7 @@ export default {
       modes: [
         { name: "Java", mode: "text/x-java" },
         { name: "Java-Script", mode: "text/javascript" },
+        { name: "SQL", mode: "text/x-sql" },
       ],
       defaultMode: {
         name: "Java",
