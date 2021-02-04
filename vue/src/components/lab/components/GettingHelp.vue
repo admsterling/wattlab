@@ -19,7 +19,7 @@
           </span>
           <div class="float-right">
             <v-btn
-              v-if="this.accountType === 'HELPER' && !this.inCall"
+              v-if="this.accountType !== 'STUDENT' && !this.inCall"
               class="mr-2"
               @click="nativeCall"
             >
@@ -36,7 +36,7 @@
               <v-icon small class="ml-2"> mdi-cancel </v-icon>
             </v-btn>
             <v-btn
-              v-if="this.accountType === 'HELPER'"
+              v-if="this.accountType !== 'STUDENT'"
               class="mr-2"
               @click="callStudent"
             >

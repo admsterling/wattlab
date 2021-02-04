@@ -39,7 +39,7 @@
         <v-tab-item>
           <div class="tab-item-wrapper">
             <StudentHelpView v-if="this.accountType === 'STUDENT'" />
-            <LabHelperView v-else-if="this.accountType === 'HELPER'" />
+            <LabHelperView v-else />
           </div>
         </v-tab-item>
         <v-tab-item v-if="this.studentSubmission">
