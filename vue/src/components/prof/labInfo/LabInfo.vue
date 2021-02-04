@@ -111,7 +111,7 @@ export default {
         method: "POST",
         data: {
           query: `
-                query getPrivateChat($staff: String!) {
+                query getPrivateChat($staff: String) {
                     getPrivateChat(staff: $staff) {
                         _id
                         student
