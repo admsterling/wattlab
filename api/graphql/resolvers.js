@@ -374,14 +374,19 @@ module.exports = {
     lab.status = false;
     lab.socketIDQue = [];
 
-    const labList = lab.labMembers;
-    for (let i = 0; i < labList.length; i++) {
-      if (labList[i].inRoom) {
-        let labMemberChange = await LabMember.findById(labList[i]._id);
-        labMemberChange.inRoom = false;
-        await labMemberChange.save();
+    await LabMember.updateMany(
+      { lab_id: lab._id, inRoom: true },
+      {
+        inRoom: false,
       }
-    }
+    );
+
+    await PrivateChat.updateMany(
+      { lab_id: lab._id, active: true },
+      {
+        active: false,
+      }
+    );
 
     await lab.save();
     return true;

@@ -56,6 +56,8 @@ export default {
   mounted() {
     if (this.$store.getters["prof/isLoggedIn"]) {
       this.$router.push("/prof");
+    } else {
+      this.$store.dispatch("socket/resetState");
     }
   },
 };

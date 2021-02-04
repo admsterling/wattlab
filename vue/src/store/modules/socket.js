@@ -112,21 +112,25 @@ const mutations = {
 
 const actions = {
   resetState({ commit, rootGetters }) {
-    return axios(process.env.VUE_APP_ENDPOINT, {
-      method: 'POST',
-      data: {
-        query: `
-              mutation memberLeaveLab($id: ID!){
-                memberLeaveLab(id: $id)
-              }
-          `,
-        variables: {
-          id: rootGetters['socket/member_id'],
+    if (rootGetters['socket/member_id']) {
+      return axios(process.env.VUE_APP_ENDPOINT, {
+        method: 'POST',
+        data: {
+          query: `
+                mutation memberLeaveLab($id: ID!){
+                  memberLeaveLab(id: $id)
+                }
+            `,
+          variables: {
+            id: rootGetters['socket/member_id'],
+          },
         },
-      },
-    }).then(() => {
+      }).then(() => {
+        commit('RESET_STATE');
+      });
+    } else {
       commit('RESET_STATE');
-    });
+    }
   },
   setLab({ commit, rootGetters }, context) {
     return axios(process.env.VUE_APP_ENDPOINT, {
