@@ -10,6 +10,8 @@
             <v-treeview
               :items="treeview"
               :active.sync="active"
+              :open.sync="open"
+              open-on-click
               activatable
               transition
               dense
@@ -21,7 +23,23 @@
           </v-col>
           <v-divider vertical></v-divider>
 
-          <v-col class="d-flex text-center"> </v-col>
+          <v-col class="d-flex text-center">
+            <v-scroll-y-transition mode="out-in">
+              <div
+                v-if="!selected"
+                class="title grey--text text--lighten-1 font-weight-light"
+                style="align-self: center"
+              >
+                Select a chat
+              </div>
+              <v-card v-else class="pt-6 mx-auto" flat max-width="800">
+                <v-card-title>
+                  Chat between: {{ selected.staff }} and {{ selected.student }}
+                </v-card-title>
+                <v-card-text> </v-card-text>
+              </v-card>
+            </v-scroll-y-transition>
+          </v-col>
         </v-row>
       </v-container>
     </v-card>
@@ -39,7 +57,23 @@ export default {
       },
       treeview: [],
       active: [],
+      open: [],
     };
+  },
+  computed: {
+    selected() {
+      if (!this.active.length) return undefined;
+
+      const id = this.active[0];
+
+      const obj = {
+        id: id,
+        staff: "as317",
+        student: "te13",
+        name: "test",
+      };
+      return obj;
+    },
   },
   async mounted() {
     let helpers;
