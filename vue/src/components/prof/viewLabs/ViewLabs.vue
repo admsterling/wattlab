@@ -49,7 +49,9 @@
                       </li>
                     </ul>
                   </v-tooltip>
-                  <span class="ml-4">{{ lab.title }}</span>
+                  <router-link :to="'/labInfo/' + lab.code" class="ml-2">
+                    {{ lab.title }}
+                  </router-link>
                 </td>
                 <td>
                   <v-icon class="mr-2" @click="loadMembers(i, $event)"

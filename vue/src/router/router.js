@@ -14,9 +14,6 @@ const RegisterView = Vue.component('Register', () =>
 const JoinLabView = Vue.component('Join', () =>
   import('../components/lab/LabRoom')
 );
-// const TestComponent = Vue.component('Login', () =>
-//   import('../components/TestComponent')
-// );
 
 const TeacherView = Vue.component('TeacherView', () =>
   import('../components/prof/ProfView.vue')
@@ -30,6 +27,9 @@ const ViewLabs = Vue.component('ViewLabs', () =>
 );
 const EditLabView = Vue.component('EditLab', () =>
   import('../components/prof/editLab/EditLab')
+);
+const LabInfoView = Vue.component('LabInfo', () =>
+  import('../components/prof/labInfo/LabInfo')
 );
 
 const NotFound = Vue.component('NotFound', () =>
@@ -69,6 +69,7 @@ const routes = [
       { path: '/createLab', component: CreateLabView },
       { path: '/viewLabs', component: ViewLabs },
       { path: '/edit/:labCode', component: EditLabView },
+      { path: '/labInfo/:code', component: LabInfoView },
     ],
   },
   { path: '*', component: NotFound },

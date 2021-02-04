@@ -734,4 +734,17 @@ module.exports = {
 
     return true;
   },
+  getPrivateChat: async function ({ staff }, req) {
+    checkAuth(req.isAuth);
+    const chats = await PrivateChat.find({ staff: staff });
+
+    return chats.map((p) => {
+      return {
+        ...p._doc,
+        _id: p._id.toString(),
+        createdAt: p.createdAt.toISOString(),
+        updatedAt: p.updatedAt.toISOString(),
+      };
+    });
+  },
 };
