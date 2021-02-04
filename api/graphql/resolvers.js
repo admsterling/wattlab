@@ -352,6 +352,7 @@ module.exports = {
 
     lab.status = true;
     lab.socketIDQue = [];
+    lab.queTimes = [];
     await lab.save();
     return true;
   },
@@ -400,12 +401,8 @@ module.exports = {
       throw error;
     }
 
-    for (let i = 0; i < lab.labMembers.length; i++) {
-      await LabMember.findByIdAndDelete(lab.labMembers[i]._id);
-    }
-    for (let i = 0; i < lab.messages.length; i++) {
-      await Message.findByIdAndDelete(lab.messages[i]._id);
-    }
+    await LabMember.deleteMany({ lab_id: lab._id });
+    await Message.deleteMany({ lab_id: lab._id });
 
     // Fix here
     for (let i = 0; i < lab.privateChats.length; i++) {
