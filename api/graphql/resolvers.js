@@ -736,7 +736,17 @@ module.exports = {
   },
   getPrivateChat: async function ({ id, staff }, req) {
     checkAuth(req.isAuth);
-    const chats = await PrivateChat.find({ staff: staff });
+
+    let chats;
+    if (id) {
+      chats = await PrivateChat.find({ _id: id }).populate('messages');
+    } else if (staff) {
+      chats = await PrivateChat.find({ staff: staff }).populate('messages');
+    } else {
+      const error = new Error('Please provide an ID or staff member');
+      error.code = 404;
+      throw error;
+    }
 
     return chats.map((p) => {
       return {
@@ -744,6 +754,15 @@ module.exports = {
         _id: p._id.toString(),
         createdAt: p.createdAt.toISOString(),
         updatedAt: p.updatedAt.toISOString(),
+        messages: p.messages.map((m) => {
+          return {
+            ...m._doc,
+            _id: m._id.toString(),
+            private_id: m.private_id.toString(),
+            createdAt: m.createdAt.toISOString(),
+            updatedAt: m.updatedAt.toISOString(),
+          };
+        }),
       };
     });
   },

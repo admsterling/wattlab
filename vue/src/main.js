@@ -8,6 +8,10 @@ import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
 
+import AsyncComputed from 'vue-async-computed'
+ 
+Vue.use(AsyncComputed)
+
 import VuePeerJS from 'vue-peerjs';
 import Peer from 'peerjs';
 

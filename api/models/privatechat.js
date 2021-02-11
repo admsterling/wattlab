@@ -14,7 +14,7 @@ const privateChatSchema = new Schema(
     messages: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Message',
+        ref: 'PrivateMessage',
         required: true,
       },
     ],

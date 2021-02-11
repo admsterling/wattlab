@@ -105,6 +105,8 @@ module.exports = buildSchema(`
         feedback: String
         requiredCall: Boolean!
         active: Boolean!
+        createdAt: String!
+        updatedAt: String!
     }
 
     type queReturn {

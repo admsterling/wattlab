@@ -4,9 +4,9 @@
       <v-card-title class="teal white--text headline">
         Lab Info: {{ lab.title }}
       </v-card-title>
-      <v-container>
-        <v-row class="pa-4" justify="space-between">
-          <v-col cols="3">
+      <v-container fluid>
+        <v-row>
+          <v-col cols="3" class="text-left">
             <v-treeview
               :items="treeview"
               :active.sync="active"
@@ -15,6 +15,7 @@
               activatable
               transition
               dense
+              style="height: calc(100vh - 250px); overflow-y: scroll"
             >
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children"> mdi-account </v-icon>
@@ -23,22 +24,52 @@
           </v-col>
           <v-divider vertical></v-divider>
 
-          <v-col class="d-flex text-center">
-            <v-scroll-y-transition mode="out-in">
-              <div
-                v-if="!selected"
-                class="title grey--text text--lighten-1 font-weight-light"
-                style="align-self: center"
-              >
-                Select a chat
-              </div>
-              <v-card v-else class="pt-6 mx-auto" flat max-width="800">
-                <v-card-title>
-                  Chat between: {{ selected.staff }} and {{ selected.student }}
-                </v-card-title>
-                <v-card-text> </v-card-text>
-              </v-card>
-            </v-scroll-y-transition>
+          <v-col>
+            <div
+              v-if="!selected"
+              class="title grey--text text--lighten-1 font-weight-light fill-height"
+              style="align-self: center"
+            >
+              Select a chat
+            </div>
+            <v-card v-else class="mx-auto" flat>
+              <v-card-title class="justify-center">
+                <div class="text-center">
+                  Chat between:
+                  <span class="font-weight-bold purple--text">
+                    {{ selected.staff }}
+                  </span>
+                  and
+                  <span class="font-weight-bold purple--text">
+                    {{ selected.student }}
+                  </span>
+                  <br />
+                  {{ selected.createdAt | moment("DD/MM/YYYY kk:mm") }}
+                  <span v-if="selected.rating > 0" class="ml-5">
+                    {{ selected.rating }}/5<v-icon class="orange--text darken-3"
+                      >mdi-star</v-icon
+                    >
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          class="ml-5"
+                          color="primary"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          mdi-comment-quote-outline
+                        </v-icon>
+                      </template>
+                      <span>{{ selected.feedback }}</span>
+                    </v-tooltip>
+                  </span>
+                </div>
+              </v-card-title>
+              <v-card-text>
+                <ChatList :messages="selected.messages" />
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
@@ -50,6 +81,9 @@
 import axios from "axios";
 
 export default {
+  components: {
+    ChatList: () => import("./ChatList"),
+  },
   data() {
     return {
       lab: {
@@ -60,18 +94,44 @@ export default {
       open: [],
     };
   },
-  computed: {
-    selected() {
+  asyncComputed: {
+    async selected() {
       if (!this.active.length) return undefined;
 
       const id = this.active[0];
 
-      const obj = {
-        id: id,
-        staff: "as317",
-        student: "te13",
-        name: "test",
-      };
+      const result = await axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getPrivateChat($id: ID) {
+                    getPrivateChat(id: $id) {
+                        _id
+                        student
+                        staff
+                        createdAt
+                        rating
+                        feedback
+                        messages { 
+                          sender
+                          accountType
+                          text
+                          createdAt
+                        }
+                    }
+                }
+            `,
+          variables: {
+            id: id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      });
+
+      const obj = result.data.data.getPrivateChat[0];
+      console.log(obj);
       return obj;
     },
   },
