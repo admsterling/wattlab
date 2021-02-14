@@ -23,7 +23,9 @@
       <v-spacer></v-spacer>
       <div class="white--text">
         &copy; Adam Sterling {{ new Date().getFullYear() }} -
-        <span class="font-weight-light">as317@hw.ac.uk</span>
+        <a href="mailto:as317@hw.ac.uk" class="font-weight-light white--text"
+          >as317@hw.ac.uk</a
+        >
       </div>
     </v-footer>
   </v-app>

@@ -41,13 +41,22 @@
         </v-row>
         <v-row class="mt-2" align="center">
           <v-col>
-            <span class="text-subtitle-1">Lab Helper PIN number:</span>
-            <br />
-            <PincodeInput
-              v-model="helperPIN"
-              placeholder="0"
-              :autofocus="false"
-            />
+            <v-expansion-panels accordion>
+              <v-expansion-panel>
+                <v-expansion-panel-header>
+                  Lab Helper Options
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <span class="text-subtitle-1">PIN number:</span>
+                  <br />
+                  <PincodeInput
+                    v-model="helperPIN"
+                    placeholder="0"
+                    :autofocus="false"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-col>
         </v-row>
         <v-row align="center">
@@ -63,8 +72,58 @@
             >
           </v-col>
         </v-row>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <span class="subtitle-2">
+              By logging in you agree to the
+              <span
+                class="blue--text text-decoration-underline hover-hand"
+                @click="showTC"
+                >terms and conditions.</span
+              >
+            </span>
+          </v-col>
+        </v-row>
       </v-container>
     </v-form>
+    <v-dialog v-model="tc" width="500">
+      <v-card>
+        <v-card-title class="headline grey lighten-2">
+          Terms and Conditions
+        </v-card-title>
+        <v-card-text class="pa-2">
+          WattLab is currently a
+          <span class="font-weight-bold">work in progress</span> project and may
+          contain errors/bugs and is not liable for any loss in data.
+          <ul class="py-2">
+            <li>
+              You agree that your Heriot-Watt username will be your account
+              identifier
+            </li>
+            <li>
+              Any text messages you send will be stored until the project is
+              complete
+              <span class="font-weight-bold"
+                >22 Apr 2021 (15:30 Local Time)</span
+              >.
+            </li>
+            <li>
+              All data will be stored and processed within GDPR Regulations.
+            </li>
+          </ul>
+          Please do not take advantage of any exploits you find and instead
+          report them to
+          <a href="mailto:as317@hw.ac.uk">as317@hw.ac.uk</a>.<br />
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="deep-orange lighten-2" @click="tc = false" dark>
+            Close
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -89,8 +148,10 @@ export default {
       ],
       usernameRules: [
         (value) => !!value || "Required",
-        (value) => /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
+        (value) =>
+          /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
       ],
+      tc: false,
     };
   },
   methods: {
@@ -151,6 +212,15 @@ export default {
           });
       }
     },
+    showTC() {
+      this.tc = true;
+    },
   },
 };
 </script>
+
+<style scoped>
+.hover-hand {
+  cursor: pointer;
+}
+</style>
