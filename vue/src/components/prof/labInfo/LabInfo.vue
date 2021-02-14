@@ -20,6 +20,20 @@
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children"> mdi-account </v-icon>
               </template>
+              <template v-slot:append="{ item }">
+                {{ item.rating
+                }}<v-icon v-if="item.rating" class="orange--text darken-3">
+                  mdi-star
+                </v-icon>
+                <v-tooltip bottom v-if="item.feedback">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon color="primary" dark v-bind="attrs" v-on="on">
+                      mdi-comment-quote-outline
+                    </v-icon>
+                  </template>
+                  <span>{{ item.feedback }}</span>
+                </v-tooltip>
+              </template>
             </v-treeview>
           </v-col>
           <v-divider vertical></v-divider>
@@ -43,6 +57,12 @@
                   <span class="font-weight-bold purple--text">
                     {{ selected.student }}
                   </span>
+                  <span class="ml-3"
+                    >Required Call:
+                    <span class="blue-grey--text darken-1 text-uppercase">{{
+                      selected.requiredCall
+                    }}</span></span
+                  >
                   <br />
                   {{ selected.createdAt | moment("DD/MM/YYYY kk:mm") }}
                   <span v-if="selected.rating > 0" class="ml-5">
@@ -112,6 +132,7 @@ export default {
                         createdAt
                         rating
                         feedback
+                        requiredCall
                         messages { 
                           sender
                           accountType
@@ -175,6 +196,8 @@ export default {
                     getPrivateChat(staff: $staff) {
                         _id
                         student
+                        feedback
+                        rating
                     }
                 }
             `,
