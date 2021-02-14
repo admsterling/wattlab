@@ -21,11 +21,13 @@
                 <v-icon v-if="!item.children"> mdi-account </v-icon>
               </template>
               <template v-slot:append="{ item }">
-                {{ item.rating
-                }}<v-icon v-if="item.rating" class="orange--text darken-3">
+                <span v-if="item.rating">
+                  {{ item.rating }}
+                </span>
+                <v-icon v-if="item.rating" class="orange--text darken-3">
                   mdi-star
                 </v-icon>
-                <v-tooltip bottom v-if="item.feedback">
+                <v-tooltip bottom v-if="item.feedback" max-width="400px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon color="primary" dark v-bind="attrs" v-on="on">
                       mdi-comment-quote-outline
@@ -69,7 +71,7 @@
                     {{ selected.rating }}/5<v-icon class="orange--text darken-3"
                       >mdi-star</v-icon
                     >
-                    <v-tooltip bottom>
+                    <v-tooltip bottom max-width="400px">
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
                           class="ml-5"
@@ -152,7 +154,6 @@ export default {
       });
 
       const obj = result.data.data.getPrivateChat[0];
-      console.log(obj);
       return obj;
     },
   },
@@ -216,6 +217,19 @@ export default {
         return p;
       });
       helpers.children[i].children = result.data.data.getPrivateChat;
+
+      for (let i = 0; i < helpers.children.length; i++) {
+        let total = 0;
+        let count = 0;
+        for (let j = 0; j < helpers.children[i].children.length; j++) {
+          if (helpers.children[i].children[j].rating) {
+            total = total + helpers.children[i].children[j].rating;
+            count++;
+          }
+        }
+        let average = total / count;
+        helpers.children[i].rating = Math.round(average * 10) / 10;
+      }
     }
     this.treeview.push(helpers);
   },

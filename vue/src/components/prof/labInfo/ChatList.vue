@@ -7,17 +7,20 @@
       dense
       style="height: calc(100vh - 360px); overflow-y: scroll"
     >
-      <v-list-item v-for="message in messages" :key="message._id">
-        <v-list-title class="mr-3 purple--text"> {{ message.sender }}: </v-list-title>
-        <v-list-item-content>
-          <v-list-item-title class="text-wrap">
-            {{ message.text }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ message.createdAt | moment("kk:mm") }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+      <template v-for="(message, i) in messages">
+        <v-divider v-if="i % 2 == 1" :key="i"></v-divider>
+        <v-list-item v-else :key="i">
+          <v-list-item-content>
+            <v-list-item-title class="text-wrap">
+              {{ message.text }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              <span class="purple--text">{{ message.sender }}</span> -
+              {{ message.createdAt | moment("kk:mm") }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
   </div>
 </template>
