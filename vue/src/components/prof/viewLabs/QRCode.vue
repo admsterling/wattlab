@@ -38,7 +38,7 @@ export default {
   methods: {
     open(code) {
       this.qrDialog = true;
-      this.code = "https://" + window.location.hostname + "/" + code;
+      this.code = "https://" + window.location.hostname + "/login/" + code;
     },
     cancel() {
       this.qrDialog = false;
@@ -46,7 +46,7 @@ export default {
     download() {
       const a = document.createElement("a");
       a.href = this.$refs.qrcode.dataUrl;
-      a.download = "lab-" + this.code.substr(this.code.length - 5) + ".png";
+      a.download = "lab-" + this.code.substr(this.code.length - 6) + ".png";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
