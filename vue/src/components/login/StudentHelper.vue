@@ -216,6 +216,11 @@ export default {
       this.tc = true;
     },
   },
+  mounted() {
+    if (this.$route.params.code) {
+      this.labCode = this.$route.params.code;
+    }
+  },
 };
 </script>
 

@@ -31,6 +31,9 @@ const EditLabView = Vue.component('EditLab', () =>
 const LabInfoView = Vue.component('LabInfo', () =>
   import('../components/prof/labInfo/LabInfo')
 );
+const QRCodeView = Vue.component('QRCode', () =>
+  import('../components/prof/viewLabs/QRCode')
+);
 
 const NotFound = Vue.component('NotFound', () =>
   import('../components/NotFound')
@@ -58,6 +61,7 @@ const routes = [
   { path: '/join/:labCode', beforeEnter: ifLab, component: JoinLabView },
 
   { path: '/login', component: LoginView },
+  { path: '/login/:code', component: LoginView },
   { path: '/register', component: RegisterView },
 
   {
@@ -70,6 +74,7 @@ const routes = [
       { path: '/viewLabs', component: ViewLabs },
       { path: '/edit/:labCode', component: EditLabView },
       { path: '/labInfo/:code', component: LabInfoView },
+      { path: '/qrcode/:code', component: QRCodeView },
     ],
   },
   { path: '*', component: NotFound },

@@ -16,10 +16,10 @@
             <thead>
               <tr>
                 <th class="text-left">Title</th>
-                <th class="text-left">Students In Lab</th>
-                <th class="text-left">Students Being Helped</th>
+                <th class="text-left">In Lab</th>
+                <th class="text-left">Being Helped</th>
                 <th class="text-left">Code</th>
-                <th class="text-left">Lab Helper PIN</th>
+                <th class="text-left">PIN</th>
                 <th class="text-left">Created:</th>
                 <th class="text-left">Status</th>
                 <th class="text-left"></th>
@@ -49,6 +49,9 @@
                       </li>
                     </ul>
                   </v-tooltip>
+                  <v-icon color="primary" @click="qrcode(lab.code)">
+                    mdi-qrcode
+                  </v-icon>
                   <router-link :to="'/labInfo/' + lab.code" class="ml-2">
                     {{ lab.title }}
                   </router-link>
@@ -65,7 +68,7 @@
                 </td>
                 <td>{{ lab.code }}</td>
                 <td>{{ lab.helperPIN }}</td>
-                <td>{{ lab.createdAt | moment("ddd, DD-MM-YY") }}</td>
+                <td>{{ lab.createdAt | moment("DD-MM-YY") }}</td>
                 <td>
                   <v-switch
                     v-if="!lab.status"
@@ -122,6 +125,7 @@
         <v-btn @click="goToCreate"> Create first Lab! </v-btn>
       </v-card-actions>
     </v-card>
+    <QRCodeVue ref="qrDialog" :qrID="this.qrID" />
   </div>
 </template>
 
@@ -129,12 +133,18 @@
 import axios from "axios";
 import { mapGetters } from "vuex";
 
+import QRCodeVue from "./QRCode";
+
 export default {
+  components: {
+    QRCodeVue,
+  },
   data() {
     return {
       loading: false,
       loadingOverlay: false,
       labs: [],
+      qrID: "",
     };
   },
   computed: {
@@ -394,6 +404,9 @@ export default {
       } else {
         this.$toast.error("Unable to fetch count");
       }
+    },
+    qrcode(code) {
+      this.$refs.qrDialog.open(code);
     },
   },
   async mounted() {

@@ -35,8 +35,9 @@ export default {
     dialog: false,
   }),
   methods: {
-    open() {
+    open(code) {
       this.dialog = true;
+      this.code = code;
     },
     agree() {
       this.$emit("confirmed", this.i);
