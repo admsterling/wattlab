@@ -59,7 +59,22 @@
             </v-expansion-panels>
           </v-col>
         </v-row>
-        <v-row align="center">
+        <v-row align="center" justify="center">
+          <v-col cols="1">
+            <v-checkbox v-model="consent" />
+          </v-col>
+          <v-col cols="11" class="text-left">
+            <span class="subtitle-2">
+              I consent to the
+              <span
+                class="blue--text text-decoration-underline hover-hand"
+                @click="showTC(e)"
+                >terms and conditions.</span
+              >
+            </span>
+          </v-col>
+        </v-row>
+        <v-row no-gutters align="center">
           <v-col class="text-center">
             <v-btn
               class="teal mt-5"
@@ -67,21 +82,9 @@
               dark
               @click="submit"
               :loading="submitted"
-              :disabled="submitted"
+              :disabled="submitted || !consent"
               >Login</v-btn
             >
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col cols="12">
-            <span class="subtitle-2">
-              By logging in you agree to the
-              <span
-                class="blue--text text-decoration-underline hover-hand"
-                @click="showTC"
-                >terms and conditions.</span
-              >
-            </span>
           </v-col>
         </v-row>
       </v-container>
@@ -141,6 +144,7 @@ export default {
       helperPIN: "7384",
       username: "te13",
       submitted: false,
+      consent: false,
       validForm: true,
       codeRules: [
         (value) => !!value || "Required",
@@ -212,8 +216,9 @@ export default {
           });
       }
     },
-    showTC() {
+    showTC(e) {
       this.tc = true;
+      e.stopPropagation();
     },
   },
   mounted() {
