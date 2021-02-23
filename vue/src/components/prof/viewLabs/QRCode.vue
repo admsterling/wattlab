@@ -7,7 +7,28 @@
         <v-container fluid no-gutters>
           <v-row no-gutters align="center" justify="center">
             <v-col cols="12" align="center" justify="center" no-gutters>
-              <VueQRCode ref="qrcode" :value="this.code" scale=6 errorCorrectionLevel="H" />
+              <VueQRCode
+                ref="qrcode"
+                :value="this.code"
+                :scale="6"
+                errorCorrectionLevel="H"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters align="center" justify="center">
+            <v-col cols="12" align="center" justify="center" no-gutters>
+              <v-hover>
+                <template v-slot:default="{ hover }">
+                  <div
+                    id="linkText"
+                    @click="selectText"
+                    :class="`elevation-${hover ? 15 : 4}`"
+                    class="pa-3 transition-swing"
+                  >
+                    {{ code }}
+                  </div>
+                </template>
+              </v-hover>
             </v-col>
           </v-row>
         </v-container>
@@ -50,6 +71,23 @@ export default {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+    },
+    selectText() {
+      const node = document.getElementById("linkText");
+
+      if (document.body.createTextRange) {
+        const range = document.body.createTextRange();
+        range.moveToElementText(node);
+        range.select();
+      } else if (window.getSelection) {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else {
+        console.warn("Could not select text in node: Unsupported browser.");
+      }
     },
   },
 };

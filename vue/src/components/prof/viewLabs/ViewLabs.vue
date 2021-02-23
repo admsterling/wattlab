@@ -51,7 +51,7 @@
                     </ul>
                   </v-tooltip>
                   <v-icon color="primary" @click="qrcode(lab.code)">
-                    mdi-qrcode
+                    mdi-share-variant
                   </v-icon>
                 </td>
                 <td>
