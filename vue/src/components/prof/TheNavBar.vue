@@ -58,6 +58,22 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+
+      <v-divider></v-divider>
+
+      <v-list nav dense>
+        <v-list-item-group v-model="selectedItem" color="primary">
+          <v-list-item v-for="(link, i) in userLinks" :key="i" :to="link.route">
+            <v-list-item-icon>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -72,8 +88,20 @@ export default {
       logoutDialog: false,
       selectedItem: 0,
       links: [
-        { icon: "mdi-card-search-outline", text: "View Labs", route: "/viewLabs"},
+        {
+          icon: "mdi-card-search-outline",
+          text: "View Labs",
+          route: "/viewLabs",
+        },
         { icon: "mdi-text-box", text: "Create New Lab", route: "/createLab" },
+      ],
+      userLinks: [
+        {
+          icon: "mdi-lock",
+          text: "Change Password",
+          route: "/changePassword",
+        },
+        { icon: "mdi-account-check", text: "Approve Users", route: "/approve" },
       ],
     };
   },
@@ -85,7 +113,7 @@ export default {
   },
   methods: {
     goHome() {
-      if(this.$router.history.current.path !== "/viewLabs"){
+      if (this.$router.history.current.path !== "/viewLabs") {
         this.$router.push("/prof");
       }
     },

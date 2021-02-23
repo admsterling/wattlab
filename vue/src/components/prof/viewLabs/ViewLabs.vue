@@ -15,6 +15,7 @@
           <v-simple-table dense style="width: 100%">
             <thead>
               <tr>
+                <th class="text-left"></th>
                 <th class="text-left">Title</th>
                 <th class="text-left">In Lab</th>
                 <th class="text-left">Being Helped</th>
@@ -52,6 +53,8 @@
                   <v-icon color="primary" @click="qrcode(lab.code)">
                     mdi-qrcode
                   </v-icon>
+                </td>
+                <td>
                   <router-link :to="'/labInfo/' + lab.code" class="ml-2">
                     {{ lab.title }}
                   </router-link>
