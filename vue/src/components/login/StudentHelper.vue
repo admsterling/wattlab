@@ -60,31 +60,61 @@
           </v-col>
         </v-row>
         <v-row align="center" justify="center" no-gutters>
-          <v-col cols="2">
-            <v-checkbox v-model="consent" dense :rules="checkboxRules" />
-          </v-col>
-          <v-col cols="10" class="text-left">
-            <span class="subtitle-2">
+          <v-col cols="12">
+            <v-simple-checkbox
+              v-model="consent"
+              :ripple="false"
+              dense
+              :rules="checkboxRules"
+              class="float-left"
+              color="blue"
+            />
+            <span class="ml-2 float-left subtitle-2">
               I consent to the
               <span
                 class="blue--text text-decoration-underline hover-hand"
-                @click="showTC()"
+                @click="$refs.tc.open()"
                 >terms and conditions</span
               >.
             </span>
           </v-col>
         </v-row>
         <v-row align="center" justify="center" no-gutters>
-          <v-col cols="2">
-            <v-checkbox v-model="studentInfo" dense :rules="checkboxRules" />
-          </v-col>
-          <v-col cols="10" class="text-left">
-            <span class="subtitle-2">
+          <v-col cols="12">
+            <v-simple-checkbox
+              v-model="studentInfo"
+              :ripple="false"
+              dense
+              :rules="checkboxRules"
+              class="float-left"
+              color="blue"
+            />
+            <span class="ml-2 float-left subtitle-2">
               I have read the
               <span
                 class="blue--text text-decoration-underline hover-hand"
-                @click="showSI()"
+                @click="$refs.si.open()"
                 >student information</span
+              >.
+            </span>
+          </v-col>
+        </v-row>
+        <v-row align="center" justify="center" no-gutters>
+          <v-col cols="12">
+            <v-simple-checkbox
+              v-model="microphone"
+              :ripple="false"
+              dense
+              :rules="checkboxRules"
+              class="float-left"
+              color="blue"
+            />
+            <span class="ml-2 float-left subtitle-2">
+              I have gave the site access to the
+              <span
+                class="blue--text text-decoration-underline hover-hand"
+                @click="$refs.mi.open()"
+                >microphone</span
               >.
             </span>
           </v-col>
@@ -93,99 +123,21 @@
           <v-col class="text-center">
             <v-btn
               class="teal mt-5"
-              :class="consent && studentInfo ? 'teal' : 'grey'"
+              :class="consent && studentInfo && microphone ? 'teal' : 'grey'"
               outlined
               dark
               @click="submit"
               :loading="submitted"
-              :disabled="!(studentInfo && consent)"
+              :disabled="!(studentInfo && consent && microphone)"
               >Login</v-btn
             >
           </v-col>
         </v-row>
       </v-container>
     </v-form>
-    <v-dialog v-model="tc" max-width="600px">
-      <v-card>
-        <v-card-title class="headline grey lighten-2">
-          Terms and Conditions
-        </v-card-title>
-        <v-card-text class="pa-2">
-          WattLab is currently a
-          <span class="font-weight-bold">work in progress</span> project and may
-          contain errors/bugs and is not liable for any loss in data.
-          <ul class="py-2">
-            <li>
-              You agree that your Heriot-Watt username will be your account
-              identifier
-            </li>
-            <li>
-              Any text messages you send will be stored until the project is
-              complete
-              <span class="font-weight-bold"
-                >22 Apr 2021 (15:30 Local Time)</span
-              >.
-            </li>
-            <li>
-              All data will be stored and processed within GDPR Regulations.
-            </li>
-          </ul>
-          Please do not take advantage of any exploits you find and instead
-          report them to
-          <a href="mailto:as317@hw.ac.uk">as317@hw.ac.uk</a>.<br />
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="deep-orange lighten-2" @click="tc = false" dark>
-            Close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="si" max-width="600px">
-      <v-card>
-        <v-card-title class="headline grey lighten-2">
-          Student Information
-        </v-card-title>
-        <v-card-text class="pa-2">
-          <span class="font-weight-bold"
-            >Students, please not that the current Microsoft Forms lab method is
-            still **WORKING**</span
-          >.<br />If for any reason this site crashes or you are unable to use
-          the application, return to the old method and a lab helper will assist
-          you that way.
-          <ul class="my-3">
-            <li>
-              Please try use the insite navigation so that we can understand how
-              a user will navigate through the site.
-            </li>
-            <li>
-              Although the site has been approved for use in most modern
-              browsers, please try and use the latest version of
-              <span class="font-weight-bold">Chrome</span>.
-            </li>
-            <li>
-              Please have the
-              <span class="font-weight-bold">Microsoft Teams</span> application
-              running in the background so that you are ready to answer lab
-              helper calls.
-            </li>
-            <li>
-              This site has been developed for laptop / monitor use, navigation
-              will not work with mobile devices.
-            </li>
-          </ul>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="deep-orange lighten-2" @click="si = false" dark>
-            Close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <TermsAndConditions ref="tc" />
+    <StudentInformation ref="si" />
+    <Mic ref="mi" />
   </div>
 </template>
 
@@ -196,6 +148,9 @@ import PincodeInput from "vue-pincode-input";
 export default {
   components: {
     PincodeInput,
+    StudentInformation: () => import("./components/StudentInformation"),
+    TermsAndConditions: () => import("./components/TermsAndConditions"),
+    Mic: () => import("./components/Mic"),
   },
   data() {
     return {
@@ -205,6 +160,7 @@ export default {
       submitted: false,
       consent: true,
       studentInfo: true,
+      microphone: true,
       validForm: true,
       codeRules: [
         (value) => !!value || "Required",
@@ -216,8 +172,6 @@ export default {
           /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
       ],
       checkboxRules: [(value) => value || "Required"],
-      tc: false,
-      si: false,
     };
   },
   methods: {
@@ -277,12 +231,6 @@ export default {
             this.$emit("flip-tabs");
           });
       }
-    },
-    showTC() {
-      this.tc = true;
-    },
-    showSI() {
-      this.si = true;
     },
   },
   mounted() {
