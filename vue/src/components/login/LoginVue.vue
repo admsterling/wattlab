@@ -60,5 +60,11 @@ export default {
       this.$store.dispatch("socket/resetState");
     }
   },
+  created() {
+    const devFlag = process.env.VUE_APP_DEV_FLAG || false;
+    if (this.$isMobile() && !devFlag) {
+      this.$router.push("/mobile");
+    }
+  },
 };
 </script>

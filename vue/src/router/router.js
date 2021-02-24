@@ -35,6 +35,10 @@ const QRCodeView = Vue.component('QRCode', () =>
   import('../components/prof/viewLabs/QRCode')
 );
 
+const MobileView = Vue.component('MobileView', () =>
+  import('../components/MobileView')
+);
+
 const NotFound = Vue.component('NotFound', () =>
   import('../components/NotFound')
 );
@@ -57,8 +61,13 @@ const ifLab = (to, from, next) => {
 
 const routes = [
   { path: '/', redirect: '/login' },
+  { path: '/mobile', component: MobileView },
 
-  { path: '/join/:labCode', beforeEnter: ifLab, component: JoinLabView },
+  {
+    path: '/join/:labCode',
+    beforeEnter: ifLab,
+    component: JoinLabView,
+  },
 
   { path: '/login', component: LoginView },
   { path: '/login/:code', component: LoginView },
