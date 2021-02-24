@@ -23,7 +23,7 @@
               class="mr-2"
               @click="nativeCall"
             >
-              Site Call
+              Site Audio Call
               <v-icon small class="ml-2"> mdi-phone </v-icon>
             </v-btn>
             <v-btn
