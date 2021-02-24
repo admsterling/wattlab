@@ -11,6 +11,14 @@
             </v-card-title>
 
             <v-divider></v-divider>
+            <v-tabs
+              fixed-tabs
+              dark
+              background-color="teal lighten-1"
+              v-model="tab"
+            >
+              <v-tab>Register</v-tab>
+            </v-tabs>
 
             <v-form ref="registerForm" lazy-validation>
               <v-container>
@@ -82,7 +90,7 @@
                   <v-col>
                     <p>
                       Already registered? Click
-                      <router-link to="/login">here</router-link>
+                      <router-link to="/login">here</router-link> to login
                     </p>
                   </v-col>
                 </v-row>
