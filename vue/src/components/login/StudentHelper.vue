@@ -105,7 +105,7 @@
         </v-row>
       </v-container>
     </v-form>
-    <v-dialog v-model="tc" max-width="750px">
+    <v-dialog v-model="tc" max-width="600px">
       <v-card>
         <v-card-title class="headline grey lighten-2">
           Terms and Conditions
@@ -143,7 +143,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="si" max-width="750px">
+    <v-dialog v-model="si" max-width="600px">
       <v-card>
         <v-card-title class="headline grey lighten-2">
           Student Information
@@ -156,6 +156,10 @@
           the application, return to the old method and a lab helper will assist
           you that way.
           <ul class="my-3">
+            <li>
+              Please try use the insite navigation so that we can understand how
+              a user will navigate through the site.
+            </li>
             <li>
               Although the site has been approved for use in most modern
               browsers, please try and use the latest version of
@@ -176,7 +180,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="deep-orange lighten-2" @click="tc = false" dark>
+          <v-btn color="deep-orange lighten-2" @click="si = false" dark>
             Close
           </v-btn>
         </v-card-actions>
