@@ -16,6 +16,10 @@ const queObjSchema = new Schema(
       type: String,
       required: true,
     },
+    requireProf: {
+      type: Boolean,
+      required: true,
+    },
     desc: {
       type: String,
       required: false,

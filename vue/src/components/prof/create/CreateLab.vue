@@ -45,11 +45,17 @@
               ></v-textarea>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row dense>
             <v-col>
               <v-checkbox
                 v-model="lab.submission"
                 label="Add Lab Submission Page"
+                dense
+              ></v-checkbox>
+              <v-checkbox
+                v-model="lab.profOnlyQue"
+                label="Allow Professor Only Queue Requests"
+                dense
               ></v-checkbox>
             </v-col>
           </v-row>
@@ -95,7 +101,8 @@ export default {
         desc: "This is a test description for the lab.\nAcross multiple lines.",
         urlTitles: ["test"],
         urlLinks: ["http://www.google.com"],
-        submission: true,
+        submission: false,
+        profOnlyQue: false,
       },
       titleRules: [(value) => !!value || "Required"],
       urlRules: [
@@ -119,8 +126,8 @@ export default {
         method: "POST",
         data: {
           query: `
-              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $submission: Boolean!){
-                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, submission: $submission})
+              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!){
+                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, submission: $submission, profOnlyQue: $profOnlyQue})
               }
           `,
           variables: {
@@ -130,6 +137,7 @@ export default {
             urlTitles: this.lab.urlTitles,
             urLinks: this.lab.urlLinks,
             submission: this.lab.submission,
+            profOnlyQue: this.lab.profOnlyQue,
           },
         },
         headers: {

@@ -3,22 +3,35 @@
     <v-row>
       <v-col></v-col>
       <v-col class="text-center" cols="8" md="11" lg="10" xl="8">
-        <v-card v-if="!loading">
+        <v-card
+          v-if="!loading"
+          style="height: calc(100vh - 250px); overflow-y: auto"
+        >
           <v-form ref="helpForm">
             <v-card-title>Please fill out the form:</v-card-title>
             <v-divider></v-divider>
             <v-card-text>
               <v-select
                 v-model="helpObj.queType"
+                dense
                 :items="labOptions"
                 label="I need:"
                 outlined
               ></v-select>
               <v-text-field
                 v-model="helpObj.title"
+                dense
                 :rules="[rules.required, rules.notempty]"
                 label="Please enter Lab/Coursework Title:"
               ></v-text-field>
+              <v-checkbox
+                v-if="this.profOnlyQue"
+                v-model="helpObj.requireProf"
+                dense
+                label="I need to speak to the Professor"
+                hint="Warning: Wait times may be longer"
+                persistent-hint
+              />
               <v-textarea
                 v-if="helpObj.queType == 'Help'"
                 label="Description:"
@@ -46,13 +59,13 @@
           <v-divider></v-divider>
           <v-card-text>
             <p class="text-h3">
-              People in que:
+              People in queue:
               <span class="purple--text lighten-text-1">{{ queLength }}</span>
             </p>
             <p class="text-h3">
               You are
               <span class="purple--text lighten-text-1">{{ quePosition }}</span>
-              in the que
+              in the queue
             </p>
             <p class="text-h3">
               Average Wait Time:
@@ -85,6 +98,7 @@ export default {
         queType: "Help",
         title: "",
         desc: "",
+        requireProf: false,
       },
       que: [],
       averageTime: 0,
@@ -103,27 +117,25 @@ export default {
       privateChat: "socket/privateChat",
       gettingSupport: "socket/gettingSupport",
       queWaiting: "socket/queWaiting",
+      profOnlyQue: "socket/profOnlyQue",
     }),
     queLength() {
       return this.que.length;
     },
     quePosition() {
-      let index = this.que.findIndex((x) => x.socketid === this.$socket.id);
-      let response;
-      switch (index) {
-        case 0:
-          response = "1st";
-          break;
-        case 1:
-          response = "2nd";
-          break;
-        case 2:
-          response = "3rd";
-          break;
-        default:
-          response = index + 1 + "th";
+      const i = this.que.findIndex((x) => x.socketid === this.$socket.id) + 1;
+      const j = i % 10;
+      const k = i % 100;
+      if (j == 1 && k != 11) {
+        return i + "st";
       }
-      return response;
+      if (j == 2 && k != 12) {
+        return i + "nd";
+      }
+      if (j == 3 && k != 13) {
+        return i + "rd";
+      }
+      return i + "th";
     },
   },
   watch: {
@@ -150,6 +162,7 @@ export default {
             queType: "Help",
             title: "",
             desc: "",
+            requireProf: false,
           };
         });
       }

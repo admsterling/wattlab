@@ -50,6 +50,12 @@
               <v-checkbox
                 v-model="lab.submission"
                 label="Add Lab Submission Page"
+                dense
+              ></v-checkbox>
+              <v-checkbox
+                v-model="lab.profOnlyQue"
+                label="Allow Professor Only Queue Requests"
+                dense
               ></v-checkbox>
             </v-col>
           </v-row>
@@ -88,6 +94,7 @@ export default {
         urlLinks: [],
         helpers: [],
         submission: false,
+        profOnlyQue: false,
       },
       submitted: false,
       errorList: undefined,
@@ -110,8 +117,8 @@ export default {
           method: "POST",
           data: {
             query: `
-              mutation updateLab($code: String!, $title: String!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $helpers: [String!]!, $submission: Boolean!){
-                updateLab(code: $code, title: $title, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, helpers: $helpers, submission: $submission)
+              mutation updateLab($code: String!, $title: String!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $helpers: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!){
+                updateLab(code: $code, title: $title, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, helpers: $helpers, submission: $submission, profOnlyQue: $profOnlyQue)
               }
           `,
             variables: {
@@ -122,6 +129,7 @@ export default {
               urlTitles: this.lab.urlTitles,
               urLinks: this.lab.urlLinks,
               submission: this.lab.submission,
+              profOnlyQue: this.lab.profOnlyQue,
             },
           },
           headers: {
@@ -162,6 +170,7 @@ export default {
                   urlLinks
                   code
                   submission
+                  profOnlyQue
                 }
               }
           `,

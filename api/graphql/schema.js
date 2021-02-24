@@ -35,6 +35,7 @@ module.exports = buildSchema(`
         privateChats: [Message!]
         socketIDQue: [QueObj!]
         queTimes: [Int]!
+        profOnlyQue: Boolean!
     }
 
     type urlObj {
@@ -48,6 +49,7 @@ module.exports = buildSchema(`
         queType: queType!
         title: String!
         desc: String
+        requireProf: Boolean!
         lab_id: ID!
         createdAt: String!
         updatedAt: String!
@@ -132,6 +134,7 @@ module.exports = buildSchema(`
         queType: queType!
         title: String!
         desc: String
+        requireProf: Boolean!
         lab_id: ID!
     }
 
@@ -142,6 +145,7 @@ module.exports = buildSchema(`
         urlTitles: [String!]!
         urlLinks: [String!]!
         submission: Boolean!
+        profOnlyQue: Boolean!
     }
 
     input MessageCreateData {
@@ -161,7 +165,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Boolean!
-        updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!): Boolean!
+        updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!): Boolean!
         joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!

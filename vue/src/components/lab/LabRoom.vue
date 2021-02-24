@@ -17,7 +17,7 @@
       <v-tabs v-model="tab" background-color="transparent" color="basil" grow>
         <v-tabs-slider color="grey"></v-tabs-slider>
         <v-tab> Main Room </v-tab>
-        <v-tab> Get Help </v-tab>
+        <v-tab> Get Help / Marking</v-tab>
         <v-tab v-if="this.studentSubmission"> Submit Work </v-tab>
       </v-tabs>
 

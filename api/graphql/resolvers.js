@@ -152,6 +152,7 @@ module.exports = {
       privateChats: [],
       creator: prof,
       submission: labInput.submission,
+      profOnlyQue: labInput.profOnlyQue,
     });
     const createdLab = await lab.save();
     prof.labs.push(createdLab);
@@ -204,7 +205,16 @@ module.exports = {
     };
   },
   updateLab: async function (
-    { code, title, urlTitles, urlLinks, desc, helpers, submission },
+    {
+      code,
+      title,
+      urlTitles,
+      urlLinks,
+      desc,
+      helpers,
+      submission,
+      profOnlyQue,
+    },
     req
   ) {
     checkAuth(req.isAuth);
@@ -225,6 +235,7 @@ module.exports = {
     lab.urlLinks = urlLinks;
     lab.helpers = helpers;
     lab.submission = submission;
+    lab.profOnlyQue = profOnlyQue;
 
     lab.save();
     return true;

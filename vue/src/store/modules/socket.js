@@ -68,6 +68,9 @@ const getters = {
   peerid: (state) => {
     return state.peerid;
   },
+  profOnlyQue: (state) => {
+    return state.lab.profOnlyQue;
+  },
 };
 
 const mutations = {
@@ -163,6 +166,7 @@ const actions = {
                 lname
               }
               submission
+              profOnlyQue
             }
             memberid
           }

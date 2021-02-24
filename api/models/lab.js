@@ -45,6 +45,10 @@ const labSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    profOnlyQue: {
+      type: Boolean,
+      default: false,
+    },
     messages: [
       {
         type: Schema.Types.ObjectId,

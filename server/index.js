@@ -75,6 +75,7 @@ io.on('connection', (socket) => {
                     title
                     desc
                     createdAt
+                    requireProf
                   }
                   averageTime
                 }
@@ -106,6 +107,7 @@ io.on('connection', (socket) => {
                     title
                     desc
                     createdAt
+                    requireProf
                   }
                   averageTime
                 }
@@ -138,6 +140,7 @@ io.on('connection', (socket) => {
                     title
                     desc
                     createdAt
+                    requireProf
                   }
                   averageTime
                 }

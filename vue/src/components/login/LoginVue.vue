@@ -20,7 +20,7 @@
               <v-tab :disabled="tabDisable">Teacher</v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" class="pa-6">
+            <v-tabs-items v-model="tab" class="py-2 px-6">
               <v-tab-item>
                 <StudentHelperLogin @flip-tabs="flipTabs" />
               </v-tab-item>
