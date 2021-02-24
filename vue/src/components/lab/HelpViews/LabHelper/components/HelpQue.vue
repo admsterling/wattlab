@@ -119,7 +119,7 @@
                       @click="startHelp(i)"
                       :loading="waiting"
                       :disabled="waiting"
-                      >Help Student
+                      >{{ buttonText(queItem.queType) }}
                     </v-btn>
                   </td>
                 </tr>
@@ -229,6 +229,13 @@ export default {
         this.startHelp(indexPos);
       } else {
         this.$toast.error("No Students request professor only help");
+      }
+    },
+    buttonText(value) {
+      if (value === "Help") {
+        return "Help Student";
+      } else {
+        return "Mark Student";
       }
     },
   },

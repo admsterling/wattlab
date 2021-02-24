@@ -44,12 +44,12 @@
             </v-card-text>
             <v-card-actions class="justify-center">
               <v-btn
-                class="mb-2"
+                class="mb-2 green white--text"
                 @click="getHelp"
                 :loading="loading"
                 :disabled="loading"
               >
-                Get Help
+                Start Request
               </v-btn>
             </v-card-actions>
           </v-form>
