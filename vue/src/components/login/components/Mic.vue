@@ -40,44 +40,13 @@
             <v-col cols="12">
               Or follow these steps:
               <br />
-              <v-expansion-panels accordion>
-                <v-expansion-panel>
+              <v-expansion-panels accordion popout>
+                <v-expansion-panel v-for="(panel, i) in panels" :key="i">
                   <v-expansion-panel-header>
-                    1) Click on the lock icon beside the URL Address Bar
+                    {{ panel.header }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-img
-                      src="mic1.jpg"
-                      lazy-src="mic1-min.jpg"
-                      max-width="100%"
-                      max-height="460px"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>
-                    2) Change your site microphone settings to "Allow"
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-img
-                      src="mic2.jpg"
-                      lazy-src="mic2-min.jpg"
-                      max-width="100%"
-                      max-height="460px"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>
-                    3) Now please click on Reload to reload the page.
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-img
-                      src="mic3.jpg"
-                      lazy-src="mic3-min.jpg"
-                      max-width="100%"
-                      max-height="157px"
-                    />
+                    <v-img :src="panel.src" :lazy-src="panel.lazy" eager />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -101,6 +70,23 @@ export default {
   data() {
     return {
       dialogShow: false,
+      panels: [
+        {
+          header: "1) Click on the lock icon beside the URL Address Bar",
+          lazy: "mic1-min.jpg",
+          src: "mic1.jpg",
+        },
+        {
+          header: "2) Change your site microphone settings to 'Allow'",
+          lazy: "mic2-min.jpg",
+          src: "mic2.jpg",
+        },
+        {
+          header: "3) Now please click on Reload to reload the page.",
+          lazy: "mic3-min.jpg",
+          src: "mic3.jpg",
+        },
+      ],
     };
   },
   methods: {
