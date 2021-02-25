@@ -52,12 +52,21 @@
                 A Lab Helper is trying to contact you on teams
               </v-card-title>
               <v-divider></v-divider>
-              <v-card-text class="my-2 justify-center">
-                Please open teams and accept the call.
+              <v-card-text class="my-2 justify-center text-center">
+                <v-container no-gutters>
+                  <v-row>
+                    <v-col cols="12">
+                      Please accept the call within your Teams application.
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col cols="12"> OR </v-col>
+                  </v-row>
+                </v-container>
               </v-card-text>
-              <v-card-actions class="mb-2 justify-center">
-                <v-btn class="purple lighten-1" dark @click="openTeams">
-                  Open Microsoft Teams
+              <v-card-actions class="justify-center">
+                <v-btn class="my-2 purple lighten-1" dark @click="openTeams">
+                  Open Microsoft Teams Web App
                   <v-icon class="ml-2"> mdi-account-group </v-icon>
                 </v-btn>
               </v-card-actions>
@@ -624,7 +633,6 @@ export default {
   padding: 8px 15px;
 }
 </style>
-
 <style>
 .CodeMirror {
   height: calc(100vh - 455px) !important;
