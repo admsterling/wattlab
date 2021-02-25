@@ -266,10 +266,6 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.params.code) {
-      this.labCode = this.$route.params.code;
-    }
-
     if (this.$cookies.get("username")) {
       this.username = this.$cookies.get("username");
       this.labCode = this.$cookies.get("labCode");
@@ -278,6 +274,10 @@ export default {
       this.consent = true;
       this.studentInfo = true;
       this.microphone = true;
+    }
+
+    if (this.$route.params.code) {
+      this.labCode = this.$route.params.code;
     }
   },
 };
