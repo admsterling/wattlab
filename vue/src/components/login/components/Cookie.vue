@@ -25,7 +25,7 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              To remove cookies, uncheck the remember me option when you log in.
+              To remove cookies, uncheck the "Remember Me" option when you log in.
             </v-col>
           </v-row>
         </v-container>
