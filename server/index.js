@@ -261,6 +261,8 @@ io.on('connection', (socket) => {
     })
       .then((res) => {
         code = res.data.data.socketMemberLeaveLab.code;
+        io.to(code).emit('disconnectUser', socket.id);
+
         axios(graphQLEndpoint, {
           method: 'POST',
           data: {

@@ -336,6 +336,13 @@ export default {
         this.inCall = false;
       }
     },
+    disconnectUser: function (id) {
+      if (id === this.gettingSupport.reciever) {
+        this.$toast.info("The other person has disconnected");
+
+        this.closeHelp();
+      }
+    },
   },
   methods: {
     scrollToEnd() {
