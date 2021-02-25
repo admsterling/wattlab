@@ -4,6 +4,17 @@
       <v-card-title class="headline grey lighten-2">Allow Mic</v-card-title>
       <v-card-text class="pa-2">
         <v-container>
+          <v-row>
+            <v-col cols="12">
+              Click
+              <span
+                class="blue--text font-weight-bold text-decoration-underline hover-hand"
+                @click="getMic"
+                >here</span
+              >
+              to allow access
+            </v-col>
+          </v-row>
           <v-row no-gutters>
             <v-col cols="12">
               We ask for you to allow this site to use the microphone so that
@@ -27,33 +38,49 @@
           </v-row>
           <v-row>
             <v-col cols="12">
-              Click
-              <span
-                class="blue--text font-weight-bold text-decoration-underline hover-hand"
-                @click="getMic"
-                >here</span
-              >
-              to allow access
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12">
               Or follow these steps:
               <br />
-              <div class="font-weight-bold mt-2">
-                1) Click on the lock icon beside the URL Address Bar.
-              </div>
-
-              <v-img src="mic1.jpg" lazy-src="mic1-min.jpg" width="100%">
-              </v-img>
-              <div class="font-weight-bold mt-2">
-                2) Change your site microphone settings to "Allow".
-              </div>
-              <v-img src="mic2.jpg" lazy-src="mic2-min.jpg" width="100%"></v-img>
-              <div class="font-weight-bold mt-2">
-                3) Now please click on Reload to reload the page.
-              </div>
-              <v-img src="mic3.jpg" lazy-src="mic3-min.jpg" width="100%"></v-img>
+              <v-expansion-panels accordion>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    1) Click on the lock icon beside the URL Address Bar
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-img
+                      src="mic1.jpg"
+                      lazy-src="mic1-min.jpg"
+                      max-width="100%"
+                      max-height="460px"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    2) Change your site microphone settings to "Allow"
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-img
+                      src="mic2.jpg"
+                      lazy-src="mic2-min.jpg"
+                      max-width="100%"
+                      max-height="460px"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header>
+                    3) Now please click on Reload to reload the page.
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-img
+                      src="mic3.jpg"
+                      lazy-src="mic3-min.jpg"
+                      max-width="100%"
+                      max-height="157px"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </v-col>
           </v-row>
         </v-container>
