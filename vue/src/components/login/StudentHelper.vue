@@ -130,12 +130,12 @@
               color="blue"
             />
             <span class="ml-2 float-left subtitle-2">
-              Remember me and my choices for 4 weeks (
+              Remember me and my choices for 4 weeks.
               <span
                 class="blue--text text-decoration-underline hover-hand"
                 @click="$refs.cookie.open()"
                 >Cookie Policy</span
-              >).
+              >.
             </span>
           </v-col>
         </v-row>
