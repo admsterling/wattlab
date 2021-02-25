@@ -119,6 +119,26 @@
             </span>
           </v-col>
         </v-row>
+        <v-row align="center" justify="center" no-gutters>
+          <v-col cols="12">
+            <v-simple-checkbox
+              v-model="rememberMe"
+              :ripple="false"
+              dense
+              :rules="checkboxRules"
+              class="float-left"
+              color="blue"
+            />
+            <span class="ml-2 float-left subtitle-2">
+              Remember me and my choices for 4 weeks (
+              <span
+                class="blue--text text-decoration-underline hover-hand"
+                @click="$refs.cookie.open()"
+                >Cookie Policy</span
+              >).
+            </span>
+          </v-col>
+        </v-row>
         <v-row no-gutters align="center">
           <v-col class="text-center">
             <v-btn
@@ -138,6 +158,7 @@
     <TermsAndConditions ref="tc" />
     <StudentInformation ref="si" />
     <Mic ref="mi" />
+    <Cookie ref="cookie" />
   </div>
 </template>
 
@@ -151,16 +172,18 @@ export default {
     StudentInformation: () => import("./components/StudentInformation"),
     TermsAndConditions: () => import("./components/TermsAndConditions"),
     Mic: () => import("./components/Mic"),
+    Cookie: () => import("./components/Cookie"),
   },
   data() {
     return {
-      labCode: "6708A8",
-      helperPIN: "7384",
-      username: "te13",
+      labCode: "",
+      helperPIN: "",
+      username: "",
       submitted: false,
-      consent: true,
-      studentInfo: true,
-      microphone: true,
+      consent: false,
+      studentInfo: false,
+      microphone: false,
+      rememberMe: false,
       validForm: true,
       codeRules: [
         (value) => !!value || "Required",
@@ -202,6 +225,15 @@ export default {
             this.$store
               .dispatch("socket/setLab", contextData)
               .then(() => {
+                if (this.rememberMe) {
+                  this.$cookies.set("username", this.username, "28d");
+                  this.$cookies.set("labCode", this.labCode, "28d");
+                  this.$cookies.set("helperPIN", this.helperPIN, "28d");
+                } else {
+                  this.$cookies.remove("username");
+                  this.$cookies.remove("labCode");
+                  this.$cookies.remove("helperPIN");
+                }
                 this.$socket.emit("joinRoom", this.labCode);
                 this.$router.push("/join/" + this.labCode);
               })
@@ -236,6 +268,16 @@ export default {
   mounted() {
     if (this.$route.params.code) {
       this.labCode = this.$route.params.code;
+    }
+
+    if (this.$cookies.get("username")) {
+      this.username = this.$cookies.get("username");
+      this.labCode = this.$cookies.get("labCode");
+      this.helperPIN = this.$cookies.get("helperPIN");
+      this.rememberMe = true;
+      this.consent = true;
+      this.studentInfo = true;
+      this.microphone = true;
     }
   },
 };

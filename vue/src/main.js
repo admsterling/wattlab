@@ -7,6 +7,9 @@ import store from './store';
 import router from './router/router';
 import VueSocketIO from 'vue-socket.io';
 import SocketIO from 'socket.io-client';
+import VueCookies from 'vue-cookies';
+
+Vue.use(VueCookies);
 
 import VueMobileDetection from 'vue-mobile-detection';
 Vue.use(VueMobileDetection);
