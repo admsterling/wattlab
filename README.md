@@ -63,5 +63,5 @@ KEY=""              # Key used for encrypting and verifying passwords
 
 Test Secret for AN Coursework:
 ```env
-SECRET_KEY = "shvkanfhelajcmw"
+SECRET_KEY = "ABCDEF+c2L7yXeGvUyrPgYsDnWRRC1AYEXAMPLE"
 ```
