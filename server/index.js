@@ -8,7 +8,7 @@ const io = require('socket.io')(http, {
   },
 });
 
-// const secretKey = "asdkvmasfkqmwfks";
+// const secretKey = "ABCDEF+c2L7yXeGvUyrPgYsDnWRRC1AYEXAMPLE";
 
 const PORT = process.env.PORT || 3000;
 const graphQLEndpoint =
