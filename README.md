@@ -60,3 +60,8 @@ For the API:
 DB=""               # Connection string to the Mongo DB
 KEY=""              # Key used for encrypting and verifying passwords
 ```
+
+Test Secret for AN Coursework:
+```env
+SECRET_KEY = "shvkanfhelajcmw"
+```
