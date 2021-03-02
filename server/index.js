@@ -8,6 +8,8 @@ const io = require('socket.io')(http, {
   },
 });
 
+// const secretKey = "asdkvmasfkqmwfks";
+
 const PORT = process.env.PORT || 3000;
 const graphQLEndpoint =
   process.env.API_ENDPOINT || 'http://localhost:4000/graphql';
