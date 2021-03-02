@@ -63,5 +63,5 @@ KEY=""              # Key used for encrypting and verifying passwords
 
 Test Secret for AN Coursework:
 ```env
-MongoConnectionString = "mongodb+srv://db_admin:example_password@cluster0.hx9ge.mongodb.net/test"
+MongoConnectionString = "mongodb+srv://dbadmin:examplepassword@cluster0.hx9ge.mongodb.net/test"
 ```
