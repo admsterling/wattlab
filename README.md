@@ -63,5 +63,5 @@ KEY=""              # Key used for encrypting and verifying passwords
 
 Test Secret for AN Coursework:
 ```env
-SECRET_KEY = "ABCDEF+c2L7yXeGvUyrPgYsDnWRRC1AYEXAMPLE"
+MongoConnectionString = "mongodb+srv://db_admin:example_password@cluster0.hx9ge.mongodb.net/test"
 ```
