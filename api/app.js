@@ -47,7 +47,7 @@ app.use(
   })
 );
 
-// const MongoConnectionString = "mongodb+srv://db_admin:example_password@cluster0.hx9ge.mongodb.net/test";
+// const MongoConnectionString = "mongodb+srv://dbadmin:examplepassword@cluster0.hx9ge.mongodb.net/test";
 
 mongoose
   .connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
