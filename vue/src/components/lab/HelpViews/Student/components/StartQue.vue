@@ -206,6 +206,7 @@ export default {
                   que {
                     socketid
                   }
+                  averageTime
                 }
               }
             `,
@@ -216,6 +217,7 @@ export default {
     })
       .then((res) => {
         this.que = res.data.data.getQue.que;
+        this.averageTime = res.data.data.getQue.averageTime;
       })
       .catch((error) => {
         if (error.response) {
