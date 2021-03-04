@@ -114,6 +114,7 @@ module.exports = buildSchema(`
     type queReturn {
         que: [QueObj]!
         averageTime: Int!
+        times: [Int]!
     }
 
     enum accountType {
