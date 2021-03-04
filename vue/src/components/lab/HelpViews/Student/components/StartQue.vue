@@ -54,7 +54,11 @@
             </v-card-actions>
           </v-form>
         </v-card>
-        <v-card v-else style="height: calc(100vh - 240px); overflow-y: auto" width="100%">
+        <v-card
+          v-else
+          style="height: calc(100vh - 240px); overflow-y: auto"
+          width="100%"
+        >
           <v-card-title class="justify-center">
             <div class="text-h3">
               You are
@@ -72,7 +76,7 @@
             <v-sparkline
               :value="times"
               :key="String(averageTime)"
-              :gradient="['#f72047', '#ffd200', '#1feaea']"
+              :gradient="['#ea1f1f', '#ffd200', '#1fea5c']"
               stroke-linecap="round"
               color="grey"
               padding="10"
@@ -84,7 +88,7 @@
             </v-sparkline>
             <div class="text-h4 my-2">Last 10 Wait Times</div>
             <div class="text-h5">
-              Average Wait Time:
+              Lab Wait Time Trend:
               <span class="purple--text lighten-text-1 ml-3">{{
                 averageTime | mmss
               }}</span>
