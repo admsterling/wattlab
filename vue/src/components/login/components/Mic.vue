@@ -46,7 +46,14 @@
                     {{ panel.header }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-img :src="panel.src" :lazy-src="panel.lazy" eager />
+                    <v-img
+                      :src="panel.src"
+                      :lazy-src="panel.lazy"
+                      :width="panel.width"
+                      :height="panel.height"
+                      contain
+                      eager
+                    />
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -75,16 +82,22 @@ export default {
           header: "1) Click on the lock icon beside the URL Address Bar",
           lazy: "mic1-min.jpg",
           src: "mic1.jpg",
+          width: 600,
+          height: 448,
         },
         {
           header: "2) Change your site microphone settings to 'Allow'",
           lazy: "mic2-min.jpg",
           src: "mic2.jpg",
+          width: 600,
+          height: 362,
         },
         {
           header: "3) Now please click on Reload to reload the page.",
           lazy: "mic3-min.jpg",
           src: "mic3.jpg",
+          width: 600,
+          height: 134,
         },
       ],
     };
