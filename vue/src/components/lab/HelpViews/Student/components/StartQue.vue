@@ -1,8 +1,8 @@
 <template>
   <v-container no-gutters>
-    <v-row>
+    <v-row no-gutters>
       <v-col></v-col>
-      <v-col class="text-center" cols="8" md="11" lg="10" xl="8">
+      <v-col class="text-center" cols="8" sm="11" md="11" lg="10" xl="8">
         <v-card
           v-if="!loading"
           style="height: calc(100vh - 250px); overflow-y: auto"
@@ -54,25 +54,41 @@
             </v-card-actions>
           </v-form>
         </v-card>
-        <v-card v-else>
-          <v-card-title> You have joined the queue... </v-card-title>
-          <v-divider></v-divider>
-          <v-card-text>
-            <p class="text-h3">
-              People in queue:
-              <span class="purple--text lighten-text-1">{{ queLength }}</span>
-            </p>
-            <p class="text-h3">
+        <v-card v-else style="height: calc(100vh - 240px); overflow-y: auto" width="100%">
+          <v-card-title class="justify-center">
+            <div class="text-h3">
               You are
-              <span class="purple--text lighten-text-1">{{ quePosition }}</span>
-              in the queue
-            </p>
-            <p class="text-h3">
+              <span class="purple--text lighten-2">
+                {{ quePosition }}
+              </span>
+              out of
+              <span class="purple--text lighten-2">
+                {{ queLength }}
+              </span>
+              in queue
+            </div>
+          </v-card-title>
+          <v-card-text style="height: calc(100vh - 390px); overflow-y: auto">
+            <v-sparkline
+              :value="times"
+              :key="String(averageTime)"
+              :gradient="['#f72047', '#ffd200', '#1feaea']"
+              stroke-linecap="round"
+              color="grey"
+              padding="10"
+              smooth
+              auto-draw
+              :auto-draw-duration="3000"
+              height="70%"
+            >
+            </v-sparkline>
+            <div class="text-h4 my-2">Last 10 Wait Times</div>
+            <div class="text-h5">
               Average Wait Time:
-              <span class="purple--text lighten-text-1">{{
+              <span class="purple--text lighten-text-1 ml-3">{{
                 averageTime | mmss
               }}</span>
-            </p>
+            </div>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn class="mb-2 deep-orange lighten-2" dark @click="cancelHelp">
@@ -183,6 +199,7 @@ export default {
     updateQue: function (data) {
       this.que = data.que;
       this.averageTime = data.averageTime;
+      this.times = data.times;
     },
     startHelp: function (data) {
       this.$store.dispatch("socket/privateChatInfo", data).then(() => {
@@ -207,6 +224,7 @@ export default {
                     socketid
                   }
                   averageTime
+                  times
                 }
               }
             `,
@@ -218,6 +236,7 @@ export default {
       .then((res) => {
         this.que = res.data.data.getQue.que;
         this.averageTime = res.data.data.getQue.averageTime;
+        this.times = res.data.data.getQue.times;
       })
       .catch((error) => {
         if (error.response) {

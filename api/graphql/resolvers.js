@@ -487,8 +487,6 @@ module.exports = {
     const sum = lab.queTimes.reduce((a, b) => a + b, 0);
     const avg = Math.floor(sum / lab.queTimes.length) || 0;
 
-    const times = lab.queTimes.slice(Math.max(lab.queTimes.length - 10, 1));
-
     return {
       que: lab.socketIDQue.map((q) => {
         return {
@@ -500,7 +498,7 @@ module.exports = {
         };
       }),
       averageTime: avg,
-      times: times,
+      times: lab.queTimes,
     };
   },
   joinQue: async function ({ queObj }) {
@@ -525,8 +523,6 @@ module.exports = {
     const sum = lab.queTimes.reduce((a, b) => a + b, 0);
     const avg = Math.floor(sum / lab.queTimes.length) || 0;
 
-    const times = lab.queTimes.slice(Math.max(lab.queTimes.length - 10, 1));
-
     return {
       que: lab.socketIDQue.map((q) => {
         return {
@@ -538,7 +534,7 @@ module.exports = {
         };
       }),
       averageTime: avg,
-      times: times,
+      times: lab.queTimes,
     };
   },
   leaveQue: async function ({ lab_id, socketid, helpingTime }) {
@@ -566,8 +562,6 @@ module.exports = {
     const sum = lab.queTimes.reduce((a, b) => a + b, 0);
     const avg = Math.floor(sum / lab.queTimes.length) || 0;
 
-    const times = lab.queTimes.slice(Math.max(lab.queTimes.length - 10, 1));
-
     return {
       que: lab.socketIDQue.map((q) => {
         return {
@@ -579,7 +573,7 @@ module.exports = {
         };
       }),
       averageTime: avg,
-      times: times,
+      times: lab.queTimes,
     };
   },
   getFirstInQueAndShift: async function ({ lab_id }) {

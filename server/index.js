@@ -78,6 +78,7 @@ io.on('connection', (socket) => {
                     requireProf
                   }
                   averageTime
+                  times
                 }
               }
           `,
@@ -110,6 +111,7 @@ io.on('connection', (socket) => {
                     requireProf
                   }
                   averageTime
+                  times
                 }
               }
           `,
@@ -143,6 +145,7 @@ io.on('connection', (socket) => {
                     requireProf
                   }
                   averageTime
+                  times
                 }
               }
           `,
@@ -174,6 +177,7 @@ io.on('connection', (socket) => {
                     createdAt
                   }
                   averageTime
+                  times
                 }
               }
           `,
