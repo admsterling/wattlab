@@ -78,7 +78,7 @@
               averageTime | mmss
             }}</span>
           </div>
-          <v-card-text style="height: calc(100vh - 430px); overflow-y: auto">
+          <v-card-text style="height: calc(100vh - 430px); overflow-y: auto" v-if="times.length>3">
             <v-sparkline
               :value="times"
               :key="String(averageTime)"
