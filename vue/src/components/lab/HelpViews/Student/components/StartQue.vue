@@ -72,7 +72,13 @@
               in queue
             </div>
           </v-card-title>
-          <v-card-text style="height: calc(100vh - 390px); overflow-y: auto">
+          <div class="text-h4">
+            Average Wait Time
+            <span class="purple--text lighten-text-1">{{
+              averageTime | mmss
+            }}</span>
+          </div>
+          <v-card-text style="height: calc(100vh - 430px); overflow-y: auto">
             <v-sparkline
               :value="times"
               :key="String(averageTime)"
@@ -86,13 +92,11 @@
               height="70%"
             >
             </v-sparkline>
-            <div class="text-h4 my-2">Last 10 Wait Times</div>
-            <div class="text-h5">
-              Lab Wait Time Trend:
-              <span class="purple--text lighten-text-1 ml-3">{{
-                averageTime | mmss
-              }}</span>
+            <div fill-width class="text-subtitle-1 font-weight-bold">
+              <span class="float-left"> Start of Lab </span>
+              <span class="float-right"> Now </span>
             </div>
+            <div class="text-h4 my-2">Lab Wait Times</div>
           </v-card-text>
           <v-card-actions class="justify-center">
             <v-btn class="mb-2 deep-orange lighten-2" dark @click="cancelHelp">
