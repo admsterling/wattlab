@@ -105,7 +105,6 @@
               v-model="microphone"
               :ripple="false"
               dense
-              :rules="checkboxRules"
               class="float-left"
               color="blue"
             />
@@ -143,12 +142,12 @@
           <v-col class="text-center">
             <v-btn
               class="teal mt-5"
-              :class="consent && studentInfo && microphone ? 'teal' : 'grey'"
+              :class="consent && studentInfo ? 'teal' : 'grey'"
               outlined
               dark
               @click="submit"
               :loading="submitted"
-              :disabled="!(studentInfo && consent && microphone)"
+              :disabled="!(studentInfo && consent)"
               >Login</v-btn
             >
           </v-col>
@@ -229,10 +228,12 @@ export default {
                   this.$cookies.set("username", this.username, "28d");
                   this.$cookies.set("labCode", this.labCode, "28d");
                   this.$cookies.set("helperPIN", this.helperPIN, "28d");
+                  this.$cookies.set("microphone", this.microphone, "28d")
                 } else {
                   this.$cookies.remove("username");
                   this.$cookies.remove("labCode");
                   this.$cookies.remove("helperPIN");
+                  this.$cookies.remove("microphone")
                 }
                 this.$socket.emit("joinRoom", this.labCode);
                 this.$router.push("/join/" + this.labCode);
@@ -273,7 +274,7 @@ export default {
       this.rememberMe = true;
       this.consent = true;
       this.studentInfo = true;
-      this.microphone = true;
+      this.microphone = this.cookies.get("microphone");
     }
 
     if (this.$route.params.code) {
