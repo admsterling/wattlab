@@ -70,6 +70,7 @@
               color="blue"
             />
             <span class="ml-2 float-left subtitle-2">
+              <span class="red--text"> * </span>
               I consent to the
               <span
                 class="blue--text text-decoration-underline hover-hand"
@@ -90,6 +91,7 @@
               color="blue"
             />
             <span class="ml-2 float-left subtitle-2">
+              <span class="red--text"> * </span>
               I have read the
               <span
                 class="blue--text text-decoration-underline hover-hand"
@@ -109,7 +111,7 @@
               color="blue"
             />
             <span class="ml-2 float-left subtitle-2">
-              I have gave the site access to the
+              I have given the site access to the
               <span
                 class="blue--text text-decoration-underline hover-hand"
                 @click="$refs.mi.open()"
@@ -129,12 +131,26 @@
               color="blue"
             />
             <span class="ml-2 float-left subtitle-2">
-              Remember me and my choices for 4 weeks.
-              <span
+              Remember me and my choices for 4 weeks (<span
                 class="blue--text text-decoration-underline hover-hand"
                 @click="$refs.cookie.open()"
                 >Cookie Policy</span
-              >.
+              >).
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    color="red"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    class="hover-hand"
+                    @click="deleteCookies"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </template>
+                <span>Delete All Cookies</span>
+              </v-tooltip>
             </span>
           </v-col>
         </v-row>
@@ -228,13 +244,14 @@ export default {
                   this.$cookies.set("username", this.username, "28d");
                   this.$cookies.set("labCode", this.labCode, "28d");
                   this.$cookies.set("helperPIN", this.helperPIN, "28d");
-                  this.$cookies.set("microphone", this.microphone, "28d")
+                  this.$cookies.set("microphone", this.microphone, "28d");
                 } else {
                   this.$cookies.remove("username");
                   this.$cookies.remove("labCode");
                   this.$cookies.remove("helperPIN");
-                  this.$cookies.remove("microphone")
+                  this.$cookies.remove("microphone");
                 }
+                this.$store.dispatch("application/mic_perm", this.microphone);
                 this.$socket.emit("joinRoom", this.labCode);
                 this.$router.push("/join/" + this.labCode);
               })
@@ -265,6 +282,13 @@ export default {
           });
       }
     },
+    deleteCookies() {
+      this.$cookies.remove("username");
+      this.$cookies.remove("labCode");
+      this.$cookies.remove("helperPIN");
+      this.$cookies.remove("microphone");
+      this.$toast.success("Any cookies stored have been deleted");
+    },
   },
   mounted() {
     if (this.$cookies.get("username")) {
@@ -274,7 +298,9 @@ export default {
       this.rememberMe = true;
       this.consent = true;
       this.studentInfo = true;
-      this.microphone = this.cookies.get("microphone");
+      this.microphone = JSON.parse(
+        this.$cookies.get("microphone").toLowerCase()
+      );
     }
 
     if (this.$route.params.code) {

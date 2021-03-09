@@ -1,6 +1,7 @@
 const getDefaultState = () => {
   return {
     volume: true,
+    micPerm: false,
   };
 };
 
@@ -8,6 +9,7 @@ const state = getDefaultState();
 
 const getters = {
   volume: (state) => state.volume,
+  micPerm: (state) => state.micPerm,
 };
 
 const mutations = {
@@ -17,6 +19,9 @@ const mutations = {
   FLIP_VOLUME(state) {
     state.volume = !state.volume;
   },
+  MIC_PERM(state, payload) {
+    state.micPerm = payload;
+  },
 };
 
 const actions = {
@@ -25,6 +30,9 @@ const actions = {
   },
   flip_volume({ commit }) {
     commit('FLIP_VOLUME');
+  },
+  mic_perm({ commit }, context) {
+    commit('MIC_PERM', context);
   },
 };
 

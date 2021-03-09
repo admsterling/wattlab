@@ -78,7 +78,10 @@
               averageTime | mmss
             }}</span>
           </div>
-          <v-card-text style="height: calc(100vh - 430px); overflow-y: auto" v-if="times.length>3">
+          <v-card-text
+            style="height: calc(100vh - 430px); overflow-y: auto"
+            v-if="times.length > 3"
+          >
             <v-sparkline
               :value="times"
               :key="String(averageTime)"
@@ -142,6 +145,7 @@ export default {
       gettingSupport: "socket/gettingSupport",
       queWaiting: "socket/queWaiting",
       profOnlyQue: "socket/profOnlyQue",
+      micPerm: "application/micPerm",
     }),
     queLength() {
       return this.que.length;
@@ -216,6 +220,7 @@ export default {
           reciever: this.$socket.id,
           privateChat: this.privateChat,
           peerid: this.$peer._id,
+          student_mic: this.micPerm,
         };
         this.$socket.emit("startHelper", helperInfo);
       });

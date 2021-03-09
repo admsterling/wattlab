@@ -19,7 +19,9 @@
           </span>
           <div class="float-right">
             <v-btn
-              v-if="this.accountType !== 'STUDENT' && !this.inCall"
+              v-if="
+                this.accountType !== 'STUDENT' && !this.inCall && this.micPerm && this.studentMic
+              "
               class="mr-2"
               @click="nativeCall"
             >
@@ -299,6 +301,8 @@ export default {
       privateChatMessages: "socket/privateChatMessages",
       peerid: "socket/peerid",
       volume: "application/volume",
+      studentMic: "socket/studentMic",
+      micPerm: "application/micPerm",
     }),
   },
   watch: {

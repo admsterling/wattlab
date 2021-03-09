@@ -15,6 +15,7 @@ const getDefaultState = () => {
     privateChat: {},
     submission: false,
     peerid: null,
+    student_mic: false,
   };
 };
 
@@ -71,6 +72,9 @@ const getters = {
   profOnlyQue: (state) => {
     return state.lab.profOnlyQue;
   },
+  studentMic: (state) => {
+    return state.student_mic;
+  },
 };
 
 const mutations = {
@@ -110,6 +114,9 @@ const mutations = {
   },
   PEER_ID(state, payload) {
     state.peerid = payload;
+  },
+  STUDENT_MIC(state, payload) {
+    state.student_mic = payload;
   },
 };
 
@@ -248,6 +255,7 @@ const actions = {
     commit('START_HELP', context.reciever);
     commit('START_PRIVATE_CHAT', context.privateChat);
     commit('PEER_ID', context.peerid);
+    commit('STUDENT_MIC', context.student_mic);
   },
   addPrivateMessage({ commit }, context) {
     commit('ADD_PRIVATE_MESSAGE', context);
