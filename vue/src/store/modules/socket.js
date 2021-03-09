@@ -118,6 +118,9 @@ const mutations = {
   STUDENT_MIC(state, payload) {
     state.student_mic = payload;
   },
+  QUE_WAITING(state, payload) {
+    state.queWaiting = payload;
+  },
 };
 
 const actions = {
@@ -259,6 +262,9 @@ const actions = {
   },
   addPrivateMessage({ commit }, context) {
     commit('ADD_PRIVATE_MESSAGE', context);
+  },
+  queWaiting({ commit }, context) {
+    commit('QUE_WAITING', context);
   },
 };
 

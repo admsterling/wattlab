@@ -6,6 +6,7 @@
           <h1 class="font-weight-bold display-3 white--text">WATTLAB</h1>
         </div>
         <v-btn
+          v-if="!gettingSupport.flag"
           color="red lighten-2 white--text"
           style="position: absolute; right: 20px"
           @click="leaveLab"
@@ -78,6 +79,8 @@ export default {
       memberid: "socket/member_id",
       accountType: "socket/accountType",
       submission: "socket/submission",
+      gettingSupport: "socket/gettingSupport",
+      privateChat: "socket/privateChat",
     }),
     studentSubmission: function () {
       return this.submission && this.accountType === "STUDENT";
@@ -91,7 +94,13 @@ export default {
   },
   methods: {
     async leaveLab() {
-      await this.$socket.emit("leaveRoom", this.labCode);
+      if (this.gettingSupport.flag) {
+        const data = {
+          socketid: this.gettingSupport.reciever,
+          priv_id: this.privateChat._id,
+        };
+        this.$socket.emit("stopHelp", data);
+      }
       if (this.queWaiting) {
         const queData = {
           lab_id: this.lab_id,
@@ -101,6 +110,7 @@ export default {
         console.log(queData);
         await this.$socket.emit("leaveQue", queData);
       }
+      this.$socket.emit("leaveRoom", this.labCode);
       this.$store.dispatch("socket/resetState").then(() => {
         this.$router.push("/");
       });

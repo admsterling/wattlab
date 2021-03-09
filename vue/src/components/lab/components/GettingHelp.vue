@@ -20,7 +20,10 @@
           <div class="float-right">
             <v-btn
               v-if="
-                this.accountType !== 'STUDENT' && !this.inCall && this.micPerm && this.studentMic
+                this.accountType !== 'STUDENT' &&
+                !this.inCall &&
+                this.micPerm &&
+                this.studentMic
               "
               class="mr-2"
               @click="nativeCall"
@@ -45,7 +48,7 @@
               Call on Teams
               <v-icon small class="ml-2"> mdi-phone </v-icon>
             </v-btn>
-            <v-btn @click="closeHelp"> Close Help </v-btn>
+            <v-btn @click="closeHelp" class="red lighten-2 white--text"> Close Help </v-btn>
           </div>
 
           <v-dialog v-model="callingDialog" max-width="400">
@@ -548,6 +551,8 @@ export default {
   },
   mounted() {
     this.scrollToEnd();
+
+    this.$store.dispatch("socket/queWaiting", false);
 
     if (this.volume) {
       const audio = new Audio(require("../../../assets/helper_connected.mp3"));
