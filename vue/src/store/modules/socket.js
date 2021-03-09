@@ -16,6 +16,7 @@ const getDefaultState = () => {
     submission: false,
     peerid: null,
     student_mic: false,
+    gitLink: null,
   };
 };
 
@@ -75,6 +76,9 @@ const getters = {
   studentMic: (state) => {
     return state.student_mic;
   },
+  gitLink: (state) => {
+    return state.gitLink;
+  },
 };
 
 const mutations = {
@@ -105,6 +109,7 @@ const mutations = {
     state.gettingSupport.reciever = null;
     state.gettingSupport.flag = false;
     state.privateChat = {};
+    state.gitLink = null;
   },
   START_PRIVATE_CHAT(state, payload) {
     state.privateChat = payload;
@@ -120,6 +125,9 @@ const mutations = {
   },
   QUE_WAITING(state, payload) {
     state.queWaiting = payload;
+  },
+  GIT_LINK(state, payload) {
+    state.gitLink = payload;
   },
 };
 
@@ -259,12 +267,16 @@ const actions = {
     commit('START_PRIVATE_CHAT', context.privateChat);
     commit('PEER_ID', context.peerid);
     commit('STUDENT_MIC', context.student_mic);
+    commit('GIT_LINK', context.gitLink);
   },
   addPrivateMessage({ commit }, context) {
     commit('ADD_PRIVATE_MESSAGE', context);
   },
   queWaiting({ commit }, context) {
     commit('QUE_WAITING', context);
+  },
+  gitLink({ commit }, context) {
+    commit('GIT_LINK', context);
   },
 };
 

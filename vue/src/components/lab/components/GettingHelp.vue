@@ -7,6 +7,22 @@
           class="rounded teal lighten-2 white--text text-h5"
           justify="center"
         >
+          <v-tooltip bottom v-if="this.gitLink">
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="white"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                large
+                class="mr-3 hover-hand"
+                @click="followLink"
+              >
+                mdi-github
+              </v-icon>
+            </template>
+            <span>Go to Code Link</span>
+          </v-tooltip>
           You are connected to:
           <span
             v-if="this.accountType === 'STUDENT'"
@@ -48,7 +64,9 @@
               Call on Teams
               <v-icon small class="ml-2"> mdi-phone </v-icon>
             </v-btn>
-            <v-btn @click="closeHelp" class="red lighten-2 white--text"> Close Help </v-btn>
+            <v-btn @click="closeHelp" class="red lighten-2 white--text">
+              Close Help
+            </v-btn>
           </div>
 
           <v-dialog v-model="callingDialog" max-width="400">
@@ -305,6 +323,7 @@ export default {
       peerid: "socket/peerid",
       volume: "application/volume",
       studentMic: "socket/studentMic",
+      gitLink: "socket/gitLink",
       micPerm: "application/micPerm",
     }),
   },
@@ -349,6 +368,9 @@ export default {
 
         this.closeHelp();
       }
+    },
+    gitLink: function (data) {
+      this.$store.dispatch("socket/gitLink", data);
     },
   },
   methods: {
@@ -411,6 +433,10 @@ export default {
     closeHelp() {
       if (this.call) {
         this.call.close();
+      }
+
+      if (this.$store.getters["socket/gitLink"].length > 0) {
+        this.$store.dispatch("socket/gitLink", null);
       }
 
       const data = {
@@ -548,6 +574,11 @@ export default {
         this.inCall = false;
       }
     },
+    followLink() {
+      console.log(this.gitLink);
+      const win = window.open(this.gitLink, "_blank");
+      win.focus();
+    },
   },
   mounted() {
     this.scrollToEnd();
@@ -647,6 +678,10 @@ export default {
   border-radius: 20px;
   max-width: 60%;
   padding: 8px 15px;
+}
+
+.hover-hand {
+  cursor: pointer;
 }
 </style>
 <style>

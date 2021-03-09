@@ -24,6 +24,12 @@
                 :rules="[rules.required, rules.notempty]"
                 label="Please enter Lab/Coursework Title:"
               ></v-text-field>
+              <v-text-field
+                v-model="gitLink"
+                dense
+                :rules="[rules.url]"
+                label="Link to your code:"
+              ></v-text-field>
               <v-checkbox
                 v-if="this.profOnlyQue"
                 v-model="helpObj.requireProf"
@@ -39,7 +45,7 @@
                 :rules="[rules.required]"
                 counter="200"
                 maxlength="200"
-                auto-grow
+                rows="2"
               ></v-textarea>
             </v-card-text>
             <v-card-actions class="justify-center">
@@ -127,12 +133,17 @@ export default {
         desc: "",
         requireProf: false,
       },
+      gitLink: "",
       que: [],
       averageTime: 0,
       loading: false,
       rules: {
         required: (value) => !!value || "Required Field",
         notempty: (value) => value.length > 0 || "Required Field",
+        url: (value) =>
+          /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(
+            value
+          ) || "Incorrect Format",
       },
     };
   },
@@ -178,6 +189,7 @@ export default {
     async getHelp() {
       if (this.$refs.helpForm.validate()) {
         this.loading = true;
+        this.$store.dispatch("socket/gitLink", this.gitLink);
         const queData = {
           ...this.helpObj,
           lab_id: this.lab_id,
@@ -192,6 +204,7 @@ export default {
             desc: "",
             requireProf: false,
           };
+          this.gitLink = "";
         });
       }
     },
@@ -201,6 +214,7 @@ export default {
         labCode: this.labCode,
         socketid: this.$socket.id,
       };
+      this.$store.dispatch("socket/gitLink", null);
       this.$store.dispatch("socket/leaveQue").then(() => {
         this.$socket.emit("leaveQue", queData);
         this.loading = false;
@@ -221,9 +235,13 @@ export default {
           privateChat: this.privateChat,
           peerid: this.$peer._id,
           student_mic: this.micPerm,
+          gitLink: this.$store.getters["socket/gitLink"],
         };
         this.$socket.emit("startHelper", helperInfo);
       });
+    },
+    gitLink: function (data) {
+      this.$store.dispatch("gitLink", data);
     },
   },
   mounted() {
