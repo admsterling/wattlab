@@ -1,7 +1,7 @@
 <template>
   <v-form ref="editLabForm" v-on:submit.prevent lazy-validation>
     <v-card>
-      <v-card-title>Create a new lab:</v-card-title>
+      <v-card-title>Edit Lab:</v-card-title>
       <v-card-text>
         <v-container>
           <v-row no-gutter>
