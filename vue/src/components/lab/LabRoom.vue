@@ -6,7 +6,6 @@
           <h1 class="font-weight-bold display-3 white--text">WATTLAB</h1>
         </div>
         <v-btn
-          v-if="!gettingSupport.flag"
           color="red lighten-2 white--text"
           style="position: absolute; right: 20px"
           @click="leaveLab"
@@ -111,9 +110,7 @@ export default {
         await this.$socket.emit("leaveQue", queData);
       }
       this.$socket.emit("leaveRoom", this.labCode);
-      this.$store.dispatch("socket/resetState").then(() => {
-        this.$router.push("/");
-      });
+      this.$router.push("/");
     },
   },
   beforeDestroy() {

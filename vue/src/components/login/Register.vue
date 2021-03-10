@@ -124,11 +124,11 @@ export default {
   data() {
     return {
       prof: {
-        fname: "Adam",
-        lname: "Sterling",
-        email: "test@test.com",
-        password: "test123",
-        confirmPassword: "test123",
+        fname: "",
+        lname: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
       },
       errorList: undefined,
       show: false,

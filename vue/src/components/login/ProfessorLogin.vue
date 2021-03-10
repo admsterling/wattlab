@@ -69,8 +69,8 @@ export default {
   data() {
     return {
       prof: {
-        email: "test@test.com",
-        password: "test123",
+        email: "",
+        password: "",
       },
       remember: false,
       errorList: undefined,
@@ -119,9 +119,6 @@ export default {
           },
         })
           .then((res) => {
-            // if(this.remember){
-            //   localStorage.setItem('token', res.data.data.login.token);
-            // }
             this.$store.dispatch("prof/loginProf", res.data.data.login);
           })
           .then(() => {

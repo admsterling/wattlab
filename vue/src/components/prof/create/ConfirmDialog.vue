@@ -44,6 +44,12 @@
             </v-col>
             <v-col cols="9">Lab Submission Page</v-col>
           </v-row>
+          <v-row>
+            <v-col cols="3">
+              <v-icon>{{ profOnlyIcon }}</v-icon>
+            </v-col>
+            <v-col cols="9">Allow Professor Only Queue</v-col> 
+          </v-row>
         </v-container>
       </v-card-text>
 
@@ -68,6 +74,9 @@ export default {
   computed: {
     submissionIcon: function () {
       return this.lab.submission ? "mdi-check" : "mdi-close";
+    },
+    profOnlyIcon: function () {
+      return this.lab.profOnlyQue ? "mdi-check" : "mdi-close";
     },
   },
   methods: {
