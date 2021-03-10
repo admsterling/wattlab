@@ -109,13 +109,13 @@ export default {
         console.log(queData);
         await this.$socket.emit("leaveQue", queData);
       }
-      this.$socket.emit("leaveRoom", this.labCode);
       this.$router.push("/");
     },
   },
   beforeDestroy() {
     if (this.labCode) {
       this.$socket.emit("leaveRoom", this.labCode);
+      this.$store.dispatch("socket/resetState");
     }
   },
 };

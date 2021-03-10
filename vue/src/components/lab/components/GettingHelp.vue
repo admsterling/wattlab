@@ -142,7 +142,7 @@
         <v-col cols="6">
           <div>
             <v-sheet
-              id="chatWindow"
+              id="privateChatWindow"
               color="grey lighten-4"
               class="rounded border"
               style="overflow-y: auto; height: calc(100vh - 370px)"
@@ -351,7 +351,9 @@ export default {
       document.querySelector(".CodeMirror").CodeMirror.setOption("value", data);
     },
     newPrivateMessage: function (data) {
-      this.$store.dispatch("socket/addPrivateMessage", data);
+      this.$store.dispatch("socket/addPrivateMessage", data).then(() => {
+        this.scrollToEnd();
+      });
     },
     newCall: function () {
       this.callingDialog = true;
@@ -375,15 +377,19 @@ export default {
   },
   methods: {
     scrollToEnd() {
-      let container = this.$el.querySelector("#chatWindow");
+      let container = this.$el.querySelector("#privateChatWindow");
       container.scrollTop = container.scrollHeight;
     },
     sendMessage() {
       this.messageSending = true;
-      axios(process.env.VUE_APP_ENDPOINT, {
-        method: "POST",
-        data: {
-          query: `
+      if (!this.message.length > 0) {
+        this.$toast.error("Please enter a message");
+        this.messageSending = false;
+      } else {
+        axios(process.env.VUE_APP_ENDPOINT, {
+          method: "POST",
+          data: {
+            query: `
               mutation createPrivateMessage($sender: String!, $accountType: accountType!, $text: String!, $private_id: String!){
                 createPrivateMessage(privateMessageInput: {
                     sender: $sender
@@ -398,37 +404,43 @@ export default {
                 }
               }
             `,
-          variables: {
-            sender: this.username,
-            accountType: this.accountType,
-            text: this.message,
-            private_id: this.privateChat._id,
+            variables: {
+              sender: this.username,
+              accountType: this.accountType,
+              text: this.message,
+              private_id: this.privateChat._id,
+            },
           },
-        },
-      })
-        .then((res) => {
-          this.message = "";
-          const messageData = res.data.data.createPrivateMessage;
-          const socketData = {
-            reciever: this.gettingSupport.reciever,
-            message: messageData,
-          };
-          this.$store.dispatch("socket/addPrivateMessage", messageData);
-          this.$socket.emit("newPrivateMessage", socketData);
         })
-        .catch((error) => {
-          if (error.response) {
-            this.errorList = error.response.data.errors;
-            for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message);
+          .then((res) => {
+            this.message = "";
+            const messageData = res.data.data.createPrivateMessage;
+            const socketData = {
+              reciever: this.gettingSupport.reciever,
+              message: messageData,
+            };
+            this.$store
+              .dispatch("socket/addPrivateMessage", messageData)
+              .then(() => {
+                this.scrollToEnd();
+              });
+            this.$socket.emit("newPrivateMessage", socketData);
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message);
+              }
+            } else {
+              console.log("Error", error.message);
             }
-          } else {
-            console.log("Error", error.message);
-          }
-        })
-        .finally(() => {
-          this.messageSending = false;
-        });
+          })
+          .finally(() => {
+            this.messageSending = false;
+            this.scrollToEnd();
+          });
+      }
     },
     closeHelp() {
       if (this.call) {

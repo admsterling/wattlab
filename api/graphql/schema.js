@@ -167,7 +167,7 @@ module.exports = buildSchema(`
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Boolean!
         updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!): Boolean!
-        joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!): joinLabReturnData!
+        joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!, prof: Boolean!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!
         createMessage(messageInput: MessageCreateData): MessageReturn!
@@ -195,7 +195,7 @@ module.exports = buildSchema(`
         getSubmission(member_id: ID!): String!
         getActiveMembers(lab_id: ID!): Int!
         getActiveChats(lab_id: ID!): Int!
-        getPrivateChat(id: ID, staff: String): [PrivateChat!]!
+        getPrivateChat(id: ID, staff: String, lab_id: ID): [PrivateChat!]!
     }
 
     schema {

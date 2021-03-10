@@ -22,7 +22,8 @@
               <div style="white-space: nowrap; width: 215px; !important">
                 <span class="ml-2 grey--text text--lighten-1">
                   {{ msg.createdAt | moment("HH:MM") }}
-                  <span class="text-lighten-2"
+                  <span
+                    class="text-lighten-2"
                     :class="[
                       msg.accountType === 'STUDENT' ? 'green--text' : '',
                       msg.accountType === 'HELPER' ? 'orange--text' : '',
@@ -38,7 +39,8 @@
               <div style="white-space: nowrap; width: 215px; !important">
                 <span class="ml-2 grey--text text--lighten-1">
                   {{ msg.createdAt | moment("HH:MM") }}
-                  <span class="text-lighten-2"
+                  <span
+                    class="text-lighten-2"
                     :class="[
                       msg.accountType === 'STUDENT' ? 'green--text' : '',
                       msg.accountType === 'HELPER' ? 'orange--text' : '',
@@ -130,10 +132,14 @@ export default {
     },
     sendMessage() {
       this.messageSending = true;
-      axios(process.env.VUE_APP_ENDPOINT, {
-        method: "POST",
-        data: {
-          query: `
+      if (!this.message.length > 0) {
+        this.$toast.error("Please enter a message");
+        this.messageSending = false;
+      } else {
+        axios(process.env.VUE_APP_ENDPOINT, {
+          method: "POST",
+          data: {
+            query: `
               mutation createMessage($sender: String!, $accountType: accountType!, $text: String!, $lab_id: String!){
                 createMessage(messageInput: {
                     sender: $sender
@@ -149,32 +155,33 @@ export default {
                 }
               }
             `,
-          variables: {
-            sender: this.username,
-            accountType: this.accountType,
-            text: this.message,
-            lab_id: this.lab_id,
+            variables: {
+              sender: this.username,
+              accountType: this.accountType,
+              text: this.message,
+              lab_id: this.lab_id,
+            },
           },
-        },
-      })
-        .then((res) => {
-          this.message = "";
-          const messageData = res.data.data.createMessage;
-          this.$socket.emit("newGroupMessage", messageData);
         })
-        .catch((error) => {
-          if (error.response) {
-            this.errorList = error.response.data.errors;
-            for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message);
+          .then((res) => {
+            this.message = "";
+            const messageData = res.data.data.createMessage;
+            this.$socket.emit("newGroupMessage", messageData);
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message);
+              }
+            } else {
+              console.log("Error", error.message);
             }
-          } else {
-            console.log("Error", error.message);
-          }
-        })
-        .finally(() => {
-          this.messageSending = false;
-        });
+          })
+          .finally(() => {
+            this.messageSending = false;
+          });
+      }
     },
     async sendAlert() {
       if (this.message.length > 0) {

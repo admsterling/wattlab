@@ -180,6 +180,7 @@ export default {
             code: lab.code,
             username: this.username,
             socketid: this.$socket.id,
+            prof: true,
           };
           this.$store.dispatch("socket/setLab", contextData).then(() => {
             this.$socket.emit("joinRoom", lab.code);

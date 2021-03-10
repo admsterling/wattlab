@@ -240,7 +240,7 @@ module.exports = {
     lab.save();
     return true;
   },
-  joinLab: async function ({ code, username, helperPIN, socketid }) {
+  joinLab: async function ({ code, username, helperPIN, socketid, prof }) {
     const lab = await Lab.findOne({
       code: code,
     })
@@ -255,6 +255,17 @@ module.exports = {
     }
     if (!lab.status) {
       const error = new Error('Lab has not started');
+      error.code = 404;
+      throw error;
+    }
+    if (
+      lab.creator.email.substring(0, lab.creator.email.indexOf('@')) ===
+        username &&
+      !prof
+    ) {
+      const error = new Error(
+        'You can not join as the professor from this screen'
+      );
       error.code = 404;
       throw error;
     }
@@ -748,14 +759,15 @@ module.exports = {
 
     return true;
   },
-  getPrivateChat: async function ({ id, staff }, req) {
+  getPrivateChat: async function ({ id, staff, lab_id }, req) {
     checkAuth(req.isAuth);
-
     let chats;
     if (id) {
       chats = await PrivateChat.find({ _id: id }).populate('messages');
     } else if (staff) {
-      chats = await PrivateChat.find({ staff: staff }).populate('messages');
+      chats = await PrivateChat.find({ staff: staff, lab_id: lab_id }).populate(
+        'messages'
+      );
     } else {
       const error = new Error('Please provide an ID or staff member');
       error.code = 404;

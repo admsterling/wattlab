@@ -165,6 +165,7 @@ export default {
         query: `
               query getLab($code: String!){
                 getLab(code: $code){
+                    _id
                     title
                     helpers
                 }
@@ -193,8 +194,8 @@ export default {
         method: "POST",
         data: {
           query: `
-                query getPrivateChat($staff: String) {
-                    getPrivateChat(staff: $staff) {
+                query getPrivateChat($staff: String, $lab_id: ID) {
+                    getPrivateChat(staff: $staff, lab_id: $lab_id) {
                         _id
                         student
                         feedback
@@ -204,6 +205,7 @@ export default {
             `,
           variables: {
             staff: helpers.children[i].name,
+            lab_id: this.lab._id,
           },
         },
         headers: {

@@ -236,6 +236,7 @@ export default {
               username: this.username,
               helperPIN: parseFloat(this.helperPIN),
               socketid: this.$socket.id,
+              prof: false,
             };
             this.$store
               .dispatch("socket/setLab", contextData)
