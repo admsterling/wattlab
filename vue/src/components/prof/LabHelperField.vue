@@ -53,17 +53,15 @@ export default {
   data() {
     return {
       currentHelper: "",
-      usernameRules: [
-        (value) =>
-          /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
-      ],
     };
   },
   methods: {
     submitHelper() {
-      if (/^[a-z]{2}[0-9]{1,4}$/.test(this.currentHelper)) {
+      if (/^[a-z\\-]{2,3}[0-9]{1,4}$/.test(this.currentHelper)) {
         this.labHelpers.push(this.currentHelper);
         this.currentHelper = "";
+      } else {
+        this.$toast.error("Incorrect Format for Lab Helper Username");
       }
     },
     removeFromList(index) {
