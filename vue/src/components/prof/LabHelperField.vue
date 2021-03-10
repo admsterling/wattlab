@@ -54,7 +54,8 @@ export default {
     return {
       currentHelper: "",
       usernameRules: [
-        (value) => /^$|[a-z]{2}[0-9]{1,4}$/.test(value) || "Incorrect Format",
+        (value) =>
+          /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
       ],
     };
   },
