@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
-      <v-col cols="5">
+      <v-col cols="3">
         <v-card>
           <v-card-title>
             Last 10 Help History
@@ -16,7 +16,7 @@
             <div v-else>
               <v-list subheader>
                 <v-subheader>Most Recent First</v-subheader>
-                <v-list-item v-for="(person, i) in history" :key="i" >
+                <v-list-item v-for="(person, i) in history" :key="i">
                   <v-list-item-content>
                     <v-list-item-title>
                       <span class="purple--text">{{ index(i) }}.</span>
@@ -29,11 +29,40 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="7">
+      <v-col cols="6">
         <v-card>
-          <v-card-title>Reply to Feedback</v-card-title>
+          <v-card-title>
+            Reply to Feedback
+            <v-spacer></v-spacer>
+            <v-btn fab x-small color="blue" dark @click="fetchFeedback">
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+          </v-card-title>
           <v-divider></v-divider>
           <v-card-text style="height: calc(100vh - 300px); overflow-y: auto">
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="3">
+        <v-card>
+          <v-card-title>Useful Links</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text style="height: calc(100vh - 300px); overflow-y: auto">
+            <div v-if="!(this.usefulLinkTitles.length > 0)">No links...</div>
+            <div v-else>
+              <v-list>
+                <v-list-item v-for="(title, i) in usefulLinkTitles" :key="i">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      -
+                      <a :href="usefulLinkLinks[i]" target="_blank">
+                        {{ title }}
+                      </a>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -47,7 +76,11 @@ import { mapGetters } from "vuex";
 
 export default {
   data() {
-    return { history: [] };
+    return {
+      history: [],
+      usefulLinkTitles: [],
+      usefulLinkLinks: [],
+    };
   },
   computed: {
     ...mapGetters({
@@ -77,9 +110,50 @@ export default {
         this.history = res.data.data.getHistory;
       });
     },
+    fetchFeedback() {
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              query getFeedback($lab_id: ID!, $staff: String!) {
+                getFeedback(lab_id: $lab_id, staff: $staff)
+              }
+            `,
+          variables: {
+            lab_id: this.lab_id,
+            staff: this.username,
+          },
+        },
+      }).then((res) => {
+        this.feedback = res.data.data.getFeedback;
+      });
+    },
+    fetchLinks() {
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              query getLab($code: String!) {
+                getLab(code: $code) {
+                  usefulLinkTitles
+                  usefulLinkLinks
+                }
+              }
+            `,
+          variables: {
+            code: this.labCode,
+          },
+        },
+      }).then((res) => {
+        this.usefulLinkTitles = res.data.data.getLab.usefulLinkTitles;
+        this.usefulLinkLinks = res.data.data.getLab.usefulLinkLinks;
+      });
+    },
   },
   mounted() {
     this.fetchHistory();
+    this.fetchFeedback();
+    this.fetchLinks();
   },
 };
 </script>
