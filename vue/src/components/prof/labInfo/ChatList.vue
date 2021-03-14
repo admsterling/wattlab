@@ -8,8 +8,7 @@
       style="height: calc(100vh - 360px); overflow-y: scroll"
     >
       <template v-for="(message, i) in messages">
-        <v-divider v-if="i % 2 == 1" :key="i"></v-divider>
-        <v-list-item v-else :key="i">
+        <v-list-item :key="i">
           <v-list-item-content>
             <v-list-item-title class="text-wrap">
               {{ message.text }}
@@ -20,6 +19,7 @@
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+        <v-divider :key="i"></v-divider>
       </template>
     </v-list>
   </div>
