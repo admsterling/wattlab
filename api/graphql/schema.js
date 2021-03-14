@@ -119,6 +119,11 @@ module.exports = buildSchema(`
         times: [Int]!
     }
 
+    type staffLinkReturn {
+        usefulLinkTitles: [String!]!
+        usefulLinkLinks: [String!]!
+    }
+
     enum accountType {
         STUDENT
         HELPER
@@ -201,6 +206,7 @@ module.exports = buildSchema(`
         getActiveChats(lab_id: ID!): Int!
         getPrivateChat(id: ID, staff: String, lab_id: ID): [PrivateChat!]!
         getHistory(lab_id: ID!, staff: String!): [String!]!
+        getStaffLinks(code: String!): staffLinkReturn!
     }
 
     schema {

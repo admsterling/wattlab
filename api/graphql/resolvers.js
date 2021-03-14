@@ -811,4 +811,18 @@ module.exports = {
       return c.student;
     });
   },
+  getStaffLinks: async function ({ code }) {
+    const lab = await Lab.findOne({ code: code });
+
+    if (!lab) {
+      const error = new Error('No lab found.');
+      error.code = 404;
+      throw error;
+    }
+    
+    return {
+      usefulLinkTitles: lab.usefulLinkTitles,
+      usefulLinkLinks: lab.usefulLinkLinks,
+    };
+  },
 };

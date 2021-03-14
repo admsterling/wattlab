@@ -86,6 +86,7 @@ export default {
     ...mapGetters({
       lab_id: "socket/lab_id",
       username: "socket/username",
+      labCode: "socket/labCode",
     }),
   },
   methods: {
@@ -133,8 +134,8 @@ export default {
         method: "POST",
         data: {
           query: `
-              query getLab($code: String!) {
-                getLab(code: $code) {
+              query getStaffLinks($code: String!) {
+                getStaffLinks(code: $code) {
                   usefulLinkTitles
                   usefulLinkLinks
                 }
@@ -144,15 +145,27 @@ export default {
             code: this.labCode,
           },
         },
-      }).then((res) => {
-        this.usefulLinkTitles = res.data.data.getLab.usefulLinkTitles;
-        this.usefulLinkLinks = res.data.data.getLab.usefulLinkLinks;
-      });
+      })
+        .then((res) => {
+          console.log(res.data.data);
+          this.usefulLinkTitles = res.data.data.getStaffLinks.usefulLinkTitles;
+          this.usefulLinkLinks = res.data.data.getStaffLinks.usefulLinkLinks;
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        });
     },
   },
   mounted() {
     this.fetchHistory();
-    this.fetchFeedback();
+    // this.fetchFeedback();
     this.fetchLinks();
   },
 };
