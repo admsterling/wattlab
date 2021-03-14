@@ -26,6 +26,7 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
+              <span class="font-weight-bold text-h6">Student Links:</span>
               <URLHelperFrield
                 :submitted="submitted"
                 :URLTitles="lab.urlTitles"
@@ -35,6 +36,7 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
+              <span class="font-weight-bold text-h6">Staff Links:</span>
               <URLHelperFrield
                 :submitted="submitted"
                 :URLTitles="lab.usefulLinkTitles"

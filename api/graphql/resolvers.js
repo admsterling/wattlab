@@ -115,7 +115,9 @@ module.exports = {
       validator.isEmpty(labInput.title) ||
       !validator.isLength(labInput.title, { min: 5 })
     ) {
-      errors.push({ message: 'Title is invalid.' });
+      errors.push({
+        message: 'Title is invalid. (Minimum: 5 characters long)',
+      });
     }
 
     const prof = await Prof.findById(req.userId);

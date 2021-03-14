@@ -5,7 +5,6 @@
       maxlength="7"
       label="Enter Lab Helper Username:"
       hint="Press Enter to add to the list of Lab Helpers"
-      :rules="usernameRules"
       @keyup.enter="submitHelper"
       :loading="submitted"
       :disabled="submitted"
