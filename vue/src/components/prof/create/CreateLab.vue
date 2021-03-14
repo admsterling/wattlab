@@ -35,6 +35,15 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
+              <URLHelperFrield
+                :submitted="submitted"
+                :URLTitles="lab.usefulLinkTitles"
+                :URLLinks="lab.usefulLinkLinks"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutter>
+            <v-col>
               <v-textarea
                 v-model="lab.desc"
                 clearable
@@ -101,16 +110,12 @@ export default {
         desc: "",
         urlTitles: [],
         urlLinks: [],
+        usefulLinkTitles: [],
+        usefulLinkLinks: [],
         submission: false,
         profOnlyQue: false,
       },
       titleRules: [(value) => !!value || "Required"],
-      urlRules: [
-        (value) =>
-          /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(
-            value
-          ) || "Incorrect Format",
-      ],
     };
   },
   methods: {
@@ -126,8 +131,8 @@ export default {
         method: "POST",
         data: {
           query: `
-              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!){
-                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, submission: $submission, profOnlyQue: $profOnlyQue})
+              mutation createLab ($title: String!, $helpers: [String!]!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!, $usefulLinkTitles: [String!]!, $usefulLinkLinks: [String!]!){
+                createLab(labInput: {title: $title, helpers: $helpers, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, submission: $submission, profOnlyQue: $profOnlyQue, usefulLinkTitles: $usefulLinkTitles, usefulLinkLinks: $usefulLinkLinks})
               }
           `,
           variables: {
@@ -138,6 +143,8 @@ export default {
             urLinks: this.lab.urlLinks,
             submission: this.lab.submission,
             profOnlyQue: this.lab.profOnlyQue,
+            usefulLinkTitles: this.lab.usefulLinkTitles,
+            usefulLinkLinks: this.lab.usefulLinkLinks,
           },
         },
         headers: {

@@ -145,6 +145,8 @@ module.exports = {
       desc: labInput.desc,
       urlTitles: labInput.urlTitles,
       urlLinks: labInput.urlLinks,
+      usefulLinkTitles: labInput.usefulLinkTitles,
+      usefulLinkLinks: labInput.usefulLinkLinks,
       messages: [],
       labMembers: [],
       socketIDQue: [],
@@ -214,6 +216,8 @@ module.exports = {
       helpers,
       submission,
       profOnlyQue,
+      usefulLinkTitles,
+      usefulLinkLinks,
     },
     req
   ) {
@@ -233,6 +237,8 @@ module.exports = {
     lab.desc = desc;
     lab.urlTitles = urlTitles;
     lab.urlLinks = urlLinks;
+    lab.usefulLinkTitles = usefulLinkTitles;
+    lab.usefulLinkLinks = usefulLinkLinks;
     lab.helpers = helpers;
     lab.submission = submission;
     lab.profOnlyQue = profOnlyQue;
@@ -793,9 +799,11 @@ module.exports = {
     });
   },
   getHistory: async function ({ lab_id, staff }) {
-    const chats = await PrivateChat.find({ staff: staff }).sort({
-      createdAt: 'desc',
-    }).limit(10)
+    const chats = await PrivateChat.find({ staff: staff })
+      .sort({
+        createdAt: 'desc',
+      })
+      .limit(10);
 
     return chats.map((c) => {
       return c.student;

@@ -27,6 +27,8 @@ module.exports = buildSchema(`
         desc: String!
         urlTitles: [String!]!
         urlLinks: [String!]!
+        usefulLinkTitles: [String!]!
+        usefulLinkLinks: [String!]!
         creator: Prof!
         createdAt: String!
         updatedAt: String!
@@ -145,6 +147,8 @@ module.exports = buildSchema(`
         desc: String!
         urlTitles: [String!]!
         urlLinks: [String!]!
+        usefulLinkTitles: [String!]!
+        usefulLinkLinks: [String!]!
         submission: Boolean!
         profOnlyQue: Boolean!
     }
@@ -166,7 +170,7 @@ module.exports = buildSchema(`
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
         createLab(labInput: LabCreateData): Boolean!
-        updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!): Boolean!
+        updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!, usefulLinkTitles: [String!]!, usefulLinkLinks: [String!]!): Boolean!
         joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!, prof: Boolean!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
         socketMemberLeaveLab(id: String!): Lab!

@@ -35,6 +35,15 @@
           </v-row>
           <v-row no-gutter>
             <v-col>
+              <URLHelperFrield
+                :submitted="submitted"
+                :URLTitles="lab.usefulLinkTitles"
+                :URLLinks="lab.usefulLinkLinks"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutter>
+            <v-col>
               <v-textarea
                 v-model="lab.desc"
                 clearable
@@ -92,6 +101,8 @@ export default {
         desc: "",
         urlTitles: [],
         urlLinks: [],
+        usefulLinkTitles: [],
+        usefulLinkLinks: [],
         helpers: [],
         submission: false,
         profOnlyQue: false,
@@ -99,12 +110,6 @@ export default {
       submitted: false,
       errorList: undefined,
       titleRules: [(value) => !!value || "Required"],
-      urlRules: [
-        (value) =>
-          /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(
-            value
-          ) || "Incorrect Format",
-      ],
     };
   },
   methods: {
@@ -117,8 +122,8 @@ export default {
           method: "POST",
           data: {
             query: `
-              mutation updateLab($code: String!, $title: String!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $helpers: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!){
-                updateLab(code: $code, title: $title, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, helpers: $helpers, submission: $submission, profOnlyQue: $profOnlyQue)
+              mutation updateLab($code: String!, $title: String!, $desc: String!, $urlTitles: [String!]!, $urLinks: [String!]!, $helpers: [String!]!, $submission: Boolean!, $profOnlyQue: Boolean!, $usefulLinkTitles: [String!]!, $usefulLinkLinks: [String!]!){
+                updateLab(code: $code, title: $title, desc: $desc, urlTitles: $urlTitles, urlLinks: $urLinks, helpers: $helpers, submission: $submission, profOnlyQue: $profOnlyQue, usefulLinkTitles: $usefulLinkTitles, usefulLinkLinks: $usefulLinkLinks)
               }
           `,
             variables: {
@@ -130,6 +135,8 @@ export default {
               urLinks: this.lab.urlLinks,
               submission: this.lab.submission,
               profOnlyQue: this.lab.profOnlyQue,
+              usefulLinkTitles: this.lab.usefulLinkTitles,
+              usefulLinkLinks: this.lab.usefulLinkLinks,
             },
           },
           headers: {
@@ -168,6 +175,8 @@ export default {
                   helpers
                   urlTitles
                   urlLinks
+                  usefulLinkTitles
+                  usefulLinkLinks
                   code
                   submission
                   profOnlyQue

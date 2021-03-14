@@ -37,6 +37,18 @@ const labSchema = new Schema(
         required: true,
       },
     ],
+    usefulLinkTitles: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    usefulLinkLinks: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     status: {
       type: Boolean,
       default: false,
