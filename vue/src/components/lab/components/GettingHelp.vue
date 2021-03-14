@@ -328,11 +328,20 @@ export default {
     }),
   },
   watch: {
-    defaultMode: (v) => {
+    defaultMode: function (v) {
       document.querySelector(".CodeMirror").CodeMirror.setOption("mode", v);
     },
-    defaultTheme: (v) => {
+    defaultTheme: function (v) {
       document.querySelector(".CodeMirror").CodeMirror.setOption("theme", v);
+
+      if (this.$cookies.get("theme")) {
+        let pos = this.themes
+          .map((m) => {
+            return m.theme;
+          })
+          .indexOf(v);
+        this.$cookies.set("theme", this.themes[pos], "28d");
+      }
     },
   },
   sockets: {
@@ -592,6 +601,15 @@ export default {
       win.focus();
     },
   },
+  created() {
+    if (this.$cookies.get("username")) {
+      if (this.$cookies.get("theme")) {
+        this.defaultTheme = this.$cookies.get("theme");
+      } else {
+        this.$cookies.set("theme", this.defaultTheme, "28d");
+      }
+    }
+  },
   mounted() {
     this.scrollToEnd();
 
@@ -668,6 +686,9 @@ export default {
         }
       );
     });
+  },
+  beforeDestroy() {
+    this.closeCall();
   },
 };
 </script>

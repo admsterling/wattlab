@@ -251,6 +251,8 @@ export default {
                   this.$cookies.remove("labCode");
                   this.$cookies.remove("helperPIN");
                   this.$cookies.remove("microphone");
+                  this.$cookies.remove("language");
+                  this.$cookies.remove("theme");
                 }
                 this.$store.dispatch("application/mic_perm", this.microphone);
                 this.$socket.emit("joinRoom", this.labCode);
@@ -288,6 +290,8 @@ export default {
       this.$cookies.remove("labCode");
       this.$cookies.remove("helperPIN");
       this.$cookies.remove("microphone");
+      this.$cookies.remove("language");
+      this.$cookies.remove("theme");
       this.$toast.success("Any cookies stored have been deleted");
     },
   },
