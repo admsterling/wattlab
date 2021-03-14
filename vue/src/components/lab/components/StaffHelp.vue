@@ -147,7 +147,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res.data.data);
           this.usefulLinkTitles = res.data.data.getStaffLinks.usefulLinkTitles;
           this.usefulLinkLinks = res.data.data.getStaffLinks.usefulLinkLinks;
         })
