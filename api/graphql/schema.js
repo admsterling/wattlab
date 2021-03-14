@@ -196,6 +196,7 @@ module.exports = buildSchema(`
         getActiveMembers(lab_id: ID!): Int!
         getActiveChats(lab_id: ID!): Int!
         getPrivateChat(id: ID, staff: String, lab_id: ID): [PrivateChat!]!
+        getHistory(lab_id: ID!, staff: String!): [String!]!
     }
 
     schema {

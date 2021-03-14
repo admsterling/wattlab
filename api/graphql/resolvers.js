@@ -792,4 +792,13 @@ module.exports = {
       };
     });
   },
+  getHistory: async function ({ lab_id, staff }) {
+    const chats = await PrivateChat.find({ staff: staff }).sort({
+      createdAt: 'desc',
+    }).limit(10)
+
+    return chats.map((c) => {
+      return c.student;
+    });
+  },
 };

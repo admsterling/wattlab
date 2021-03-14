@@ -19,6 +19,7 @@
         <v-tab> Main Room </v-tab>
         <v-tab> Get Help / Marking</v-tab>
         <v-tab v-if="this.studentSubmission"> Submit Work </v-tab>
+        <v-tab v-if="this.accountType !== 'STUDENT'">Staff Page</v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="tab" height="100%">
@@ -47,6 +48,11 @@
             <SubmissionPage v-if="this.studentSubmission" />
           </div>
         </v-tab-item>
+        <v-tab-item v-if="this.accountType !== 'STUDENT'">
+          <div class="tab-item-wrapper">
+            <StaffHelp />
+          </div>
+        </v-tab-item>
       </v-tabs-items>
     </v-card>
   </div>
@@ -63,6 +69,7 @@ export default {
     StudentHelpView: () => import("./HelpViews/Student/StudentView"),
     LabHelperView: () => import("./HelpViews/LabHelper/LabHelperView"),
     SubmissionPage: () => import("./components/SubmissionPage"),
+    StaffHelp: () => import("./components/StaffHelp"),
   },
   data() {
     return {
