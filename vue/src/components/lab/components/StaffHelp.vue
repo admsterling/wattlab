@@ -77,6 +77,7 @@
                           append-outer-icon="mdi-send"
                           dense
                           @click:append-outer="sendResponse(item._id)"
+                          @keyup.enter="sendResponse(item._id)"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -233,22 +234,27 @@ export default {
 
       const response = this.feedback[pos].response;
 
-      axios(process.env.VUE_APP_ENDPOINT, {
-        method: "POST",
-        data: {
-          query: `
+      if (!response.length > 0) {
+        this.$toast.error("Please enter a response");
+      } else {
+        axios(process.env.VUE_APP_ENDPOINT, {
+          method: "POST",
+          data: {
+            query: `
               mutation sendResponse($priv_id: ID!, $response: String!) {
                 sendResponse(priv_id: $priv_id, response: $response)
               }
             `,
-          variables: {
-            priv_id: id,
-            response: response,
+            variables: {
+              priv_id: id,
+              response: response,
+            },
           },
-        },
-      }).then(() => {
-        this.feedback.splice(pos, 1);
-      });
+        }).then(() => {
+          this.feedback.splice(pos, 1);
+          this.$toast.success("Response Sent");
+        });
+      }
     },
     skipResponse(id) {
       console.log("here");
