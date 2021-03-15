@@ -819,10 +819,42 @@ module.exports = {
       error.code = 404;
       throw error;
     }
-    
+
     return {
       usefulLinkTitles: lab.usefulLinkTitles,
       usefulLinkLinks: lab.usefulLinkLinks,
     };
+  },
+  getFeedback: async function ({ lab_id, staff }) {
+    const chats = await PrivateChat.find({
+      lab_id: lab_id,
+      staff: staff,
+      feedback: { $exists: true },
+      response: { $exists: false },
+    });
+
+    if (!chats.length > 0) {
+      const error = new Error('No feedback found');
+      error.code = 404;
+      throw error;
+    }
+
+    return chats.map((c) => {
+      return {
+        ...c._doc,
+        _id: c._id.toString(),
+        createdAt: c.createdAt.toISOString(),
+        updatedAt: c.updatedAt.toISOString(),
+      };
+    });
+  },
+  sendResponse: async function ({ priv_id, response }) {
+    const private = await PrivateChat.findById(priv_id);
+
+    private.response = response;
+
+    await private.save();
+
+    return true;
   },
 };

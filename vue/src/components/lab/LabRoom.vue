@@ -97,6 +97,9 @@ export default {
       this.$toast.warning("The lab has stopped");
       this.$router.push("/login");
     },
+    feedback: function () {
+      this.$toast.info("You have recieved feedback from a student");
+    },
   },
   methods: {
     async leaveLab() {

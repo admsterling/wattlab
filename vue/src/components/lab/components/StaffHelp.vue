@@ -40,6 +40,51 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text style="height: calc(100vh - 300px); overflow-y: auto">
+            <div v-if="!(feedback.length > 0)">
+              You currently have no feedback, try refresh?
+            </div>
+            <v-list subheader v-else>
+              <v-subheader>Found This Feedback:</v-subheader>
+              <v-list-item v-for="item in feedback" :key="item._id">
+                <v-sheet
+                  class="px-2 pt-2 ma-2 rounded-r-xl"
+                  color="blue lighten-4"
+                  elevation="4"
+                  rounded
+                  width="100%"
+                >
+                  <v-container fluid no-gutters>
+                    <v-row no-gutters class="mb-2">
+                      <v-col cols="11" class="text-subtitle-1 font-italic">
+                        "{{ item.feedback }}"
+                      </v-col>
+                      <v-col cols="1" align="start" justify="end">
+                        <v-btn
+                          x-small
+                          outlined
+                          fab
+                          @click="skipResponse(item._id)"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                    <v-row no-gutters>
+                      <v-col cols="12">
+                        <v-text-field
+                          label="Response to feedback:"
+                          v-model="item.response"
+                          append-outer-icon="mdi-send"
+                          dense
+                          @click:append-outer="sendResponse(item._id)"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <div class="mb-3"></div>
+                </v-sheet>
+              </v-list-item>
+            </v-list>
           </v-card-text>
         </v-card>
       </v-col>
@@ -80,6 +125,7 @@ export default {
       history: [],
       usefulLinkTitles: [],
       usefulLinkLinks: [],
+      feedback: [],
     };
   },
   computed: {
@@ -117,7 +163,10 @@ export default {
         data: {
           query: `
               query getFeedback($lab_id: ID!, $staff: String!) {
-                getFeedback(lab_id: $lab_id, staff: $staff)
+                getFeedback(lab_id: $lab_id, staff: $staff){
+                  _id
+                  feedback
+                }
               }
             `,
           variables: {
@@ -125,9 +174,23 @@ export default {
             staff: this.username,
           },
         },
-      }).then((res) => {
-        this.feedback = res.data.data.getFeedback;
-      });
+      })
+        .then((res) => {
+          this.feedback = res.data.data.getFeedback;
+          this.feedback = this.feedback.map((f) => {
+            return { ...f, response: "" };
+          });
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        });
     },
     fetchLinks() {
       axios(process.env.VUE_APP_ENDPOINT, {
@@ -161,10 +224,59 @@ export default {
           }
         });
     },
+    sendResponse(id) {
+      const pos = this.feedback
+        .map((f) => {
+          return f._id;
+        })
+        .indexOf(id);
+
+      const response = this.feedback[pos].response;
+
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              mutation sendResponse($priv_id: ID!, $response: String!) {
+                sendResponse(priv_id: $priv_id, response: $response)
+              }
+            `,
+          variables: {
+            priv_id: id,
+            response: response,
+          },
+        },
+      }).then(() => {
+        this.feedback.splice(pos, 1);
+      });
+    },
+    skipResponse(id) {
+      console.log("here");
+      const pos = this.feedback
+        .map((f) => {
+          return f._id;
+        })
+        .indexOf(id);
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              mutation sendResponse($priv_id: ID!, $response: String!) {
+                sendResponse(priv_id: $priv_id, response: $response)
+              }
+            `,
+          variables: {
+            priv_id: id,
+            response: "null",
+          },
+        },
+      }).then(() => {
+        this.feedback.splice(pos, 1);
+      });
+    },
   },
   mounted() {
     this.fetchHistory();
-    // this.fetchFeedback();
     this.fetchLinks();
   },
 };

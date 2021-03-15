@@ -35,6 +35,18 @@
                   </template>
                   <span>{{ item.feedback }}</span>
                 </v-tooltip>
+                <v-tooltip
+                  bottom
+                  v-if="item.response && item.response !== 'null'"
+                  max-width="400px"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon color="primary" dark v-bind="attrs" v-on="on">
+                      mdi-comment-alert
+                    </v-icon>
+                  </template>
+                  <span>{{ item.response }}</span>
+                </v-tooltip>
               </template>
             </v-treeview>
           </v-col>
@@ -85,6 +97,25 @@
                       </template>
                       <span>{{ selected.feedback }}</span>
                     </v-tooltip>
+
+                    <v-tooltip
+                      bottom
+                      max-width="400px"
+                      v-if="selected.response !== 'null'"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          class="ml-5"
+                          color="primary"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          mdi-comment-alert
+                        </v-icon>
+                      </template>
+                      <span>{{ selected.response }}</span>
+                    </v-tooltip>
                   </span>
                 </div>
               </v-card-title>
@@ -134,6 +165,7 @@ export default {
                         createdAt
                         rating
                         feedback
+                        response
                         requiredCall
                         messages { 
                           sender
@@ -200,6 +232,7 @@ export default {
                         student
                         feedback
                         rating
+                        response
                     }
                 }
             `,

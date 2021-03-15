@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   props: ["rating"],
   data() {
@@ -90,6 +91,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      gettingSupport: "socket/gettingSupport",
+    }),
     disableButton: function () {
       return this.rating.value == 0;
     },
@@ -100,6 +104,9 @@ export default {
     },
     agree() {
       if (this.$refs.ratingForm.validate()) {
+        if (this.rating.feedback.length > 0) {
+          this.$socket.emit("feedback", this.gettingSupport.reciever);
+        }
         this.$emit("confirmed");
         this.dialog = false;
       }

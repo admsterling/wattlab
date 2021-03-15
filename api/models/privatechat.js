@@ -26,6 +26,10 @@ const privateChatSchema = new Schema(
       type: String,
       required: false,
     },
+    response: {
+      type: String,
+      required: false,
+    },
     requiredCall: {
       type: Boolean,
       required: true,

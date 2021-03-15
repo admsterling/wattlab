@@ -107,6 +107,7 @@ module.exports = buildSchema(`
         messages: [Message!]
         rating: Int
         feedback: String
+        response: String
         requiredCall: Boolean!
         active: Boolean!
         createdAt: String!
@@ -192,6 +193,7 @@ module.exports = buildSchema(`
         addSubmission(member_id: ID!, submissionLink: String!): String!
         requireCall(private_chat_id: ID!): Boolean!
         stopHelp(priv_id: ID!) : Boolean!
+        sendResponse(priv_id: ID!, response: String!): Boolean!
     }
 
     type RootQuery {
@@ -207,6 +209,7 @@ module.exports = buildSchema(`
         getPrivateChat(id: ID, staff: String, lab_id: ID): [PrivateChat!]!
         getHistory(lab_id: ID!, staff: String!): [String!]!
         getStaffLinks(code: String!): staffLinkReturn!
+        getFeedback(lab_id: ID!, staff: String!): [PrivateChat!]!
     }
 
     schema {

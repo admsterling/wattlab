@@ -245,6 +245,10 @@ io.on('connection', (socket) => {
     });
   });
 
+  socket.on('feedback', (reciever) => {
+    socket.broadcast.to(reciever).emit('feedback');
+  });
+
   socket.on('disconnect', () => {
     let code;
     axios(graphQLEndpoint, {
