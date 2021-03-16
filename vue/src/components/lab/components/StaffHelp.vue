@@ -257,7 +257,6 @@ export default {
       }
     },
     skipResponse(id) {
-      console.log("here");
       const pos = this.feedback
         .map((f) => {
           return f._id;
