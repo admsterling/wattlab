@@ -595,6 +595,15 @@ export default {
               console.log("Failed to get local stream", err);
             }
           );
+
+          setTimeout(() => {
+            if (!this.inCall) {
+              this.$toast.info(
+                "If the call is taking too long to connect, the other person might have their microphone permissions disabled.",
+                { timeout: false }
+              );
+            }
+          }, 6000);
         });
     },
     closeCall() {
@@ -701,9 +710,11 @@ export default {
     });
   },
   beforeDestroy() {
-    this.stream.getTracks().forEach(function (track) {
-      track.stop();
-    });
+    if (this.stream) {
+      this.stream.getTracks().forEach(function (track) {
+        track.stop();
+      });
+    }
   },
 };
 </script>
