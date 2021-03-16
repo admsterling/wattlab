@@ -31,7 +31,13 @@
                 <td>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon color="primary" dark v-bind="attrs" v-on="on">
+                      <v-icon
+                        color="primary"
+                        class="mr-1"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                         mdi-information-outline
                       </v-icon>
                     </template>
@@ -39,7 +45,13 @@
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon color="primary" dark v-bind="attrs" v-on="on">
+                      <v-icon
+                        color="primary"
+                        class="mr-1"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                         mdi-account
                       </v-icon>
                     </template>
@@ -50,9 +62,26 @@
                       </li>
                     </ul>
                   </v-tooltip>
-                  <v-icon color="primary" @click="qrcode(lab.code)">
+                  <v-icon
+                    color="primary"
+                    class="mr-1"
+                    @click="qrcode(lab.code)"
+                  >
                     mdi-share-variant
                   </v-icon>
+                  <v-tooltip bottom v-if="lab.submission">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        color="primary"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="submissions(lab.code)"
+                      >
+                        mdi-file-edit
+                      </v-icon>
+                    </template>
+                    <span>See Submissions</span>
+                  </v-tooltip>
                 </td>
                 <td>
                   <router-link :to="'/labInfo/' + lab.code" class="ml-2">
@@ -412,6 +441,9 @@ export default {
     qrcode(code) {
       this.$refs.qrDialog.open(code);
     },
+    submissions(code) {
+      this.$router.push("submissions/" + code);
+    },
   },
   async mounted() {
     this.loading = true;
@@ -430,7 +462,7 @@ export default {
                       status
                       helpers
                       createdAt
-
+                      submission
                   }
                 }
               }

@@ -31,8 +31,8 @@ const EditLabView = Vue.component('EditLab', () =>
 const LabInfoView = Vue.component('LabInfo', () =>
   import('../components/prof/labInfo/LabInfo')
 );
-const QRCodeView = Vue.component('QRCode', () =>
-  import('../components/prof/viewLabs/QRCode')
+const SubmissionsView = Vue.component('Submissions', () =>
+  import('../components/prof/submissions/Submissions')
 );
 
 const MobileView = Vue.component('MobileView', () =>
@@ -83,7 +83,7 @@ const routes = [
       { path: '/viewLabs', component: ViewLabs },
       { path: '/edit/:labCode', component: EditLabView },
       { path: '/labInfo/:code', component: LabInfoView },
-      { path: '/qrcode/:code', component: QRCodeView },
+      { path: '/submissions/:code', component: SubmissionsView },
     ],
   },
   { path: '*', component: NotFound },
