@@ -34,16 +34,6 @@
             </p>
           </v-col>
         </v-row>
-        <!-- <v-row no-gutters>
-          <v-col class="text-center">
-            <v-checkbox
-              v-model="remember"
-              label="Remember me"
-              :loading="submitted"
-              :disabled="submitted"
-            ></v-checkbox>
-          </v-col>
-        </v-row> -->
         <v-row align="center">
           <v-col class="text-center">
             <v-btn
@@ -69,10 +59,9 @@ export default {
   data() {
     return {
       prof: {
-        email: "",
-        password: "",
+        email: "test@test.com",
+        password: "test123",
       },
-      remember: false,
       errorList: undefined,
       show: false,
       submitted: false,
