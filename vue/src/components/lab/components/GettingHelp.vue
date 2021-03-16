@@ -43,6 +43,8 @@
               "
               class="mr-2"
               @click="nativeCall"
+              :disabled="connecting"
+              :loading="connecting"
             >
               Site Audio Call
               <v-icon small class="ml-2"> mdi-phone </v-icon>
@@ -310,6 +312,7 @@ export default {
         feedback: "",
       },
       callingDialog: false,
+      connecting: false,
     };
   },
   computed: {
@@ -545,6 +548,8 @@ export default {
       this.$store.dispatch("socket/stopHelp");
     },
     nativeCall() {
+      this.connecting = true;
+
       axios(process.env.VUE_APP_ENDPOINT, {
         method: "POST",
         data: {
@@ -574,12 +579,16 @@ export default {
               this.call = this.$peer.call(this.peerid, stream);
               this.call.on("stream", (remoteStream) => {
                 this.inCall = true;
+                this.connecting = false;
                 addStream(remoteStream);
               });
               this.call.on("close", () => {
                 stream.getTracks().forEach(function (track) {
                   track.stop();
                 });
+              });
+              this.call.on("error", (err) => {
+                console.error(err);
               });
             },
             (err) => {
@@ -669,6 +678,7 @@ export default {
       getUserMedia(
         { video: false, audio: true },
         (stream) => {
+          this.stream = stream;
           this.call = call;
           this.call.answer(stream);
           this.call.on("stream", (remoteStream) => {
@@ -680,6 +690,9 @@ export default {
               track.stop();
             });
           });
+          this.call.on("error", (err) => {
+            console.error(err);
+          });
         },
         (err) => {
           console.log("Failed to get local stream", err);
@@ -688,7 +701,9 @@ export default {
     });
   },
   beforeDestroy() {
-    this.closeCall();
+    this.stream.getTracks().forEach(function (track) {
+      track.stop();
+    });
   },
 };
 </script>
