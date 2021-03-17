@@ -20,7 +20,7 @@
                   <v-list-item-content>
                     <v-list-item-title>
                       <span class="purple--text">{{ index(i) }}.</span>
-                      {{ person }}
+                      {{ person }}@hw.ac.uk
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
