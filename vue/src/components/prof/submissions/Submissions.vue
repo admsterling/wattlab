@@ -439,8 +439,8 @@ export default {
               `submissions-${this.$route.params.code}.csv`
             );
             document.body.appendChild(link);
-
             link.click();
+            document.body.removeChild(link);
           })();
         })
         .finally(() => {
