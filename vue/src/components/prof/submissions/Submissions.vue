@@ -2,9 +2,28 @@
   <div>
     <v-card>
       <v-card-title>
-        Submissions For: {{ this.$route.params.code }}
+        Activity and Submissions For: {{ this.$route.params.code }}
         <v-spacer></v-spacer>
-        <v-btn dark class="green" v-if="submissionFlag">Generate PDF</v-btn>
+        <v-btn
+          dark
+          class="green mx-1"
+          v-if="submissionFlag"
+          :loading="generatePDFLoading"
+          :disabled="generatePDFLoading"
+          @click="generatePDF"
+        >
+          Generate PDF
+        </v-btn>
+        <v-btn
+          dark
+          class="green mx-1"
+          v-if="submissionFlag"
+          :loading="generateCSVLoading"
+          :disabled="generateCSVLoading"
+          @click="generateCSV"
+        >
+          Generate CSV
+        </v-btn>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text
@@ -27,6 +46,7 @@
             prevIcon: 'mdi-minus',
             nextIcon: 'mdi-plus',
           }"
+          :items-per-page="5"
           :server-items-length="totalMembers"
         >
           <template v-slot:item.inRoom="{ item }">
@@ -48,6 +68,22 @@
               </a>
             </v-chip>
           </template>
+          <template v-slot:item.marked="{ item }">
+            <v-icon
+              align="center"
+              justify="center"
+              v-if="item.submissionLink"
+              v-model="item.marked"
+              :class="item.marked ? 'green--text' : 'red--text'"
+              @click="markWork(item.username, item.marked)"
+            >
+              {{
+                item.marked
+                  ? "mdi-check-box-outline"
+                  : "mdi-checkbox-blank-outline"
+              }}
+            </v-icon>
+          </template>
         </v-data-table>
         <v-data-table
           v-else
@@ -64,6 +100,7 @@
             prevIcon: 'mdi-minus',
             nextIcon: 'mdi-plus',
           }"
+          :items-per-page="5"
           :server-items-length="totalMembers"
         >
           <template v-slot:item.inRoom="{ item }">
@@ -83,6 +120,9 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import ObjectsToCsv from "objects-to-csv";
 
 export default {
   data() {
@@ -92,6 +132,8 @@ export default {
       options: {},
       totalMembers: 0,
       submissionFlag: false,
+      generatePDFLoading: false,
+      generateCSVLoading: false,
     };
   },
   computed: {
@@ -100,7 +142,7 @@ export default {
         {
           text: "Status",
           value: "inRoom",
-          sortable: false,
+          sortable: true,
           filterable: false,
           align: "center",
           width: "15%",
@@ -108,7 +150,7 @@ export default {
         {
           text: "Username",
           value: "username",
-          sortable: false,
+          sortable: true,
           filterable: true,
           align: "start",
           width: "15%",
@@ -118,12 +160,12 @@ export default {
           value: "submissionLink",
           sortable: false,
           filterable: false,
-          width: "60%",
+          width: "50%",
         },
         {
           text: "Marked",
           value: "marked",
-          sortable: false,
+          sortable: true,
           filterable: false,
           width: "10%",
           align: "center",
@@ -135,7 +177,7 @@ export default {
         {
           text: "Status",
           value: "inRoom",
-          sortable: false,
+          sortable: true,
           filterable: false,
           align: "center",
           width: "15%",
@@ -143,7 +185,7 @@ export default {
         {
           text: "Username",
           value: "username",
-          sortable: false,
+          sortable: true,
           filterable: true,
           align: "center",
           width: "15%",
@@ -151,7 +193,7 @@ export default {
         {
           text: "Enable Submission Settings to allow Submissions",
           sortable: false,
-          filterable: true,
+          filterable: false,
           align: "center",
           width: "70%",
         },
@@ -189,12 +231,13 @@ export default {
         method: "POST",
         data: {
           query: `
-                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int) {
-                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage) {
+                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int, $sortBy: [String], $sortDesc: [Boolean]) {
+                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage, sortBy: $sortBy, sortDesc: $sortDesc) {
                       members {
                         username
                         submissionLink
                         inRoom
+                        marked
                       }
                       totalMembers
                     }
@@ -204,6 +247,8 @@ export default {
             id: this.$route.params.id,
             page: this.options.page,
             itemsPerPage: this.options.itemsPerPage,
+            sortBy: this.options.sortBy,
+            sortDesc: this.options.sortDesc,
           },
         },
         headers: {
@@ -224,8 +269,8 @@ export default {
         method: "POST",
         data: {
           query: `
-                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int) {
-                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage) {
+                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int, $sortBy: [String], $sortDesc: [Boolean]) {
+                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage, sortBy: $sortBy, sortDesc: $sortDesc) {
                       members {
                         username
                         inRoom
@@ -238,6 +283,8 @@ export default {
             id: this.$route.params.id,
             page: this.options.page,
             itemsPerPage: this.options.itemsPerPage,
+            sortBy: this.options.sortBy,
+            sortDesc: this.options.sortDesc,
           },
         },
         headers: {
@@ -253,12 +300,152 @@ export default {
         });
     },
     refresh() {
-      console.log(this.options);
       if (this.$route.params.submissions) {
         this.fetchSubmissions();
       } else {
         this.fetchActivity();
       }
+    },
+    markWork(username, bool) {
+      const pos = this.members
+        .map((m) => {
+          return m.username;
+        })
+        .indexOf(username);
+
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                mutation markWork($lab_id: ID!, $username: String!, $bool: Boolean!) {
+                    markWork(lab_id: $lab_id, username: $username, bool: $bool)
+                }
+            `,
+          variables: {
+            lab_id: this.$route.params.id,
+            username: username,
+            bool: !bool,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then(() => {
+          this.members[pos].marked = !bool;
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        });
+    },
+    generatePDF() {
+      this.generatePDFLoading = true;
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getLabMembers($id: ID!, $itemsPerPage: Int, $sortBy: [String], $sortDesc: [Boolean]) {
+                    getLabMembers(id: $id, itemsPerPage: $itemsPerPage, sortBy: $sortBy, sortDesc: $sortDesc) {
+                      members {
+                        username
+                        submissionLink
+                        marked
+                      }
+                      totalMembers
+                    }
+                }
+            `,
+          variables: {
+            id: this.$route.params.id,
+            itemsPerPage: -1,
+            sortBy: ["username"],
+            sortDesc: [false],
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((result) => {
+          var columns = [
+            { title: "Username", dataKey: "username" },
+            { title: "Link", dataKey: "submissionLink" },
+            { title: "Marked", dataKey: "marked" },
+          ];
+          var doc = new jsPDF("p", "pt");
+          doc.text(
+            `Submissions For - ${this.$route.params.code}   (${result.data.data.getLabMembers.totalMembers} students)`,
+            40,
+            40
+          );
+          doc.autoTable(columns, result.data.data.getLabMembers.members, {
+            margin: { top: 60 },
+          });
+          doc.save(`submissions-${this.$route.params.code}.pdf`);
+        })
+        .finally(() => {
+          this.generatePDFLoading = false;
+        });
+    },
+    generateCSV() {
+      this.generateCSVLoading = true;
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getLabMembers($id: ID!, $itemsPerPage: Int, $sortBy: [String], $sortDesc: [Boolean]) {
+                    getLabMembers(id: $id, itemsPerPage: $itemsPerPage, sortBy: $sortBy, sortDesc: $sortDesc) {
+                      members {
+                        username
+                        submissionLink
+                        marked
+                      }
+                      totalMembers
+                    }
+                }
+            `,
+          variables: {
+            id: this.$route.params.id,
+            itemsPerPage: -1,
+            sortBy: ["username"],
+            sortDesc: [false],
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((result) => {
+          const members = result.data.data.getLabMembers.members;
+
+          (async () => {
+            const csv = new ObjectsToCsv(members);
+
+            const csvContent =
+              "data:text/csv;charset=utf-8," + (await csv.toString());
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute(
+              "download",
+              `submissions-${this.$route.params.code}.csv`
+            );
+            document.body.appendChild(link);
+
+            link.click();
+          })();
+        })
+        .finally(() => {
+          this.generateCSVLoading = false;
+        });
     },
   },
   mounted() {

@@ -98,6 +98,7 @@ module.exports = buildSchema(`
         inRoom: Boolean!
         lab_id: String!
         submissionLink: String
+        marked: Boolean
     }
 
     type PrivateChat {
@@ -199,6 +200,7 @@ module.exports = buildSchema(`
         requireCall(private_chat_id: ID!): Boolean!
         stopHelp(priv_id: ID!) : Boolean!
         sendResponse(priv_id: ID!, response: String!): Boolean!
+        markWork(lab_id: ID!, username: String!, bool: Boolean!): Boolean!
     }
 
     type RootQuery {
@@ -215,7 +217,7 @@ module.exports = buildSchema(`
         getHistory(lab_id: ID!, staff: String!): [String!]!
         getStaffLinks(code: String!): staffLinkReturn!
         getFeedback(lab_id: ID!, staff: String!): [PrivateChat!]!
-        getLabMembers(id: ID!, page: Int, itemsPerPage: Int): membersList
+        getLabMembers(id: ID!, page: Int, itemsPerPage: Int, sortBy: [String], sortDesc: [Boolean]): membersList
     }
 
     schema {

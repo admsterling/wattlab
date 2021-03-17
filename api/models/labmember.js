@@ -19,6 +19,10 @@ const LabMemberSchema = new Schema({
     type: String,
     required: false,
   },
+  marked: {
+    type: Boolean,
+    required: false,
+  },
   lab_id: {
     type: Schema.Types.ObjectId,
     ref: 'Lab',

@@ -696,6 +696,7 @@ module.exports = {
     }
 
     labmember.submissionLink = submissionLink;
+    labmember.marked = false;
     labmember.save();
     return labmember.submissionLink;
   },
@@ -857,10 +858,25 @@ module.exports = {
 
     return true;
   },
-  getLabMembers: async function ({ id, page, itemsPerPage }, req) {
+  getLabMembers: async function (
+    { id, page, itemsPerPage, sortBy, sortDesc },
+    req
+  ) {
     checkAuth(req.isAuth);
 
     let members = [];
+    let sortObj = {};
+    let sortMethod = '';
+
+    if (sortBy.length > 0) {
+      if (sortDesc[0] === true) {
+        sortMethod = 'desc';
+      } else {
+        sortMethod = 'asc';
+      }
+
+      sortObj[sortBy] = sortMethod;
+    }
 
     if (itemsPerPage > 0) {
       members = await LabMember.find({
@@ -868,15 +884,11 @@ module.exports = {
       })
         .limit(itemsPerPage)
         .skip(itemsPerPage * (page - 1))
-        .sort({
-          username: 'asc',
-        });
+        .sort(sortObj);
     } else {
       members = await LabMember.find({
         lab_id: id,
-      }).sort({
-        username: 'asc',
-      });
+      }).sort(sortObj);
     }
 
     const totalMembers = await LabMember.find({ lab_id: id }).countDocuments();
@@ -890,5 +902,22 @@ module.exports = {
       }),
       totalMembers: totalMembers,
     };
+  },
+  markWork: async function ({ lab_id, username, bool }) {
+    const member = await LabMember.findOne({
+      lab_id: lab_id,
+      username: username,
+    });
+
+    if (!member) {
+      const error = new Error('No Lab Member Found');
+      error.code = 404;
+      throw error;
+    }
+
+    member.marked = bool;
+    await member.save();
+
+    return true;
   },
 };
