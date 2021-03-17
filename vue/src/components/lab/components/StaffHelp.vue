@@ -127,6 +127,7 @@ export default {
       usefulLinkTitles: [],
       usefulLinkLinks: [],
       feedback: [],
+      init: true,
     };
   },
   computed: {
@@ -156,6 +157,10 @@ export default {
         },
       }).then((res) => {
         this.history = res.data.data.getHistory;
+        if (!this.init) {
+          this.$toast.success("History Updated");
+        }
+        this.init = false;
       });
     },
     fetchFeedback() {
