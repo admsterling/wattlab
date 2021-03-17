@@ -452,6 +452,23 @@ module.exports = {
     await prof.save();
     return true;
   },
+  restartChat: async function ({ lab_id }, req) {
+    checkAuth(req.isAuth);
+
+    const lab = await Lab.findById(lab_id);
+    if (!lab) {
+      const error = new Error('No lab found.');
+      error.code = 404;
+      throw error;
+    }
+
+    lab.messages = [];
+    await lab.save();
+
+    await Message.deleteMany({ lab_id: lab._id });
+
+    return true;
+  },
   labExist: async function ({ code }) {
     const lab = await Lab.findOne({ code: code });
     if (!lab) {

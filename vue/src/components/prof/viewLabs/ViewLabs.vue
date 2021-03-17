@@ -73,6 +73,7 @@
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon
                         color="primary"
+                        class="mr-1"
                         v-bind="attrs"
                         v-on="on"
                         @click="submissions(lab.code, lab._id, lab.submission)"
@@ -84,6 +85,19 @@
                       >Lab Activity and Submission Report</span
                     >
                     <span v-else>Lab Activity</span>
+                  </v-tooltip>
+                  <v-tooltip bottom v-if="!lab.status">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        color="primary"
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="restartChat(lab._id)"
+                      >
+                        mdi-restart-alert
+                      </v-icon>
+                    </template>
+                    <span>Restart Group Chat</span>
                   </v-tooltip>
                 </td>
                 <td>
@@ -451,6 +465,41 @@ export default {
     },
     submissions(code, id, submissions) {
       this.$router.push("submissions/" + code + "/" + id + "/" + submissions);
+    },
+    restartChat(lab_id) {
+      this.loadingOverlay = true;
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              mutation restartChat($lab_id: ID!){
+                restartChat(lab_id: $lab_id)
+              }
+          `,
+          variables: {
+            lab_id: lab_id,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then(() => {
+          this.$toast.success("Group Chat Restarted");
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        })
+        .finally(() => {
+          this.loadingOverlay = false;
+        });
     },
   },
   async mounted() {
