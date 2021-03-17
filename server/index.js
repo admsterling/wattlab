@@ -38,13 +38,13 @@ io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
 
   socket.on('joinRoom', (data) => {
-    console.log(data);
+    console.log(data.username + ' joined lab: ' + data.labCode);
     socket.join(data.labCode);
     io.in(data.labCode).emit('updateRoomMembers', data);
   });
 
   socket.on('leaveRoom', (data) => {
-    console.log(data);
+    console.log(data.username + ' left lab: ' + data.labCode);
     socket.leave(data.labCode);
     io.in(data.labCode).emit('updateRoomMembers', data);
   });

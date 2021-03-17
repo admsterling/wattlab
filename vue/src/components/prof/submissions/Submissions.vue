@@ -138,15 +138,22 @@ export default {
           sortable: false,
           filterable: false,
           align: "center",
-          width: "50%",
+          width: "15%",
         },
         {
           text: "Username",
           value: "username",
           sortable: false,
           filterable: true,
-          align: "start",
-          width: "50%",
+          align: "center",
+          width: "15%",
+        },
+        {
+          text: "Enable Submission Settings to allow Submissions",
+          sortable: false,
+          filterable: true,
+          align: "center",
+          width: "70%",
         },
       ];
     },
@@ -157,7 +164,7 @@ export default {
   watch: {
     options: {
       handler() {
-        this.fetchSubmissions();
+        this.refresh();
       },
       deep: true,
     },
@@ -246,6 +253,7 @@ export default {
         });
     },
     refresh() {
+      console.log(this.options);
       if (this.$route.params.submissions) {
         this.fetchSubmissions();
       } else {

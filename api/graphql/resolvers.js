@@ -860,14 +860,24 @@ module.exports = {
   getLabMembers: async function ({ id, page, itemsPerPage }, req) {
     checkAuth(req.isAuth);
 
-    const members = await LabMember.find({
-      lab_id: id,
-    })
-      .limit(itemsPerPage)
-      .skip(itemsPerPage * (page - 1))
-      .sort({
+    let members = [];
+
+    if (itemsPerPage > 0) {
+      members = await LabMember.find({
+        lab_id: id,
+      })
+        .limit(itemsPerPage)
+        .skip(itemsPerPage * (page - 1))
+        .sort({
+          username: 'asc',
+        });
+    } else {
+      members = await LabMember.find({
+        lab_id: id,
+      }).sort({
         username: 'asc',
       });
+    }
 
     const totalMembers = await LabMember.find({ lab_id: id }).countDocuments();
 
