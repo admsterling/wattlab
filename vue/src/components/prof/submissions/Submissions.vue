@@ -4,24 +4,75 @@
       <v-card-title>
         Submissions For: {{ this.$route.params.code }}
         <v-spacer></v-spacer>
-        <v-btn dark class="green">Generate PDF</v-btn>
+        <v-btn dark class="green" v-if="submissionFlag">Generate PDF</v-btn>
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text style="height: calc(100vh - 200px); overflow-y: auto">
+      <v-card-text
+        style="height: calc(100vh - 200px); overflow-y: auto"
+        justify="center"
+        align="center"
+      >
         <v-data-table
-          :headers="headers"
-          :items="desserts"
-          item-key="name"
-          class="elevation-1"
-          :search="search"
-          :custom-filter="filterOnlyCapsText"
+          v-if="submissionFlag"
+          :headers="headers1"
+          :items="members"
+          item-key="username"
+          :options.sync="options"
+          :loading="loading"
+          loading-text="Loading... Please wait"
+          :footer-props="{
+            showFirstLastPage: true,
+            firstIcon: 'mdi-arrow-collapse-left',
+            lastIcon: 'mdi-arrow-collapse-right',
+            prevIcon: 'mdi-minus',
+            nextIcon: 'mdi-plus',
+          }"
+          :server-items-length="totalMembers"
         >
-          <template v-slot:top>
-            <v-text-field
-              v-model="search"
-              label="Search (UPPER CASE ONLY)"
-              class="mx-4"
-            ></v-text-field>
+          <template v-slot:item.inRoom="{ item }">
+            <v-icon v-if="item.inRoom" color="green">
+              mdi-checkbox-blank-circle
+            </v-icon>
+            <v-icon v-else color="red">
+              mdi-checkbox-blank-circle-outline
+            </v-icon>
+          </template>
+          <template v-slot:item.submissionLink="{ item }">
+            <v-chip color="primary" dark v-if="item.submissionLink">
+              <a
+                class="white--text"
+                :href="item.submissionLink"
+                target="_blank"
+              >
+                {{ item.submissionLink }}
+              </a>
+            </v-chip>
+          </template>
+        </v-data-table>
+        <v-data-table
+          v-else
+          :headers="headers2"
+          :items="members"
+          item-key="username"
+          :options.sync="options"
+          :loading="loading"
+          loading-text="Loading... Please wait"
+          :footer-props="{
+            showFirstLastPage: true,
+            firstIcon: 'mdi-arrow-collapse-left',
+            lastIcon: 'mdi-arrow-collapse-right',
+            prevIcon: 'mdi-minus',
+            nextIcon: 'mdi-plus',
+          }"
+          :server-items-length="totalMembers"
+        >
+          <template v-slot:item.inRoom="{ item }">
+            <v-icon v-if="item.inRoom" color="green">
+              mdi-checkbox-blank-circle
+            </v-icon>
+            <v-icon v-else color="red">
+              mdi-checkbox-blank-circle-outline
+            </v-icon>
           </template>
         </v-data-table>
       </v-card-text>
@@ -30,127 +81,196 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        search: '',
-        calories: '',
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
+import axios from "axios";
+import { mapGetters } from "vuex";
+
+export default {
+  data() {
+    return {
+      members: [],
+      loading: true,
+      options: {},
+      totalMembers: 0,
+      submissionFlag: false,
+    };
+  },
+  computed: {
+    headers1() {
+      return [
+        {
+          text: "Status",
+          value: "inRoom",
+          sortable: false,
+          filterable: false,
+          align: "center",
+          width: "15%",
+        },
+        {
+          text: "Username",
+          value: "username",
+          sortable: false,
+          filterable: true,
+          align: "start",
+          width: "15%",
+        },
+        {
+          text: "Link",
+          value: "submissionLink",
+          sortable: false,
+          filterable: false,
+          width: "60%",
+        },
+        {
+          text: "Marked",
+          value: "marked",
+          sortable: false,
+          filterable: false,
+          width: "10%",
+          align: "center",
+        },
+      ];
+    },
+    headers2() {
+      return [
+        {
+          text: "Status",
+          value: "inRoom",
+          sortable: false,
+          filterable: false,
+          align: "center",
+          width: "50%",
+        },
+        {
+          text: "Username",
+          value: "username",
+          sortable: false,
+          filterable: true,
+          align: "start",
+          width: "50%",
+        },
+      ];
+    },
+    ...mapGetters({
+      username: "prof/username",
+    }),
+  },
+  watch: {
+    options: {
+      handler() {
+        this.fetchSubmissions();
+      },
+      deep: true,
+    },
+  },
+  sockets: {
+    updateRoomMembers: function (data) {
+      const pos = this.members
+        .map((m) => {
+          return m.username;
+        })
+        .indexOf(data.username);
+
+      if (pos !== -1) {
+        this.members[pos].inRoom = data.inRoom;
       }
     },
-    computed: {
-      headers () {
-        return [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
+  },
+  methods: {
+    async fetchSubmissions() {
+      this.loading = true;
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int) {
+                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage) {
+                      members {
+                        username
+                        submissionLink
+                        inRoom
+                      }
+                      totalMembers
+                    }
+                }
+            `,
+          variables: {
+            id: this.$route.params.id,
+            page: this.options.page,
+            itemsPerPage: this.options.itemsPerPage,
           },
-          {
-            text: 'Calories',
-            value: 'calories',
-            filter: value => {
-              if (!this.calories) return true
-
-              return value < parseInt(this.calories)
-            },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((res) => {
+          this.members = res.data.data.getLabMembers.members;
+          this.totalMembers = res.data.data.getLabMembers.totalMembers;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    async fetchActivity() {
+      this.loading = true;
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+                query getLabMembers($id: ID!, $page: Int, $itemsPerPage: Int) {
+                    getLabMembers(id: $id, page: $page, itemsPerPage: $itemsPerPage) {
+                      members {
+                        username
+                        inRoom
+                      }
+                      totalMembers
+                    }
+                }
+            `,
+          variables: {
+            id: this.$route.params.id,
+            page: this.options.page,
+            itemsPerPage: this.options.itemsPerPage,
           },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
-        ]
-      },
+        },
+        headers: {
+          Authorization: `Bearer ${this.$store.state.prof.token}`,
+        },
+      })
+        .then((res) => {
+          this.members = res.data.data.getLabMembers.members;
+          this.totalMembers = res.data.data.getLabMembers.totalMembers;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
-    methods: {
-      filterOnlyCapsText (value, search) {
-        return value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(search) !== -1
-      },
+    refresh() {
+      if (this.$route.params.submissions) {
+        this.fetchSubmissions();
+      } else {
+        this.fetchActivity();
+      }
     },
-  }
+  },
+  mounted() {
+    if (this.$route.params.submissions == "true") {
+      this.submissionFlag = true;
+    }
+    const data = {
+      inRoom: false,
+      username: this.username,
+      labCode: this.$route.params.code,
+    };
+    this.$socket.emit("joinRoom", data);
+  },
+  beforeDestroy() {
+    const data = {
+      inRoom: false,
+      username: this.username,
+      labCode: this.$route.params.code,
+    };
+    this.$socket.emit("leaveRoom", data);
+  },
+};
 </script>

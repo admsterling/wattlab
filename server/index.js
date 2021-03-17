@@ -37,14 +37,16 @@ app.use(express.static(public));
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
 
-  socket.on('joinRoom', (labCode) => {
-    console.log('Join Room: ' + labCode);
-    socket.join(labCode);
+  socket.on('joinRoom', (data) => {
+    console.log(data);
+    socket.join(data.labCode);
+    io.in(data.labCode).emit('updateRoomMembers', data);
   });
 
-  socket.on('leaveRoom', (labCode) => {
-    console.log('Leave Room: ' + labCode);
-    socket.leave(labCode);
+  socket.on('leaveRoom', (data) => {
+    console.log(data);
+    socket.leave(data.labCode);
+    io.in(data.labCode).emit('updateRoomMembers', data);
   });
 
   socket.on('endLab', (labCode) => {

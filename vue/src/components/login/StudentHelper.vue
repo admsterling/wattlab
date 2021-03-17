@@ -254,7 +254,12 @@ export default {
                   this.$cookies.remove("theme");
                 }
                 this.$store.dispatch("application/mic_perm", this.microphone);
-                this.$socket.emit("joinRoom", this.labCode);
+                const data = {
+                  inRoom: true,
+                  labCode: this.labCode,
+                  username: this.username,
+                };
+                this.$socket.emit("joinRoom", data);
                 this.$router.push("/join/" + this.labCode);
               })
               .catch((error) => {

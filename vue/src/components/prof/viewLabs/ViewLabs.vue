@@ -69,18 +69,21 @@
                   >
                     mdi-share-variant
                   </v-icon>
-                  <v-tooltip bottom v-if="lab.submission">
+                  <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon
                         color="primary"
                         v-bind="attrs"
                         v-on="on"
-                        @click="submissions(lab.code)"
+                        @click="submissions(lab.code, lab._id, lab.submission)"
                       >
-                        mdi-file-edit
+                        mdi-file
                       </v-icon>
                     </template>
-                    <span>See Submissions</span>
+                    <span v-if="lab.submission"
+                      >Lab Activity and Submission Report</span
+                    >
+                    <span v-else>Lab Activity</span>
                   </v-tooltip>
                 </td>
                 <td>
@@ -212,7 +215,12 @@ export default {
             prof: true,
           };
           this.$store.dispatch("socket/setLab", contextData).then(() => {
-            this.$socket.emit("joinRoom", lab.code);
+            const data = {
+              inRoom: true,
+              labCode: lab.code,
+              username: this.username,
+            };
+            this.$socket.emit("joinRoom", data);
             this.$router.push("/join/" + lab.code);
           });
         })
@@ -441,8 +449,8 @@ export default {
     qrcode(code) {
       this.$refs.qrDialog.open(code);
     },
-    submissions(code) {
-      this.$router.push("submissions/" + code);
+    submissions(code, id, submissions) {
+      this.$router.push("submissions/" + code + "/" + id + "/" + submissions);
     },
   },
   async mounted() {

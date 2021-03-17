@@ -83,7 +83,7 @@ const routes = [
       { path: '/viewLabs', component: ViewLabs },
       { path: '/edit/:labCode', component: EditLabView },
       { path: '/labInfo/:code', component: LabInfoView },
-      { path: '/submissions/:code', component: SubmissionsView },
+      { path: '/submissions/:code/:id/:submissions', component: SubmissionsView },
     ],
   },
   { path: '*', component: NotFound },

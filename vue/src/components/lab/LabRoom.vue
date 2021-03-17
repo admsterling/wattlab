@@ -87,6 +87,7 @@ export default {
       submission: "socket/submission",
       gettingSupport: "socket/gettingSupport",
       privateChat: "socket/privateChat",
+      username: "socket/username",
     }),
     studentSubmission: function () {
       return this.submission && this.accountType === "STUDENT";
@@ -124,7 +125,12 @@ export default {
   },
   beforeDestroy() {
     if (this.labCode) {
-      this.$socket.emit("leaveRoom", this.labCode);
+      const data = {
+        inRoom: false,
+        username: this.username,
+        labCode: this.labCode,
+      };
+      this.$socket.emit("leaveRoom", data);
       this.$store.dispatch("socket/resetState");
     }
   },

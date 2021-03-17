@@ -857,16 +857,28 @@ module.exports = {
 
     return true;
   },
-  getLabMembers: async function ({ lab_id }, req) {
+  getLabMembers: async function ({ id, page, itemsPerPage }, req) {
     checkAuth(req.isAuth);
 
-    const members = await LabMember.find({ lab_id: lab_id });
+    const members = await LabMember.find({
+      lab_id: id,
+    })
+      .limit(itemsPerPage)
+      .skip(itemsPerPage * (page - 1))
+      .sort({
+        username: 'asc',
+      });
 
-    return members.map((m) => {
-      return {
-        ...m._doc,
-        _id: m._id.toString(),
-      };
-    });
+    const totalMembers = await LabMember.find({ lab_id: id }).countDocuments();
+
+    return {
+      members: members.map((m) => {
+        return {
+          ...m._doc,
+          _id: m._id.toString(),
+        };
+      }),
+      totalMembers: totalMembers,
+    };
   },
 };
