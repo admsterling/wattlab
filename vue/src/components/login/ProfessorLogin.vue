@@ -59,8 +59,8 @@ export default {
   data() {
     return {
       prof: {
-        email: "test@test.com",
-        password: "test123",
+        email: "",
+        password: "",
       },
       errorList: undefined,
       show: false,
