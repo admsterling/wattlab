@@ -210,6 +210,7 @@ module.exports = buildSchema(`
         getHistory(lab_id: ID!, staff: String!): [String!]!
         getStaffLinks(code: String!): staffLinkReturn!
         getFeedback(lab_id: ID!, staff: String!): [PrivateChat!]!
+        getLabMembers(lab_id: ID!): [LabMember!]!
     }
 
     schema {

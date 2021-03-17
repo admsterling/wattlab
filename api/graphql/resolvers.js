@@ -857,4 +857,16 @@ module.exports = {
 
     return true;
   },
+  getLabMembers: async function ({ lab_id }, req) {
+    checkAuth(req.isAuth);
+
+    const members = await LabMember.find({ lab_id: lab_id });
+
+    return members.map((m) => {
+      return {
+        ...m._doc,
+        _id: m._id.toString(),
+      };
+    });
+  },
 };
