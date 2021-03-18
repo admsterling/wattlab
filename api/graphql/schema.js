@@ -131,6 +131,11 @@ module.exports = buildSchema(`
         totalMembers: Int!
     }
 
+    type PredictionReturn { 
+        avg: Int!
+        totalHelpers: Int!
+    }
+
     enum accountType {
         STUDENT
         HELPER
@@ -219,6 +224,7 @@ module.exports = buildSchema(`
         getStaffLinks(code: String!): staffLinkReturn!
         getFeedback(lab_id: ID!, staff: String!): [PrivateChat!]!
         getLabMembers(id: ID!, page: Int, itemsPerPage: Int, sortBy: [String], sortDesc: [Boolean]): membersList
+        getPredictions(lab_id: ID!): PredictionReturn!
     }
 
     schema {

@@ -937,4 +937,31 @@ module.exports = {
 
     return true;
   },
+  getPredictions: async function ({ lab_id }) {
+    const chats = await PrivateChat.find({ lab_id: lab_id });
+
+    const arr = chats.map((p) => {
+      if (!p.status) {
+        const x = new Date(p.createdAt.toISOString()).getTime();
+        const y = new Date(p.updatedAt.toISOString()).getTime();
+        return y - x;
+      }
+    });
+
+    const sum = arr.reduce((a, b) => a + b, 0);
+    const avg = Math.floor(sum / arr.length) || 0;
+
+    const lab = await Lab.findById(lab_id);
+
+    const totalHelpers = await LabMember.find({
+      lab_id: lab_id,
+      inRoom: true,
+      username: { $in: lab.helpers },
+    }).countDocuments();
+
+    return {
+      avg: avg,
+      totalHelpers: totalHelpers,
+    };
+  },
 };
