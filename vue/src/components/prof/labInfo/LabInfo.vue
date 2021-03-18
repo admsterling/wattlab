@@ -83,7 +83,11 @@
                     {{ selected.rating }}/5<v-icon class="orange--text darken-3"
                       >mdi-star</v-icon
                     >
-                    <v-tooltip bottom max-width="400px">
+                    <v-tooltip
+                      bottom
+                      max-width="400px"
+                      v-if="selected.feedback"
+                    >
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
                           class="ml-5"
@@ -101,7 +105,7 @@
                     <v-tooltip
                       bottom
                       max-width="400px"
-                      v-if="selected.response !== 'null'"
+                      v-if="selected.response && selected.response !== 'null'"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
