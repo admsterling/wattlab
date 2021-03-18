@@ -940,16 +940,17 @@ module.exports = {
   getPredictions: async function ({ lab_id }) {
     const chats = await PrivateChat.find({ lab_id: lab_id });
 
-    const arr = chats.map((p) => {
-      if (!p.status) {
-        const x = new Date(p.createdAt.toISOString()).getTime();
-        const y = new Date(p.updatedAt.toISOString()).getTime();
-        return y - x;
+    const times = chats.reduce((times, c) => {
+      if (!c.active) {
+        const x = new Date(c.createdAt.toISOString());
+        const y = new Date(c.updatedAt.toISOString());
+        times.push((y - x) / (1000 * 60));
       }
-    });
+      return times;
+    }, []);
 
-    const sum = arr.reduce((a, b) => a + b, 0);
-    const avg = Math.floor(sum / arr.length) || 0;
+    const sum = times.reduce((a, b) => a + b, 0);
+    const avg = sum / times.length || 0;
 
     const lab = await Lab.findById(lab_id);
 
@@ -960,7 +961,7 @@ module.exports = {
     }).countDocuments();
 
     return {
-      avg: avg,
+      avg: avg.toFixed(5),
       totalHelpers: totalHelpers,
     };
   },

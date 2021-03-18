@@ -132,7 +132,7 @@ module.exports = buildSchema(`
     }
 
     type PredictionReturn { 
-        avg: Int!
+        avg: Float!
         totalHelpers: Int!
     }
 

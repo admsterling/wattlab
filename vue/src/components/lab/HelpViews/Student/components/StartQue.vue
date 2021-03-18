@@ -84,6 +84,12 @@
               averageTime | mmss
             }}</span>
           </div>
+          <div class="text-h4">
+            Estimated time until connected:
+            <span class="purple--text lighten-text-1">
+              {{ estimatedTime }}
+            </span>
+          </div>
           <v-card-text
             style="height: calc(100vh - 430px); overflow-y: auto"
             v-if="times.length > 3"
@@ -126,6 +132,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      loadingComp: false,
       labOptions: ["Help", "Marking"],
       helpObj: {
         queType: "Help",
@@ -144,6 +151,10 @@ export default {
           /^$|(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/.test(
             value
           ) || "Incorrect Format",
+      },
+      predictions: {
+        avg: 0,
+        totalHelpers: 0,
       },
     };
   },
@@ -176,6 +187,18 @@ export default {
       }
       return i + "th";
     },
+    estimatedTime() {
+      const i = this.que.findIndex((x) => x.socketid === this.$socket.id);
+
+      if (i < this.predictions.totalHelpers || i == 0) {
+        return "Any second now...";
+      } else {
+        const time = Math.floor(
+          (i * this.predictions.avg) / this.predictions.totalHelpers
+        );
+        return `~ ${time} minutes`;
+      }
+    },
   },
   watch: {
     "helpObj.queType": {
@@ -189,6 +212,8 @@ export default {
     async getHelp() {
       if (this.$refs.helpForm.validate()) {
         this.loading = true;
+        this.getPredictions();
+        console.log(this.predictions);
         this.$store.dispatch("socket/gitLink", this.gitLink);
         const queData = {
           ...this.helpObj,
@@ -220,12 +245,44 @@ export default {
         this.loading = false;
       });
     },
+    async getPredictions() {
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              query getPredictions($lab_id: ID!) {
+                getPredictions(lab_id: $lab_id) {
+                  avg
+                  totalHelpers
+                }
+              }
+            `,
+          variables: {
+            lab_id: this.lab_id,
+          },
+        },
+      })
+        .then((res) => {
+          this.predictions = res.data.data.getPredictions;
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.errorList = error.response.data.errors;
+            for (let i = 0; i < this.errorList.length; i++) {
+              this.$toast.error(this.errorList[i].message);
+            }
+          } else {
+            console.log("Error", error.message);
+          }
+        });
+    },
   },
   sockets: {
     updateQue: function (data) {
       this.que = data.que;
       this.averageTime = data.averageTime;
       this.times = data.times;
+      this.getPredictions();
     },
     startHelp: function (data) {
       this.$store.dispatch("socket/privateChatInfo", data).then(() => {
