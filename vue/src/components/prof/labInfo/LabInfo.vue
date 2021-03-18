@@ -6,8 +6,22 @@
       </v-card-title>
       <v-container fluid>
         <v-row>
-          <v-col cols="3" class="text-left">
+          <v-col
+            cols="3"
+            :class="
+              this.loading ? 'd-flex justify-center align-center' : 'text-left'
+            "
+            style="height: calc(100vh - 220px); overflow-y: auto"
+          >
+            <v-progress-circular
+              v-if="loading"
+              class="ma-3 justify-center"
+              :size="100"
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
             <v-treeview
+              v-else
               :items="treeview"
               :active.sync="active"
               :open.sync="open"
@@ -15,7 +29,6 @@
               activatable
               transition
               dense
-              style="height: calc(100vh - 250px); overflow-y: scroll"
             >
               <template v-slot:prepend="{ item }">
                 <v-icon v-if="!item.children"> mdi-account </v-icon>
@@ -52,7 +65,11 @@
           </v-col>
           <v-divider vertical></v-divider>
 
-          <v-col>
+          <v-col
+            :class="
+              this.loadingChat ? 'd-flex justify-center align-center' : ''
+            "
+          >
             <div
               v-if="!selected"
               class="title grey--text text--lighten-1 font-weight-light fill-height"
@@ -60,6 +77,13 @@
             >
               Select a chat
             </div>
+            <v-progress-circular
+              v-else-if="selected && loadingChat"
+              class="ma-3 justify-center"
+              :size="200"
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
             <v-card v-else class="mx-auto" flat>
               <v-card-title class="justify-center">
                 <div class="text-center">
@@ -149,12 +173,15 @@ export default {
       treeview: [],
       active: [],
       open: [],
+      loading: true,
+      loadingChat: false,
     };
   },
   asyncComputed: {
     async selected() {
       if (!this.active.length) return undefined;
 
+      this.loadingChat = true;
       const id = this.active[0];
 
       const result = await axios(process.env.VUE_APP_ENDPOINT, {
@@ -190,6 +217,7 @@ export default {
       });
 
       const obj = result.data.data.getPrivateChat[0];
+      this.loadingChat = false;
       return obj;
     },
   },
@@ -271,6 +299,8 @@ export default {
       }
     }
     this.treeview.push(helpers);
+
+    this.loading = false;
   },
 };
 </script>
