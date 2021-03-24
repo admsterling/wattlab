@@ -138,7 +138,7 @@ const mutations = {
   },
   UPDATE_LAB_HELPERS(state, payload) {
     state.labHelpers = payload;
-  },
+  }
 };
 
 const actions = {

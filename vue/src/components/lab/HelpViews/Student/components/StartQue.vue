@@ -78,17 +78,14 @@
               in queue
             </div>
           </v-card-title>
-          <div class="text-h4">
-            Average Wait Time
-            <span class="purple--text lighten-text-1">{{
-              averageTime | mmss
-            }}</span>
-          </div>
-          <div class="text-h4">
+          <div class="text-h4" v-if="this.labHelpers > 0">
             Estimated time until connected:
             <span class="purple--text lighten-text-1">
               {{ estimatedTime }}
             </span>
+          </div>
+          <div class="text-h4" v-else>
+            There are currently no lab helpers connected
           </div>
           <v-card-text
             style="height: calc(100vh - 430px); overflow-y: auto"
@@ -153,8 +150,7 @@ export default {
           ) || "Incorrect Format",
       },
       predictions: {
-        avg: 0,
-        totalHelpers: 0,
+        avg: 9,
       },
     };
   },
@@ -167,6 +163,7 @@ export default {
       gettingSupport: "socket/gettingSupport",
       queWaiting: "socket/queWaiting",
       profOnlyQue: "socket/profOnlyQue",
+      labHelpers: "socket/labHelpers",
       micPerm: "application/micPerm",
     }),
     queLength() {
@@ -190,12 +187,10 @@ export default {
     estimatedTime() {
       const i = this.que.findIndex((x) => x.socketid === this.$socket.id);
 
-      if (i < this.predictions.totalHelpers || i == 0) {
-        return "Any second now...";
+      const time = Math.floor((i * this.predictions.avg) / this.labHelpers);
+      if (time == 0) {
+        return `Any second now...`;
       } else {
-        const time = Math.floor(
-          (i * this.predictions.avg) / this.predictions.totalHelpers
-        );
         return `~ ${time} minutes`;
       }
     },
@@ -212,8 +207,6 @@ export default {
     async getHelp() {
       if (this.$refs.helpForm.validate()) {
         this.loading = true;
-        this.getPredictions();
-        console.log(this.predictions);
         this.$store.dispatch("socket/gitLink", this.gitLink);
         const queData = {
           ...this.helpObj,
@@ -245,44 +238,12 @@ export default {
         this.loading = false;
       });
     },
-    async getPredictions() {
-      axios(process.env.VUE_APP_ENDPOINT, {
-        method: "POST",
-        data: {
-          query: `
-              query getPredictions($lab_id: ID!) {
-                getPredictions(lab_id: $lab_id) {
-                  avg
-                  totalHelpers
-                }
-              }
-            `,
-          variables: {
-            lab_id: this.lab_id,
-          },
-        },
-      })
-        .then((res) => {
-          this.predictions = res.data.data.getPredictions;
-        })
-        .catch((error) => {
-          if (error.response) {
-            this.errorList = error.response.data.errors;
-            for (let i = 0; i < this.errorList.length; i++) {
-              this.$toast.error(this.errorList[i].message);
-            }
-          } else {
-            console.log("Error", error.message);
-          }
-        });
-    },
   },
   sockets: {
     updateQue: function (data) {
       this.que = data.que;
       this.averageTime = data.averageTime;
       this.times = data.times;
-      this.getPredictions();
     },
     startHelp: function (data) {
       this.$store.dispatch("socket/privateChatInfo", data).then(() => {

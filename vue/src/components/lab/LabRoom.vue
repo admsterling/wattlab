@@ -104,7 +104,7 @@ export default {
       this.$toast.info("You have recieved feedback from a student");
     },
     setHelpers: function (data) {
-      this.$store.dispatch("socket/updateLabHelpers", this.labHelpers + data);
+      this.$store.dispatch("socket/updateLabHelpers", data);
     },
   },
   methods: {

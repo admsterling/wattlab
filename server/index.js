@@ -61,17 +61,45 @@ io.on('connection', (socket) => {
     io.in(data.labCode).emit('updateRoomMembers', data);
 
     if (isHelper(data.labCode, data.username)) {
-      io.in(data.labCode).emit('setHelpers', 1);
+      axios(graphQLEndpoint, {
+        method: 'POST',
+        data: {
+          query: `
+                query getLabHelpers($code: String!){
+                  getLabHelpers(code: $code)
+                }
+            `,
+          variables: {
+            code: data.labCode,
+          },
+        },
+      }).then((res) => {
+        io.in(data.labCode).emit('setHelpers', res.data.data.getLabHelpers);
+      });
     }
   });
 
-  socket.on('leaveRoom', (data) => {
+  socket.on('leaveRoom', async (data) => {
     console.log(data.username + ' left lab: ' + data.labCode);
     socket.leave(data.labCode);
     io.in(data.labCode).emit('updateRoomMembers', data);
 
     if (isHelper(data.labCode, data.username)) {
-      io.in(data.labCode).emit('setHelpers', -1);
+      axios(graphQLEndpoint, {
+        method: 'POST',
+        data: {
+          query: `
+                      query getLabHelpers($code: String!){
+                        getLabHelpers(code: $code)
+                      }
+                  `,
+          variables: {
+            code: data.labCode,
+          },
+        },
+      }).then((res) => {
+        io.in(data.labCode).emit('setHelpers', res.data.data.getLabHelpers);
+      });
     }
   });
 
@@ -331,7 +359,21 @@ io.on('connection', (socket) => {
           .catch(() => {});
 
         if (isHelper(code, res.data.data.socketMemberLeaveLab.username)) {
-          io.in(code).emit('setHelpers', -1);
+          axios(graphQLEndpoint, {
+            method: 'POST',
+            data: {
+              query: `
+                    query getLabHelpers($code: String!){
+                      getLabHelpers(code: $code)
+                    }
+                `,
+              variables: {
+                code: code,
+              },
+            },
+          }).then((res) => {
+            io.in(code).emit('setHelpers', res.data.data.getLabHelpers);
+          });
         }
       })
       .catch(() => {});

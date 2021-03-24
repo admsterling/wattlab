@@ -212,6 +212,7 @@ module.exports = buildSchema(`
         sendResponse(priv_id: ID!, response: String!): Boolean!
         markWork(lab_id: ID!, username: String!, bool: Boolean!): Boolean!
         restartChat(lab_id: ID!): Boolean!
+        forceLeave(code: String!, username: String!): Boolean!
     }
 
     type RootQuery {

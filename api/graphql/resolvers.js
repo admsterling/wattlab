@@ -994,4 +994,12 @@ module.exports = {
       return false;
     }
   },
+  forceLeave: async function ({ code, username }) {
+    const member = await LabMember.findOne({ code: code, username: username });
+
+    member.inRoom = false;
+    await member.save();
+
+    return true;
+  },
 };
