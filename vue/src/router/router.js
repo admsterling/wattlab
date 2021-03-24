@@ -34,6 +34,9 @@ const LabInfoView = Vue.component('LabInfo', () =>
 const SubmissionsView = Vue.component('Submissions', () =>
   import('../components/prof/submissions/Submissions')
 );
+const ChangePassword = Vue.component('ChangePassword', () =>
+  import('../components/prof/ChangePassword')
+);
 
 const MobileView = Vue.component('MobileView', () =>
   import('../components/MobileView')
@@ -83,7 +86,11 @@ const routes = [
       { path: '/viewLabs', component: ViewLabs },
       { path: '/edit/:labCode', component: EditLabView },
       { path: '/labInfo/:code', component: LabInfoView },
-      { path: '/submissions/:code/:id/:submissions', component: SubmissionsView },
+      {
+        path: '/submissions/:code/:id/:submissions',
+        component: SubmissionsView,
+      },
+      { path: '/changePassword', component: ChangePassword },
     ],
   },
   { path: '*', component: NotFound },

@@ -73,7 +73,7 @@
                   </v-col>
                   <v-col>
                     <v-text-field
-                      label="Password:"
+                      label="Confirm Password:"
                       v-model="prof.confirmPassword"
                       :rules="confirmPasswordRules"
                       :type="show ? 'text' : 'password'"
