@@ -207,7 +207,7 @@ export default {
       usernameRules: [
         (value) => !!value || "Required",
         (value) =>
-          /^[a-z\\-]{2,3}[0-9]{1,4}$/.test(value) || "Incorrect Format",
+          /^[a-z\\-]{1,4}[0-9]{1,4}$/.test(value) || "Incorrect Format",
       ],
       checkboxRules: [(value) => value || "Required"],
     };
