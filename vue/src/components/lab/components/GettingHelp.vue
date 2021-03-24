@@ -257,6 +257,8 @@ import "codemirror/theme/monokai.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/clike/clike";
 import "codemirror/mode/sql/sql";
+
+import "codemirror/mode/htmlmixed/htmlmixed";
 // Code Mirror Addons
 import "codemirror/addon/display/fullscreen.js";
 import "codemirror/addon/display/fullscreen.css";
@@ -283,6 +285,7 @@ export default {
         { name: "Java", mode: "text/x-java" },
         { name: "Java-Script", mode: "text/javascript" },
         { name: "SQL", mode: "text/x-sql" },
+        { name: "HTML / XML", mode: "text/html" },
       ],
       defaultMode: {
         name: "Java",
