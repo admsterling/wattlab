@@ -4,7 +4,7 @@
     <v-card max-width="700px">
       <v-card-title> Change Password </v-card-title>
       <v-divider></v-divider>
-      <v-card-text>
+      <v-card-text align="center">
         <v-form ref="passwordForm" lazy-validation>
           <v-text-field
             label="Password:"
@@ -31,10 +31,6 @@
             @keyup.enter="submit"
           ></v-text-field>
         </v-form>
-      </v-card-text>
-      <v-card-actions>
-        
-        
         <v-btn
           class="teal"
           outlined
@@ -44,12 +40,15 @@
           :disabled="submitted"
           >Change Password
         </v-btn>
-      </v-card-actions>
+      </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -68,10 +67,50 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapGetters({
+      prof_id: "prof/prof_id",
+    }),
+  },
   methods: {
     submit() {
       if (this.$refs.passwordForm.validate()) {
         this.submitted = true;
+
+        axios(process.env.VUE_APP_ENDPOINT, {
+          method: "POST",
+          data: {
+            query: `
+            mutation changePassword($prof_id: ID, $password: String!){
+                changePassword(prof_id: $prof_id, password: $password)
+            }
+            `,
+            variables: {
+              prof_id: this.prof_id,
+              password: this.password,
+            },
+          },
+          headers: {
+            Authorization: `Bearer ${this.$store.state.prof.token}`,
+          },
+        })
+          .then(() => {
+            this.$toast.success("Password Chnaged!");
+            this.$router.push("/viewLabs");
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.errorList = error.response.data.errors;
+              for (let i = 0; i < this.errorList.length; i++) {
+                this.$toast.error(this.errorList[i].message);
+              }
+            } else {
+              console.log("Error", error.message);
+            }
+          })
+          .finally(() => {
+            this.submitted = false;
+          });
       }
     },
   },

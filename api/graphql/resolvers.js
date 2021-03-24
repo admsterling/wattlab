@@ -66,6 +66,24 @@ module.exports = {
     const createdProf = await prof.save();
     return { ...createdProf._doc, _id: createdProf._id.toString() };
   },
+  changePassword: async function ({ prof_id, password }, req) {
+    checkAuth(req.isAuth);
+
+    const prof = await Prof.findById(prof_id);
+
+    if (!prof) {
+      const error = new Error('No Professor found');
+      error.code = 402;
+      throw error;
+    }
+
+    const hashedPw = await bcrypt.hash(password, 12);
+
+    prof.password = hashedPw;
+    await prof.save();
+
+    return true;
+  },
   login: async function ({ email, password }) {
     const prof = await Prof.findOne({ email: email });
     if (!prof) {
@@ -107,6 +125,36 @@ module.exports = {
       ...prof._doc,
       _id: prof._id.toString(),
     };
+  },
+  getAccounts: async function ({}, req) {
+    checkAuth(req.isAuth);
+
+    const profs = await Prof.find({ approved: false });
+
+    return profs;
+  },
+  approveProf: async function ({ prof_id }, req) {
+    checkAuth(req.isAuth);
+
+    const prof = await Prof.findById(prof_id);
+
+    if (!prof) {
+      const error = new Error('No Account Found');
+      error.code = 404;
+      throw error;
+    }
+
+    prof.approved = true;
+    await prof.save();
+
+    return true;
+  },
+  rejectProf: async function ({ prof_id }, req) {
+    checkAuth(req.isAuth);
+
+    await Prof.findByIdAndRemove(prof_id);
+
+    return true;
   },
   createLab: async function ({ labInput }, req) {
     checkAuth(req.isAuth);

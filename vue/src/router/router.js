@@ -37,6 +37,9 @@ const SubmissionsView = Vue.component('Submissions', () =>
 const ChangePassword = Vue.component('ChangePassword', () =>
   import('../components/prof/ChangePassword')
 );
+const ApproveUsers = Vue.component('ApproveUsers', () =>
+  import('../components/prof/ApproveUsers')
+);
 
 const MobileView = Vue.component('MobileView', () =>
   import('../components/MobileView')
@@ -91,6 +94,7 @@ const routes = [
         component: SubmissionsView,
       },
       { path: '/changePassword', component: ChangePassword },
+      { path: '/approve', component: ApproveUsers },
     ],
   },
   { path: '*', component: NotFound },

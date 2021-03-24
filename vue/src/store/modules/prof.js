@@ -16,11 +16,17 @@ const getters = {
     return state.profData.email;
   },
   username: (state) => {
-    if(state.profData.email){
-      return state.profData.email.substring(0, state.profData.email.indexOf("@"))
+    if (state.profData.email) {
+      return state.profData.email.substring(
+        0,
+        state.profData.email.indexOf('@')
+      );
     }
     return undefined;
-  }
+  },
+  prof_id: (state) => {
+    return state.profData._id;
+  },
 };
 
 const mutations = {

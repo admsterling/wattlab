@@ -191,6 +191,9 @@ module.exports = buildSchema(`
 
     type RootMutation {
         createProf(profInput: ProfCreateData): Prof!
+        approveProf(prof_id: ID!): Boolean!
+        rejectProf(prof_id: ID!): Boolean!
+        changePassword(prof_id: ID, password: String!): String!
         createLab(labInput: LabCreateData): Boolean!
         updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!, usefulLinkTitles: [String!]!, usefulLinkLinks: [String!]!): Boolean!
         joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!, prof: Boolean!): joinLabReturnData!
@@ -213,6 +216,7 @@ module.exports = buildSchema(`
         markWork(lab_id: ID!, username: String!, bool: Boolean!): Boolean!
         restartChat(lab_id: ID!): Boolean!
         forceLeave(code: String!, username: String!): Boolean!
+        
     }
 
     type RootQuery {
@@ -222,6 +226,7 @@ module.exports = buildSchema(`
         labExist(code: String!): Boolean!
         getQue(lab_id: ID!): queReturn!
         prof(id: String!): Prof!
+        getAccounts: [Prof!]!
         getSubmission(member_id: ID!): String!
         getActiveMembers(lab_id: ID!): Int!
         getActiveChats(lab_id: ID!): Int!

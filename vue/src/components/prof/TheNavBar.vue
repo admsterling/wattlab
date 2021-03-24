@@ -44,8 +44,8 @@
       </v-list>
 
       <v-divider></v-divider>
-
-      <v-list nav dense>
+      <v-list nav dense subheader>
+        <v-subheader>Lab Links</v-subheader>
         <v-list-item-group v-model="selectedItem" color="primary">
           <v-list-item v-for="(link, i) in links" :key="i" :to="link.route">
             <v-list-item-icon>
@@ -60,10 +60,35 @@
       </v-list>
 
       <v-divider></v-divider>
-
-      <v-list nav dense>
+      <v-list nav dense subheader>
+        <v-subheader>User Links</v-subheader>
         <v-list-item-group v-model="selectedItem" color="primary">
           <v-list-item v-for="(link, i) in userLinks" :key="i" :to="link.route">
+            <v-list-item-icon>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ link.text }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+
+      <v-divider></v-divider>
+      <v-list
+        nav
+        dense
+        subheader
+        v-if="this.$store.state.prof.profData.email === 'cd32@hw.ac.uk'"
+      >
+        <v-subheader>Admin Links</v-subheader>
+        <v-list-item-group v-model="selectedItem" color="primary">
+          <v-list-item
+            v-for="(link, i) in adminLinks"
+            :key="i"
+            :to="link.route"
+          >
             <v-list-item-icon>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-item-icon>
@@ -101,7 +126,13 @@ export default {
           text: "Change Password",
           route: "/changePassword",
         },
-        { icon: "mdi-account-check", text: "Approve Users", route: "/approve" },
+      ],
+      adminLinks: [
+        {
+          icon: "mdi-account-check",
+          text: "Approve Users",
+          route: "/approve",
+        },
       ],
     };
   },
