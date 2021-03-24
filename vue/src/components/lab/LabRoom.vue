@@ -60,6 +60,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -88,6 +89,7 @@ export default {
       gettingSupport: "socket/gettingSupport",
       privateChat: "socket/privateChat",
       username: "socket/username",
+      labHelpers: "socket/labHelpers",
     }),
     studentSubmission: function () {
       return this.submission && this.accountType === "STUDENT";
@@ -100,6 +102,9 @@ export default {
     },
     feedback: function () {
       this.$toast.info("You have recieved feedback from a student");
+    },
+    setHelpers: function (data) {
+      this.$store.dispatch("socket/updateLabHelpers", this.labHelpers + data);
     },
   },
   methods: {
@@ -122,6 +127,30 @@ export default {
       }
       this.$router.push("/");
     },
+    async getLabHelpers() {
+      axios(process.env.VUE_APP_ENDPOINT, {
+        method: "POST",
+        data: {
+          query: `
+              query getLabHelpers($lab_id: ID) {
+                getLabHelpers(lab_id: $lab_id)
+              }
+            `,
+          variables: {
+            lab_id: this.lab_id,
+          },
+        },
+      }).then((res) => {
+        this.$store.dispatch("socket/labHelpers", res.data.data.getLabHelpers);
+      });
+    },
+  },
+  mounted() {
+    this.getLabHelpers();
+
+    if (this.accountType === "HELPER") {
+      this.$socket.emit("updateHelpers", this.labCode);
+    }
   },
   beforeDestroy() {
     if (this.labCode) {

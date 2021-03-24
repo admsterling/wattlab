@@ -17,6 +17,7 @@ const getDefaultState = () => {
     peerid: null,
     student_mic: false,
     gitLink: null,
+    labHelpers: 0,
   };
 };
 
@@ -79,6 +80,9 @@ const getters = {
   gitLink: (state) => {
     return state.gitLink;
   },
+  labHelpers: (state) => {
+    return state.labHelpers;
+  },
 };
 
 const mutations = {
@@ -128,6 +132,12 @@ const mutations = {
   },
   GIT_LINK(state, payload) {
     state.gitLink = payload;
+  },
+  LAB_HELPERS(state, payload) {
+    state.labHelpers = payload;
+  },
+  UPDATE_LAB_HELPERS(state, payload) {
+    state.labHelpers = payload;
   },
 };
 
@@ -278,6 +288,12 @@ const actions = {
   },
   gitLink({ commit }, context) {
     commit('GIT_LINK', context);
+  },
+  labHelpers({ commit }, context) {
+    commit('LAB_HELPERS', context);
+  },
+  updateLabHelpers({ commit }, context) {
+    commit('UPDATE_LAB_HELPERS', context);
   },
 };
 

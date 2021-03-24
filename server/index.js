@@ -34,6 +34,24 @@ app.use(
 );
 app.use(express.static(public));
 
+async function isHelper(code, username) {
+  const result = await axios(graphQLEndpoint, {
+    method: 'POST',
+    data: {
+      query: `
+            query isHelper($code: String!, $username: String!){
+              isHelper(code: $code, username: $username)
+            }
+        `,
+      variables: {
+        code: code,
+        username: username,
+      },
+    },
+  });
+  return result.data.data.isHelper;
+}
+
 io.on('connection', (socket) => {
   console.log('Socket Connection Established with ID :' + socket.id);
 
@@ -41,12 +59,20 @@ io.on('connection', (socket) => {
     console.log(data.username + ' joined lab: ' + data.labCode);
     socket.join(data.labCode);
     io.in(data.labCode).emit('updateRoomMembers', data);
+
+    if (isHelper(data.labCode, data.username)) {
+      io.in(data.labCode).emit('setHelpers', 1);
+    }
   });
 
   socket.on('leaveRoom', (data) => {
     console.log(data.username + ' left lab: ' + data.labCode);
     socket.leave(data.labCode);
     io.in(data.labCode).emit('updateRoomMembers', data);
+
+    if (isHelper(data.labCode, data.username)) {
+      io.in(data.labCode).emit('setHelpers', -1);
+    }
   });
 
   socket.on('endLab', (labCode) => {
@@ -257,12 +283,15 @@ io.on('connection', (socket) => {
       method: 'POST',
       data: {
         query: `
-              mutation socketMemberLeaveLab($id: String!){
-                socketMemberLeaveLab(id: $id){
+            mutation socketMemberLeaveLab($id: String!) {
+              socketMemberLeaveLab(id: $id) {
+                lab {
                   _id
                   code
                 }
+                username
               }
+            }
           `,
         variables: {
           id: socket.id,
@@ -270,7 +299,7 @@ io.on('connection', (socket) => {
       },
     })
       .then((res) => {
-        code = res.data.data.socketMemberLeaveLab.code;
+        code = res.data.data.socketMemberLeaveLab.lab.code;
         io.to(code).emit('disconnectUser', socket.id);
 
         axios(graphQLEndpoint, {
@@ -291,7 +320,7 @@ io.on('connection', (socket) => {
               }
           `,
             variables: {
-              lab_id: res.data.data.socketMemberLeaveLab._id,
+              lab_id: res.data.data.socketMemberLeaveLab.lab._id,
               socketid: socket.id,
             },
           },
@@ -300,6 +329,10 @@ io.on('connection', (socket) => {
             io.to(code).emit('updateQue', res.data.data.leaveQue);
           })
           .catch(() => {});
+
+        if (isHelper(code, res.data.data.socketMemberLeaveLab.username)) {
+          io.in(code).emit('setHelpers', -1);
+        }
       })
       .catch(() => {});
     console.log('Socket Disconnected: ' + socket.id);

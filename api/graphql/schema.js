@@ -126,6 +126,11 @@ module.exports = buildSchema(`
         usefulLinkLinks: [String!]!
     }
 
+    type socketMemberReturn {
+        lab: Lab!
+        username: String!
+    }
+
     type membersList { 
         members: [LabMember!]!
         totalMembers: Int!
@@ -190,7 +195,7 @@ module.exports = buildSchema(`
         updateLab(code: String!, title: String!, desc: String!, urlTitles: [String!]!, urlLinks: [String!], helpers: [String!]!, submission: Boolean!, profOnlyQue: Boolean!, usefulLinkTitles: [String!]!, usefulLinkLinks: [String!]!): Boolean!
         joinLab(code: String!, username: String!, helperPIN: Int, socketid: String!, prof: Boolean!): joinLabReturnData!
         memberLeaveLab(id: ID!): Boolean!
-        socketMemberLeaveLab(id: String!): Lab!
+        socketMemberLeaveLab(id: String!): socketMemberReturn!
         createMessage(messageInput: MessageCreateData): MessageReturn!
         startLab(id: ID!): Boolean!
         endLab(id: ID!): Boolean!
@@ -225,6 +230,8 @@ module.exports = buildSchema(`
         getFeedback(lab_id: ID!, staff: String!): [PrivateChat!]!
         getLabMembers(id: ID!, page: Int, itemsPerPage: Int, sortBy: [String], sortDesc: [Boolean]): membersList
         getPredictions(lab_id: ID!): PredictionReturn!
+        getLabHelpers(lab_id: ID, code: String): Int!
+        isHelper(code: String!, username: String!): Boolean!
     }
 
     schema {

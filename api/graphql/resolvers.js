@@ -359,10 +359,13 @@ module.exports = {
 
     const lab = await Lab.findOne(labMember.lab_id);
     return {
-      ...lab._doc,
-      _id: lab._doc._id.toString(),
-      createdAt: lab._doc.createdAt.toISOString(),
-      updatedAt: lab._doc.updatedAt.toISOString(),
+      lab: {
+        ...lab._doc,
+        _id: lab._doc._id.toString(),
+        createdAt: lab._doc.createdAt.toISOString(),
+        updatedAt: lab._doc.updatedAt.toISOString(),
+      },
+      username: labMember.username,
     };
   },
   startLab: async function ({ id }, req) {
@@ -964,5 +967,31 @@ module.exports = {
       avg: avg.toFixed(5),
       totalHelpers: totalHelpers,
     };
+  },
+  getLabHelpers: async function ({ lab_id, code }) {
+    let lab;
+
+    if (lab_id) {
+      lab = await Lab.findById(lab_id);
+    } else if (code) {
+      lab = await Lab.findOne({ code: code });
+    }
+
+    const totalHelpers = await LabMember.find({
+      lab_id: lab._id,
+      inRoom: true,
+      username: { $in: lab.helpers },
+    }).countDocuments();
+
+    return totalHelpers;
+  },
+  isHelper: async function ({ code, username }) {
+    const lab = await Lab.findOne({ code: code });
+
+    if (lab.helpers.includes(username)) {
+      return true;
+    } else {
+      return false;
+    }
   },
 };
