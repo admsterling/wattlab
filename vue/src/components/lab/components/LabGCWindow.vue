@@ -62,6 +62,7 @@
     <v-text-field
       v-if="accountType !== 'PROFESSOR'"
       v-model="message"
+      ref="messageField"
       label="Message:"
       type="text"
       no-details
@@ -77,6 +78,7 @@
     <v-text-field
       v-else
       v-model="message"
+      ref="messageField"
       label="Message:"
       type="text"
       no-details
@@ -180,6 +182,7 @@ export default {
           })
           .finally(() => {
             this.messageSending = false;
+            this.$nextTick(() => this.$refs.messageField.focus());
           });
       }
     },

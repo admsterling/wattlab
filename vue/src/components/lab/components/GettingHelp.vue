@@ -221,6 +221,7 @@
             <v-text-field
               v-model="message"
               label="Message:"
+              ref="messageField2"
               type="text"
               no-details
               outlined
@@ -257,7 +258,6 @@ import "codemirror/theme/monokai.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/clike/clike";
 import "codemirror/mode/sql/sql";
-
 import "codemirror/mode/htmlmixed/htmlmixed";
 // Code Mirror Addons
 import "codemirror/addon/display/fullscreen.js";
@@ -454,6 +454,8 @@ export default {
           .finally(() => {
             this.messageSending = false;
             this.scrollToEnd();
+
+            this.$nextTick(() => this.$refs.messageField2.focus());
           });
       }
     },
