@@ -870,7 +870,7 @@ module.exports = {
     });
   },
   getHistory: async function ({ lab_id, staff }) {
-    const chats = await PrivateChat.find({ staff: staff })
+    const chats = await PrivateChat.find({ lab_id: lab_id, staff: staff })
       .sort({
         createdAt: 'desc',
       })
