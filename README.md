@@ -4,9 +4,6 @@ This is a lab management system developed for Heriot-Watt University and for my 
 A running version of this can be found at:
 [wattlab.tech](https://wattlab.tech)
 
-Backup link: 
-[https://watt-lab-server.herokuapp.com/login](https://watt-lab-server.herokuapp.com/login)
-
 Backup Link:
 [Heroku App](https://watt-lab-server.herokuapp.com)
 
