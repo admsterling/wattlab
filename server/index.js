@@ -1,4 +1,4 @@
-console.log('test6')
+console.log('test7')
 
 const express = require('express');
 const history = require('connect-history-api-fallback');
