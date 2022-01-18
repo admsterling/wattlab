@@ -23,8 +23,8 @@
       <v-spacer></v-spacer>
       <div class="white--text">
         &copy; Adam Sterling {{ new Date().getFullYear() }} -
-        <a href="mailto:as317@hw.ac.uk" class="font-weight-light white--text"
-          >as317@hw.ac.uk</a
+        <a href="mailto:adamsterling10@gmail.com" class="font-weight-light white--text"
+          >adamsterling10@gmail.com</a
         >
       </div>
     </v-footer>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+
 import { mapGetters } from "vuex";
 export default {
   name: "App",

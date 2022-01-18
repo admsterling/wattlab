@@ -13,19 +13,19 @@
             You agree that your Heriot-Watt username will be your account
             identifier
           </li>
-          <li>
+          <!-- <li>
             Any text messages you send will be stored until the project is
             complete
             <span class="font-weight-bold">22 Apr 2021 (15:30 Local Time)</span
             >.
-          </li>
+          </li> -->
           <li>
             All data will be stored and processed within GDPR Regulations.
           </li>
         </ul>
         Please do not take advantage of any exploits you find and instead report
         them to
-        <a href="mailto:as317@hw.ac.uk">as317@hw.ac.uk</a>.<br />
+        <a href="mailto:adamsterling10@gmail.com">adamsterling10@gmail.com</a>.<br />
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>

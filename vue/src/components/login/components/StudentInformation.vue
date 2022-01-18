@@ -5,17 +5,17 @@
         Student Information
       </v-card-title>
       <v-card-text class="pa-2">
-        <span class="font-weight-bold"
+        <!-- <span class="font-weight-bold"
           >Students, please not that the current Microsoft Forms lab method is
           still **WORKING**</span
         >.<br />If for any reason this site crashes or you are unable to use the
         application, return to the old method and a lab helper will assist you
-        that way.
+        that way. -->
         <ul class="my-3">
-          <li>
+          <!-- <li>
             Please try use the insite navigation so that we can understand how a
             user will navigate through the site.
-          </li>
+          </li> -->
           <li>
             Although the site has been approved for use in most modern browsers,
             please try and use the latest version of
